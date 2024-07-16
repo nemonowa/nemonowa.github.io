@@ -1,4 +1,4 @@
-# ⚓｜𝐁𝐞𝐭𝐭𝐞𝐫 𝐇𝐏 𝐆𝐔𝐈
+# ⚓｜𝐋𝐈𝐍𝐊 𝐨𝐟 𝐍𝐄𝐗𝐔𝐒
 ## ❱ はじめに【README】
 https://nemonowa.github.io/
 
@@ -13,7 +13,7 @@ start https://nemonowa.github.io/
 
 ## ❱ 情報【Information】
 ```
-❱ Website: ⚓｜𝐁𝐞𝐭𝐭𝐞𝐫 𝐇𝐏 𝐆𝐔𝐈
+❱ Website: ⚓｜𝐋𝐈𝐍𝐊 𝐨𝐟 𝐍𝐄𝐗𝐔𝐒
 ❱ Versiton: ver1.0 for FireFox
 ❱ Copyright: SoraFlete(c)
 ❱ Release: 2024/7/17
