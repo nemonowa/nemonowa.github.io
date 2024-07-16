@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // 現在のページのURLを取得
+  var currentPageUrl = window.location.href;
+
+  // URLからファイル名部分のみを抽出
+  var fileName = currentPageUrl.substring(currentPageUrl.lastIndexOf('/') + 1);
+
+  // 拡張子が含まれる場合は、それを取り除く
+  var fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
+
+  // タイトルを設定
+  document.title = fileNameWithoutExtension;
+</script>
+<title></title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2F57A7; /* 海を連想させる色 */
+    font-family: Arial, sans-serif;
+  }
+  #image-container {
+    position: relative;
+    overflow: hidden;
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none; /* ユーザー選択を無効化 */
+    background-color: #2F57A7; /* 海を連想させる色 */
+  }
+  #image-container img {
+    display: block;
+    max-width: none;
+    user-select: none; /* ユーザー選択を無効化 */
+  }
+  #image-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px; /* 右上に配置 */
+    background-color: rgba(0, 0, 0, 0.7); /* 半透明の背景色 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 影を追加 */
+    z-index: 10; /* コントロールパネルを手前に表示 */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .control-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #009295; /* スカルク */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+  }
+  .control-button:hover {
+    background-color: #45a049; /* ホバー時の色 */
+  }
+  #zoom-slider {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #f1f1f1;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  #zoom-slider:hover {
+    opacity: 1;
+  }
+  #zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #2196F3; /* ブルー */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  #zoom-level {
+    color: #fff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+  #zoom-level span {
+    margin-right: 5px;
+  }
+  #zoom-level input[type="number"] {
+    width: 60px;
+    font-size: 16px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+  }
+  #mouse-position {
+    color: #fff;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+<div id="image-container">
+  <img src="map.png" id="huge-image" alt="map">
+</div>
+
+<div id="image-controls">
+  <div class="control-button" id="reset-button">基準座標に戻す</div>
+  <div class="control-button" id="fullscreen-button">全画面表示</div>
+  <div id="zoom-level">
+    <span>拡大率:</span>
+    <input type="number" id="zoom-input" min="25" max="1000" value="100">
+    <span>%</span>
+  </div>
+  <input type="range" id="zoom-slider" min="25" max="1000" value="100">
+  <div id="mouse-position">座標（画像左上基準）: (0, 0) ピクセル</div>
+</div>
+
+<script>
+  const imageContainer = document.getElementById('image-container');
+  const resetButton = document.getElementById('reset-button');
+  const fullscreenButton = document.getElementById('fullscreen-button');
+  const zoomSlider = document.getElementById('zoom-slider');
+  const zoomInput = document.getElementById('zoom-input');
+  const mousePositionDisplay = document.getElementById('mouse-position');
+  const hugeImage = document.getElementById('huge-image');
+  let zoomLevel = 1; // 初期の拡大率を100%に設定
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+  let imageOffsetX = 0;
+  let imageOffsetY = 0;
+  const zoomSpeed = 0.001; // 拡大縮小速度をさらに緩やかに調整
+
+  // 初期設定
+  window.onload = function() {
+    setInitialImagePosition();
+
+    // シークバーの変更イベントを追加
+    zoomSlider.addEventListener('input', function(event) {
+      const value = parseInt(event.target.value);
+      zoomLevel = value / 100; // シークバーの値を拡大率に変換
+      applyZoom();
+      updateZoomInput();
+    });
+
+    // テキスト入力フィールドの変更イベントを追加
+    zoomInput.addEventListener('input', function(event) {
+      const value = parseInt(event.target.value);
+      if (!isNaN(value) && value >= 25 && value <= 1000) {
+        zoomLevel = value / 100; // 入力された値を拡大率に変換
+        zoomSlider.value = value; // シークバーの値を更新
+        applyZoom();
+      }
+    });
+  };
+
+  imageContainer.addEventListener('wheel', function(event) {
+    event.preventDefault();
+
+    let newZoomLevel = zoomLevel + event.deltaY * -zoomSpeed;
+    newZoomLevel = Math.max(0.25, Math.min(10.0, newZoomLevel)); // 範囲を25%から1000%に制限
+
+    const rect = imageContainer.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left - imageOffsetX) * (newZoomLevel / zoomLevel - 1);
+    const offsetY = (event.clientY - rect.top - imageOffsetY) * (newZoomLevel / zoomLevel - 1);
+
+    zoomLevel = newZoomLevel;
+    applyZoom(imageOffsetX + offsetX, imageOffsetY + offsetY);
+
+    // シークバーの値を更新
+    zoomSlider.value = zoomLevel * 100;
+    updateZoomInput();
+  });
+
+  imageContainer.addEventListener('mousedown', function(event) {
+    if (event.button === 0) { // 左クリックのみドラッグを許可
+      isDragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      imageContainer.style.cursor = 'grabbing';
+    }
+  });
+
+  imageContainer.addEventListener('mousemove', function(event) {
+    if (isDragging) {
+      const deltaX = event.clientX - lastX;
+      const deltaY = event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+
+      imageOffsetX += deltaX / zoomLevel;
+      imageOffsetY += deltaY / zoomLevel;
+
+      applyZoom(imageOffsetX, imageOffsetY);
+    }
+
+    // 画像左上を基準としたマウス位置を表示
+    const rect = imageContainer.getBoundingClientRect();
+    const imageX = (event.clientX - rect.left - imageOffsetX) / zoomLevel;
+    const imageY = (event.clientY - rect.top - imageOffsetY) / zoomLevel;
+    mousePositionDisplay.textContent = `座標：(${imageX.toFixed(2)}, ${imageY.toFixed(2)})`;
+  });
+
+  window.addEventListener('mouseup', function(event) {
+    if (event.button === 0 && isDragging) { // 左クリックでドラッグ中の場合のみ処理
+      isDragging = false;
+      imageContainer.style.cursor = 'grab';
+    }
+  });
+
+  // 右クリックメニューを無効化
+  imageContainer.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+  });
+
+  // デフォルトに戻るボタンのクリックイベント
+  resetButton.addEventListener('click', function() {
+    zoomLevel = 1; // デフォルトの拡大率を100%に設定
+    zoomSlider.value = 100;
+    zoomInput.value = 100;
+    applyZoom();
+    updateZoomInput();
+  });
+
+  // 全画面表示ボタンのクリックイベント
+  fullscreenButton.addEventListener('click', function() {
+    if (!document.fullscreenElement) {
+      imageContainer.requestFullscreen().catch(err => {
+        console.error('全画面表示に失敗しました。', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  function setInitialImagePosition() {
+    const img = imageContainer.querySelector('img');
+    img.style.transform = `translate(0, 0) scale(${zoomLevel})`;
+  }
+
+  function applyZoom(offsetX = 0, offsetY = 0) {
+    const img = imageContainer.querySelector('img');
+
+    img.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomLevel})`;
+
+    // 拡大率を表示
+    zoomInput.value = Math.round(zoomLevel * 100); // テキスト入力フィールドの値を更新
+
+    // ドラッグ中はオフセットも更新
+    imageOffsetX = offsetX;
+    imageOffsetY = offsetY;
+  }
+
+  function updateZoomInput() {
+    zoomInput.value = Math.round(zoomLevel * 100); // テキスト入力フィールドの値を更新
+  }
+</script>
+</body>
+</html>
