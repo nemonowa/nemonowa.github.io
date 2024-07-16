@@ -37,5 +37,6 @@ https://discord.gg/ax2HpwXmjx
 * 公開
 * README作成
 <p align="right">
-<img src="https://github.com/nemonowa/Better_HP_GUI/blob/main/icon.png?raw=true" alt="discord.js" /></a>
+<img src="https://github.com/nemonowa/Better_HP_GUI/blob/main/icon.png?raw=true" alt="discord.js" />
+</a>
 </p>
