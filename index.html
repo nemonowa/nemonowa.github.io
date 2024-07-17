@@ -42,6 +42,7 @@
 
     h1 {
       font-size: 3rem;
+      user-select: none; /* 選択を禁止 */
     }
 
     button {
@@ -67,7 +68,6 @@
       pointer-events: auto; /* マウスイベントを有効化 */
       animation: bubbleRise 10s linear infinite; /* 10秒かけて画面全体に上昇 */
       cursor: pointer; /* ポインターを指定 */
-      transition: opacity 1s ease; /* フェードアウトのトランジション */
     }
 
     @keyframes bubbleRise {
@@ -129,8 +129,8 @@
       font-size: 2rem;
       color: white;
       z-index: 1000;
-      opacity: 1;
-      transition: opacity 2s ease; /* スコアが更新されない場合のフェードアウト */
+      opacity: 0; /* 最初は非表示 */
+      transition: opacity 1.5s ease; /* 徐々にフェードアウト */
     }
 
     @media (max-width: 600px) {
@@ -146,10 +146,32 @@
   </style>
 </head>
 <body>
-  <audio id="diveAudio" src="4other/asset/dive.wav" loop></audio>
+  <audio id="diveAudio" src="4other/asset/dive.mp3" loop></audio>
   <audio id="bubbleAudio" src="4other/asset/bubble.mp3"></audio>
 
   <script>
+document.addEventListener('DOMContentLoaded', function() {
+  var diveButton = document.getElementById('diveButton');
+  var overlay = document.getElementById('overlay');
+
+  diveButton.addEventListener('click', function() {
+    // フェードインのアニメーションを追加
+    overlay.style.opacity = '0';
+    overlay.style.display = 'block';
+    setTimeout(function() {
+      overlay.style.transition = 'opacity 1s';
+      overlay.style.opacity = '1';
+    }, 100); // 0.1秒後にフェードインを開始
+
+    // 深海に潜る演出（setTimeoutを使って2秒後に実行）
+    setTimeout(function() {
+      window.location.href = "https://nemonowa.github.io/4other/map"; // 深海ページにリダイレクト
+    }, 2000); // 2秒後に深海ページに遷移
+  });
+});
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
       var diveAudio = document.getElementById('diveAudio');
       var bubbleAudio = document.getElementById('bubbleAudio');
@@ -165,8 +187,8 @@
 
       // 得点を表示する要素を取得
       var scoreDisplay = document.getElementById('score');
-      scoreDisplay.textContent = 'Score: ' + score;
-      
+      var scoreTimeout; // スコア表示のタイムアウト用の変数
+
       // 気泡をクリックした時の得点加算処理
       function handleClick() {
         var bubble = this;
@@ -175,7 +197,14 @@
 
         // 得点を加算
         score += points;
-        scoreDisplay.textContent = 'Score: ' + score;
+        scoreDisplay.textContent = 'depth: ' + score;
+        scoreDisplay.style.opacity = '1'; // スコアを表示
+
+        // 3秒後にスコアを非表示にする
+        clearTimeout(scoreTimeout); // 既存のタイムアウトをクリア
+        scoreTimeout = setTimeout(function() {
+          scoreDisplay.style.opacity = '0'; // 3秒後にスコアを非表示
+        }, 3000);
 
         // 弾けるアニメーションを追加
         bubble.style.animation = 'bubblePop 0.3s ease forwards';
@@ -219,15 +248,6 @@
 
       // 定期的に気泡を生成
       setInterval(createBubble, 750); // 0.75秒ごとに気泡を生成
-
-      // スコアが更新されない場合に徐々にフェードアウトする
-      function fadeOutScore() {
-        if (scoreDisplay.textContent === 'Score: ' + score) {
-          scoreDisplay.style.opacity = '0';
-        }
-      }
-
-      setInterval(fadeOutScore, 3000); // 3秒ごとにチェック
     });
   </script>
 
