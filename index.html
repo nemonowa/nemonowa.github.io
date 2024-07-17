@@ -88,6 +88,36 @@
         opacity: 0;
       }
     }
+
+    .corner-button {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    #menuButton {
+      top: 10px;
+      left: 10px;
+    }
+
+    #fullscreenButton {
+      bottom: 10px;
+      left: 10px;
+    }
+
+    #audioButton {
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #accountButton {
+      top: 10px;
+      right: 10px;
+    }
   </style>
 </head>
 <body>
@@ -95,9 +125,13 @@
     <div id="overlay"></div>
     <div id="content">
       <h1>Welcome to the NEXUS</h1>
-      <button id="diveButton"> >> DIVE << </button>
+      <button id="diveButton"> > DIVE < </button>
     </div>
     <div id="bubbleContainer"></div>
+    <button id="menuButton" class="corner-button"></button>
+    <button id="fullscreenButton" class="corner-button"></button>
+    <button id="audioButton" class="corner-button"></button>
+    <button id="accountButton" class="corner-button"></button>
   </div>
 
   <script>
