@@ -88,16 +88,73 @@
         opacity: 0;
       }
     }
+
+    .corner-button {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    #menuButton {
+      top: 10px;
+      left: 10px;
+    }
+
+    #fullscreenButton {
+      bottom: 10px;
+      left: 10px;
+    }
+
+    #audioButton {
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #accountButton {
+      top: 10px;
+      right: 10px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      button {
+        font-size: 1.5rem;
+        padding: 10px 20px;
+      }
+    }
   </style>
 </head>
 <body>
+  <audio id="diveAudio" src="dive.wav"></audio>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var diveAudio = document.getElementById('diveAudio');
+
+      function playAudio() {
+        diveAudio.play();
+      }
+
+      document.addEventListener('click', playAudio, { once: true });
+      document.addEventListener('keydown', playAudio, { once: true });
+      document.addEventListener('touchstart', playAudio, { once: true });
+    });
+  </script>
+
   <div id="ocean">
     <div id="overlay"></div>
     <div id="content">
       <h1>Welcome to the NEXUS</h1>
-      <button id="diveButton"> >> DIVE << </button>
+      <button id="diveButton"> > DIVE < </button>
     </div>
-    <div id="bubbleContainer"></div>
+    <div id="bubbleContainer"></div> <!-- ここに bubbleContainer を追加 -->
   </div>
 
   <script>
