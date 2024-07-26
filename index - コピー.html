@@ -92,6 +92,36 @@
       }
     }
 
+    .corner-button {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    #menuButton {
+      top: 10px;
+      left: 10px;
+    }
+
+    #fullscreenButton {
+      bottom: 10px;
+      left: 10px;
+    }
+
+    #audioButton {
+      bottom: 10px;
+      right: 10px;
+    }
+
+    #accountButton {
+      top: 10px;
+      right: 10px;
+    }
+
     #score {
       position: fixed;
       top: 20px;
@@ -120,36 +150,29 @@
   <audio id="bubbleAudio" src="asset/bubble.mp3"></audio>
 
   <script>
+document.addEventListener('DOMContentLoaded', function() {
+  var diveButton = document.getElementById('diveButton');
+  var overlay = document.getElementById('overlay');
+
+  diveButton.addEventListener('click', function() {
+    // フェードインのアニメーションを追加
+    overlay.style.opacity = '0';
+    overlay.style.display = 'block';
+    setTimeout(function() {
+      overlay.style.transition = 'opacity 1s';
+      overlay.style.opacity = '1';
+    }, 100); // 0.1秒後にフェードインを開始
+
+    // 深海に潜る演出（setTimeoutを使って2秒後に実行）
+    setTimeout(function() {
+      window.location.href = "https://nemonowa.github.io/4other/map"; // 深海ページにリダイレクト
+    }, 2000); // 2秒後に深海ページに遷移
+  });
+});
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
-      var diveButton = document.getElementById('diveButton');
-      var overlay = document.getElementById('overlay');
-
-      diveButton.addEventListener('click', function() {
-        // フルスクリーンモードに移行する処理
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-          document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-          document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-          document.documentElement.msRequestFullscreen();
-        }
-
-        // フェードインのアニメーションを追加
-        overlay.style.opacity = '0';
-        overlay.style.display = 'block';
-        setTimeout(function() {
-          overlay.style.transition = 'opacity 1s';
-          overlay.style.opacity = '1';
-        }, 100); // 0.1秒後にフェードインを開始
-
-        // 深海に潜る演出（setTimeoutを使って2秒後に実行）
-        setTimeout(function() {
-          window.location.href = "https://nemonowa.github.io/4other/map"; // 深海ページにリダイレクト
-        }, 2000); // 2秒後に深海ページに遷移
-      });
-
       var diveAudio = document.getElementById('diveAudio');
       var bubbleAudio = document.getElementById('bubbleAudio');
       var score = 0; // 初期得点
@@ -158,13 +181,9 @@
         diveAudio.play();
       }
 
-      document.addEventListener('click', handleInput);
-      document.addEventListener('keydown', handleInput);
-
-      function handleInput() {
-        playAudio();
-        createBubble();
-      }
+      document.addEventListener('click', playAudio, { once: true });
+      document.addEventListener('keydown', playAudio, { once: true });
+      document.addEventListener('touchstart', playAudio, { once: true });
 
       // 得点を表示する要素を取得
       var scoreDisplay = document.getElementById('score');
@@ -196,8 +215,6 @@
           bubble.remove(); // アニメーション終了後に気泡を削除
         }, 300); // 0.3秒後に気泡を削除
       }
-
-      var bubbleContainer = document.getElementById('bubbleContainer');
 
       // 気泡を生成する関数
       function createBubble() {
