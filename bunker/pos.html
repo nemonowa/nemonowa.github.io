@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #2F57A7;
+    color: white;
+    padding: 20px;
+  }
+  .container {
+    max-width: 600px;
+    margin: auto;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .icon img {
+    width: 64px;
+    height: 64px;
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .description {
+    margin-top: 20px;
+    white-space: pre-wrap; /* 改行を反映させる */
+  }
+  .reward {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">
+      <img src="path_to_icon/filled_map.png" alt="Icon">
+    </div>
+    <div class="title">無限の創造世界 -OverWorld-</div>
+    <div class="description">
+      条件：指定座標(pos:1)に到達する。
+      <br>
+      報酬：経験値×64
+      <br>
+      説明：無限の創造世界。多種多様のバイオームがある。
+    </div>
+    <div class="reward">
+      報酬関数：neoadvancement:give
+    </div>
+  </div>
+</body>
+</html>

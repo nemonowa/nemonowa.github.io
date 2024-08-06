@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2F57A7;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .description {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .button {
+            background-color: #4285f4;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">潮汐破壊対消滅砲 -TED-                                </div>
+        <div class="description">条件：指定座標(pos:49)に到達する。\n報酬：経験値×64\n説明：潮汐破壊現象(Tidal Disruption Event)を拡散する装置。非常に強く不均一な重力場によって、領域内の物体が垂直方向への引き延ばしおよび水平方向の圧縮を与え、原子レベルでスパゲッティのように細長い形状に変形・破壊する。攻撃目標に対して艦体を正対させる必要があるが、威力と減衰は標準的な星系を消失につき3%程度で有効射程が無限遠。この装置の役割は「砲」としてより、変換されたエネルギーの一時的な格納、瞬間的な放出の機能にあり、膨大なエネルギーを義手や周囲の空間に負荷なく貯蓄し、正確な狙いタイミングで発射するための砲である。動力源はNEOの義手であり、義手と機龍と艦を接続して始めて主砲として成立する。<div class="description">
