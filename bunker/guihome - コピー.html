@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>展開する直角三角形ボタン</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .button {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .button.top-left {
+            top: 0;
+            left: 0;
+            border-width: 0 100px 100px 0;
+            border-color: transparent #ff007f transparent transparent;
+        }
+
+        .button.top-right {
+            top: 0;
+            right: 0;
+            border-width: 100px 0 0 100px;
+            border-color: transparent transparent #ff007f transparent;
+        }
+
+        .button.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-width: 100px 0 0 100px;
+            border-color: #ff007f transparent transparent transparent;
+        }
+
+        .button.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-width: 100px 100px 0 0;
+            border-color: transparent #ff007f transparent transparent;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="button top-left"></div>
+    <div class="button top-right"></div>
+    <div class="button bottom-right"></div>
+    <div class="button bottom-left"></div>
+    <div class="overlay"></div>
+
+    <script>
+        const buttons = document.querySelectorAll('.button');
+        const overlay = document.querySelector('.overlay');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const rect = button.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+
+                // Reset overlay size and position
+                overlay.style.width = '0';
+                overlay.style.height = '0';
+                overlay.style.top = `${rect.top}px`;
+                overlay.style.left = `${rect.left}px`;
+                overlay.style.background = 'rgba(0, 0, 0, 0.8)';
+                
+                // Set the target size of the overlay
+                setTimeout(() => {
+                    overlay.style.width = `${viewportWidth}px`;
+                    overlay.style.height = `${viewportHeight}px`;
+                }, 10); // Small delay to ensure transition effect
+
+                // Reset other buttons
+                buttons.forEach(btn => {
+                    if (btn !== button) {
+                        btn.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Close the overlay on click
+        overlay.addEventListener('click', () => {
+            overlay.style.width = '0';
+            overlay.style.height = '0';
+        });
+    </script>
+</body>
+</html>
