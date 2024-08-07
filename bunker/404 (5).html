@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>404 - Matrix digital rain</title>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <style>
+        @supports (padding-top: env(safe-area-inset-top)) {
+            body {
+                padding: 0;
+                height: calc(100% + env(safe-area-inset-top));
+            }
+        }
+        body {
+            background: black;
+            overflow: hidden;
+            margin: 0;
+            font-family: monospace;
+            font-size: 2em;
+            text-align: center;
+        }
+
+        canvas {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .notice {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: hsl(108, 90%, 70%);
+            text-shadow: hsl(108, 90%, 40%) 1px 0 10px;
+            animation: fadeInAnimation ease 3s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .pill {
+            display: inline-block;
+            background: gray;
+            border: 0.3em solid lightgray;
+            font-size: 1rem;
+            font-family: monospace;
+            color: white;
+            padding: 0.5em 1em;
+            border-radius: 2em;
+            min-width: 6rem;
+            margin: 3em;
+            text-decoration: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .blue {
+            background: linear-gradient(skyblue, blue, black, black, darkblue);
+            border-color: darkblue;
+            color: lightblue;
+        }
+
+        .blue:hover {
+            border-color: blue;
+            color: white;
+        }
+
+        .red {
+            background: linear-gradient(lightpink, crimson, black, black, darkred);
+            border-color: darkred;
+            color: lightpink;
+        }
+
+        .red:hover {
+            border-color: crimson;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix digital rain effect -->
+    <canvas id="matrixRain"></canvas>
+    <div class="notice">
+        <h1>Missing Link</h1>
+        <p>HTTP ERROR</p>
+        <p>StatusCode</p>
+        <p>Level 404 : Not Found</p>
+        <p>Re;connect to NEXUS</p>
+    </div>
+    <script type="module" src="Matrix%20digital%20rain_files/main.js"></script>
+    <script src="Matrix%20digital%20rain_files/regl.min.js"></script>
+    <script src="Matrix%20digital%20rain_files/gl-matrix.js"></script>
+</body>
+</html>

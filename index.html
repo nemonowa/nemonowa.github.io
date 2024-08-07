@@ -11,6 +11,18 @@
       height: 100%;
       overflow: hidden;
       background: linear-gradient(to bottom, #005f80, #001d2e);
+      animation: fadeInAnimation ease 3s; /* フェードイン処理 */
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes fadeInAnimation {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
     #ocean {
@@ -43,6 +55,8 @@
     h1 {
       font-size: 3rem;
       user-select: none; /* 選択を禁止 */
+      color: white; /* 文字色を白に設定 */
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
     }
 
     button {
@@ -53,6 +67,7 @@
       border: none;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
     }
 
     button:hover {
@@ -68,6 +83,15 @@
       pointer-events: auto; /* マウスイベントを有効化 */
       animation: bubbleRise 10s linear infinite; /* 10秒かけて画面全体に上昇 */
       cursor: pointer; /* ポインターを指定 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem; /* 絵文字のサイズ */
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.6); /* 初期の発光効果 */
+    }
+
+    .bubble.clicked {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1); /* クリック時の発光効果 */
     }
 
     @keyframes bubbleRise {
@@ -81,17 +105,6 @@
       }
     }
 
-    @keyframes bubblePop {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(2);
-        opacity: 0;
-      }
-    }
-
     #score {
       position: fixed;
       top: 20px;
@@ -101,6 +114,7 @@
       z-index: 1000;
       opacity: 0; /* 最初は非表示 */
       transition: opacity 1.5s ease; /* 徐々にフェードアウト */
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
     }
 
     @media (max-width: 600px) {
@@ -112,6 +126,16 @@
         font-size: 1.5rem;
         padding: 10px 20px;
       }
+    }
+
+    .fullscreen-notice {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1em;
+      color: white;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
     }
   </style>
 </head>
@@ -125,17 +149,6 @@
       var overlay = document.getElementById('overlay');
 
       diveButton.addEventListener('click', function() {
-        // フルスクリーンモードに移行する処理
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-          document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-          document.documentElement.webkitRequestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-          document.documentElement.msRequestFullscreen();
-        }
-
         // フェードインのアニメーションを追加
         overlay.style.opacity = '0';
         overlay.style.display = 'block';
@@ -178,7 +191,7 @@
 
         // 得点を加算
         score += points;
-        scoreDisplay.textContent = 'depth: ' + score;
+        scoreDisplay.textContent = 'Depth Level: ' + score;
         scoreDisplay.style.opacity = '1'; // スコアを表示
 
         // 3秒後にスコアを非表示にする
@@ -187,14 +200,34 @@
           scoreDisplay.style.opacity = '0'; // 3秒後にスコアを非表示
         }, 3000);
 
-        // 弾けるアニメーションを追加
-        bubble.style.animation = 'bubblePop 0.3s ease forwards';
-        bubbleAudio.currentTime = 0; // 音声ファイルを最初から再生
+        // ランダムな絵文字を表示
+        var emojis = ['🌟', '🎉', '💥', '✨', '🌈', '⭕', '❌', '👀', '⚓', '🐻‍❄️', '🔍', '🕶️', '💣', '🗡️', '⚔️', '🗝️', '☯️', '💯', '♨️', '🎖️', '📥', '🌵', '⚠️', '🎃', '👑', '🔰', '❤️', '📣', '📁', '💾', '🛰️', '📡', '🧬', '📜', '🎫'];
+        var randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+        var emojiElement = document.createElement('div');
+        emojiElement.textContent = randomEmoji;
+        emojiElement.style.position = 'absolute';
+        emojiElement.style.fontSize = '2rem';
+        emojiElement.style.top = '50%';
+        emojiElement.style.left = '50%';
+        emojiElement.style.transform = 'translate(-50%, -50%)';
+        emojiElement.style.pointerEvents = 'none'; // クリックイベントを無効化
+        bubble.appendChild(emojiElement); // 泡の中に絵文字を追加
+
+        // 1秒後に絵文字を削除
+        setTimeout(function() {
+          emojiElement.remove();
+        }, 1000);
+
+        // 音声ファイルを最初から再生
+        bubbleAudio.currentTime = 0;
         bubbleAudio.play(); // 音声再生
 
+        // 発光効果を追加
+        bubble.classList.add('clicked');
+
         setTimeout(function() {
-          bubble.remove(); // アニメーション終了後に気泡を削除
-        }, 300); // 0.3秒後に気泡を削除
+          bubble.remove(); // 気泡を削除
+        }, 75); // 0.75秒後に気泡を削除
       }
 
       var bubbleContainer = document.getElementById('bubbleContainer');
@@ -203,7 +236,7 @@
       function createBubble() {
         var bubble = document.createElement('div');
         bubble.className = 'bubble';
-        var size = Math.random() * 60 + 30; // ランダムなサイズ（30px以上90px以下）
+        var size = Math.random() * 60 + 40; // ランダムなサイズ（40px以上90px以下）
         bubble.style.width = size + 'px';
         bubble.style.height = size + 'px';
 
@@ -215,11 +248,6 @@
 
         bubbleContainer.appendChild(bubble);
 
-        // アニメーション終了後に要素を削除
-        bubble.addEventListener('animationend', function() {
-          bubble.remove();
-        });
-
         // 一定時間後に気泡を削除する
         setTimeout(function() {
           bubble.remove();
@@ -230,7 +258,7 @@
       }
 
       // 定期的に気泡を生成
-      setInterval(createBubble, 750); // 0.75秒ごとに気泡を生成
+      setInterval(createBubble, 1000); // 1秒ごとに気泡を生成
     });
   </script>
 
