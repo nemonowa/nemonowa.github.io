@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Tree</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            background: #f1f1f1;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .tab {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            background: #e0e0e0;
+        }
+        .tab.active {
+            background: #fff;
+            border-bottom: 1px solid #fff;
+            font-weight: bold;
+        }
+        .tab-content {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 0 0 5px 5px;
+            background: #fff;
+        }
+        .tree {
+            font-family: monospace;
+            white-space: pre;
+            line-height: 1.5;
+        }
+        .folder-content {
+            display: none;
+            padding-left: 20px;
+        }
+        .folder-content.active {
+            display: block;
+        }
+        .folder-link {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tabs">
+    <div class="tab active" onclick="showTab('root')">Root</div>
+    <div class="tab" onclick="showTab('4other')">4other</div>
+    <div class="tab" onclick="showTab('asset')">Asset</div>
+    <div class="tab" onclick="showTab('bunker')">Bunker</div>
+    <div class="tab" onclick="showTab('entity')">Entity</div>
+    <div class="tab" onclick="showTab('item')">Item</div>
+    <div class="tab" onclick="showTab('region')">Region</div>
+    <div class="tab" onclick="showTab('skill')">Skill</div>
+</div>
+
+<div id="root" class="tab-content active">
+    <div class="tree">
+C:.
+│  <span class="folder-link" onclick="toggleFolder('root-files')">404.html</span>
+│  <span class="folder-link" onclick="toggleFolder('root-files')">index.html</span>
+│  <span class="folder-link" onclick="toggleFolder('root-files')">README.md</span>
+│  <span class="folder-link" onclick="toggleFolder('root-files')">??｜LINK of NEXUS.url</span>
+│  <span class="folder-link" onclick="toggleFolder('root-files')">階層構造出力装置.bat</span>
+│  ├─<span class="folder-link" onclick="toggleFolder('4other')">4other</span>
+│  ├─<span class="folder-link" onclick="toggleFolder('asset')">asset</span>
+│  ├─<span class="folder-link" onclick="toggleFolder('bunker')">bunker</span>
+│  ├─<span class="folder-link" onclick="toggleFolder('entity')">entity</span>
+│  ├─<span class="folder-link" onclick="toggleFolder('item')">item</span>
+│  └─<span class="folder-link" onclick="toggleFolder('region')">region</span>
+    </div>
+    <div id="root-files" class="folder-content">
+        <!-- Hidden content will be shown when folder is toggled -->
+    </div>
+</div>
+
+<!-- Subfolders contents -->
+<div id="4other" class="tab-content">
+    <div class="tree">
+├─.test.html
+├─discord.html
+├─map.html
+├─map.png
+└─フルスクリーンにするボタン.html
+    </div>
+</div>
+
+<div id="asset" class="tab-content">
+    <div class="tree">
+├─bubble.mp3
+├─dive.mp3
+└─neo.ico
+    </div>
+</div>
+
+<div id="bunker" class="tab-content">
+    <div class="tree">
+├─404 (10).html
+├─404 (2).html
+├─404 (3).html
+├─404 (4).html
+├─404 (5).html
+├─404 (6).html
+├─404 (7).html
+├─404 (8).html
+├─404 (9).html
+├─404.html
+├─adventure.html
+├─cyberhomehape.html
+├─guihome - コピー (2).html
+├─guihome - コピー - コピー.html
+├─guihome - コピー.html
+├─guihome.html
+├─index - コピー.html
+├─pos.html
+└─pos1.html
+    </div>
+</div>
+
+<div id="entity" class="tab-content">
+    <div class="tree">
+        <!-- No content available -->
+    </div>
+</div>
+
+<div id="item" class="tab-content">
+    <div class="tree">
+        <!-- No content available -->
+    </div>
+</div>
+
+<div id="region" class="tab-content">
+    <div class="tree">
+        <!-- Long list of files -->
+    </div>
+</div>
+
+<div id="skill" class="tab-content">
+    <div class="tree">
+        <!-- No content available -->
+    </div>
+</div>
+
+<script>
+    function showTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        
+        // Show the clicked tab's content
+        document.getElementById(tabId).classList.add('active');
+        
+        // Add active class to the clicked tab
+        document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }
+
+    function toggleFolder(folderId) {
+        // Toggle visibility of the folder content
+        const folder = document.getElementById(folderId);
+        if (folder) {
+            folder.classList.toggle('active');
+        }
+    }
+</script>
+
+</body>
+</html>
