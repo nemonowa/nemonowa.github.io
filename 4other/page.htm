@@ -58,6 +58,7 @@ html {
     font-size: 1.6rem;
     font-size: 100%;
     color: #333;
+
 }
 
 head {}
@@ -71,13 +72,13 @@ body {
     line-height: 1.2;
     word-break: break-all;
     color: inherit;
+
 }
 
 header {
     background-color: #000000;/* 背景色の変更 */
     text-align: center;
-    max-height: 200px;
-    min-height: 150px;
+    height: 15vh; /* 画面の高さの15%に設定 */
     font-size: 200%;
     opacity: 0.5;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
@@ -85,17 +86,15 @@ header {
 
 main {
     margin: 0 auto;
-    max-width: 1200px;
-    min-width: 900px;
     padding: 40px 30px 25px;
     font-size: 250%;
+    width: 70vw;
 }
 
 footer {
     text-align: center;
     background-color: #ffffff;
-    max-height: 200px;
-    min-height: 150px;
+    height: 15vh;
     font-size: 100%;
     opacity: 0.5;
 }
@@ -104,10 +103,8 @@ footer {
 /* ボタンの共通処理 */
 .button {
     position: fixed;
-    max-width: 200px;
-    min-width: 150px;
-    max-height: 200px;
-    min-height: 150px;
+    width: 15vh;
+    height: 15vh;
     background-color: #000000;
     opacity: 0.1;
 }
