@@ -4,7 +4,29 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>⚓️｜LINK of NEXUS</title>
-  <style>
+</head>
+<body>
+  <audio id="diveAudio" src="asset/dive.mp3" loop></audio>
+  <audio id="bubbleAudio" src="asset/bubble.mp3"></audio>
+
+  <div id="ocean">
+    <div id="overlay"></div>
+    <div id="content">
+      <h1>Welcome to the NEXUS</h1>
+      <button id="diveButton"> > DIVE < </button>
+    </div>
+    <!-- ここで気泡を画面全体に配置 -->
+    <div id="bubbleContainer"></div>
+  </div>
+
+  <!-- 得点を表示する要素 -->
+  <div id="score">Score: 0</div>
+  
+</body>
+</html>
+
+// CSS
+<style>
     body, html {
       margin: 0;
       padding: 0;
@@ -138,11 +160,11 @@
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
     }
   </style>
-</head>
-<body>
-  <audio id="diveAudio" src="asset/dive.mp3" loop></audio>
-  <audio id="bubbleAudio" src="asset/bubble.mp3"></audio>
 
+
+
+
+// JS
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var diveButton = document.getElementById('diveButton');
@@ -261,19 +283,3 @@
       setInterval(createBubble, 1000); // 1秒ごとに気泡を生成
     });
   </script>
-
-  <div id="ocean">
-    <div id="overlay"></div>
-    <div id="content">
-      <h1>Welcome to the NEXUS</h1>
-      <button id="diveButton"> > DIVE < </button>
-    </div>
-    <!-- ここで気泡を画面全体に配置 -->
-    <div id="bubbleContainer"></div>
-  </div>
-
-  <!-- 得点を表示する要素 -->
-  <div id="score">Score: 0</div>
-  
-</body>
-</html>
