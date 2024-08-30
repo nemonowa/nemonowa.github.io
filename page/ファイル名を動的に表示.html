@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><span id="file-name"></span></title>
+</head>
+<body>
+
+    <h1>ファイル名をタイトルに設定するサンプル</h1>
+    <p>このファイル名は <span id="file-name"></span> です。</p>
+
+</body>
+</html>
+
+
+    <script>
+        // 現在のファイル名を取得.split('/').pop()
+        const currentFileName = location.pathname;
+
+        // HTMLのタイトルをファイル名に設定。
+        document.getElementById('file-name').textContent = currentFileName;
+
+    </script>

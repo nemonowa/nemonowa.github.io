@@ -8,6 +8,23 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="notice">
+        <p>*** ERROR ***</p>
+        <p>Depth Level : 404 |  Missing Link...</p>
+        <p>Lore : The AACK object you were looking for has disappeared beyond the event horizon.</p>
+        <p>HTTP Status Code : 404 Not Found</p>
+        <button class="reconnect-button" onclick="location.href='./index.html'">"Will you Re;dive to NEXUS?"</button>
+        <div id="popup" class="popup">
+            <span>...ここは未定義領域。多くは急ぎ足で過ぎ去る世界だ。<br>ここにいる君はその「羅針」が揺れていたのか？<br>それとも、君の意志で「流れ星」に立ち止まったのかな？<br>無尽に連なる電子の海で君の探しものを見つけるのは困難かもしれない。<br>それでも、ただひとつだけ覚えておいて欲しいことがある。<br>この世界での君は誰よりも何よりも自由だ。Bon voyage(それでは良い旅を)</span>
+        </div>
+    </div>
+</body>
+</html>
+
+
     <style>
         @supports (padding-top: env(safe-area-inset-top)) {
             body {
@@ -111,19 +128,10 @@
             50% { border-color: #00ff00; }
         }
     </style>
-</head>
-<body>
-    <canvas id="matrixCanvas"></canvas>
-    <div class="notice">
-        <p>*** ERROR ***</p>
-        <p>Depth Level : 404 |  Missing Link...</p>
-        <p>Lore : The AACK object you were looking for has disappeared beyond the event horizon.</p>
-        <p>HTTP Status Code : 404 Not Found</p>
-        <button class="reconnect-button" onclick="location.href='./index.html'">"Will you Re;dive to NEXUS?"</button>
-        <div id="popup" class="popup">
-            <span>...ここは未定義領域。多くは急ぎ足で過ぎ去る世界だ。<br>ここにいる君はその「羅針」が揺れていたのか？<br>それとも、君の意志で「流れ星」に立ち止まったのかな？<br>無尽に連なる電子の海で君の探しものを見つけるのは困難かもしれない。<br>それでも、ただひとつだけ覚えておいて欲しいことがある。<br>この世界での君は誰よりも何よりも自由だ。Bon voyage(それでは良い旅を)</span>
-        </div>
-    </div>
+
+
+
+
     <script>
         // Matrix like digital rain effect
         const canvas = document.getElementById('matrixCanvas');
@@ -182,5 +190,3 @@
             popup.style.display = 'none';
         });
     </script>
-</body>
-</html>

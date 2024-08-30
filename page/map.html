@@ -3,20 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  // 現在のページのURLを取得
-  var currentPageUrl = window.location.href;
-
-  // URLからファイル名部分のみを抽出
-  var fileName = currentPageUrl.substring(currentPageUrl.lastIndexOf('/') + 1);
-
-  // 拡張子が含まれる場合は、それを取り除く
-  var fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
-
-  // タイトルを設定
-  document.title = fileNameWithoutExtension;
-</script>
 <title></title>
+</head>
+<body>
+<div id="image-container">
+  <img src="../asset/map.png" id="huge-image" alt="map">
+</div>
+<div id="image-controls">
+  <div class="control-button" id="reset-button">基準座標に戻す</div>
+  <div class="control-button" id="fullscreen-button">全画面表示</div>
+  <div id="zoom-level">
+    <span>拡大率:</span>
+    <input type="number" id="zoom-input" min="25" max="1000" value="100">
+    <span>%</span>
+  </div>
+  <input type="range" id="zoom-slider" min="25" max="1000" value="100">
+  <div id="mouse-position">座標（画像左上基準）: (0, 0) ピクセル</div>
+</div>
+</body>
+</html>
+
 <style>
   body {
     margin: 0;
@@ -117,23 +123,25 @@
     font-size: 16px;
   }
 </style>
-</head>
-<body>
-<div id="image-container">
-  <img src="map.png" id="huge-image" alt="map">
-</div>
 
-<div id="image-controls">
-  <div class="control-button" id="reset-button">基準座標に戻す</div>
-  <div class="control-button" id="fullscreen-button">全画面表示</div>
-  <div id="zoom-level">
-    <span>拡大率:</span>
-    <input type="number" id="zoom-input" min="25" max="1000" value="100">
-    <span>%</span>
-  </div>
-  <input type="range" id="zoom-slider" min="25" max="1000" value="100">
-  <div id="mouse-position">座標（画像左上基準）: (0, 0) ピクセル</div>
-</div>
+
+
+
+
+<script>
+  // 現在のページのURLを取得
+  var currentPageUrl = window.location.href;
+
+  // URLからファイル名部分のみを抽出
+  var fileName = currentPageUrl.substring(currentPageUrl.lastIndexOf('/') + 1);
+
+  // 拡張子が含まれる場合は、それを取り除く
+  var fileNameWithoutExtension = fileName.split('.').slice(0, -1).join('.');
+
+  // タイトルを設定
+  document.title = fileNameWithoutExtension;
+</script>
+
 
 <script>
   const imageContainer = document.getElementById('image-container');
@@ -275,5 +283,3 @@
     zoomInput.value = Math.round(zoomLevel * 100); // テキスト入力フィールドの値を更新
   }
 </script>
-</body>
-</html>

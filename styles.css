@@ -1,0 +1,113 @@
+/* CSS */
+@charset "utf-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: 100%;
+}
+
+html {
+    background: linear-gradient(to bottom, #005f80, #001d2e) !important;
+    font-family: 'DM Mono', monospace; /* DM Mono フォントの適用 */
+    font-size: 2vw; /* 画面の幅の2%に設定 */
+    word-break: break-all;
+    color: #333;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow: auto;
+    overflow: -moz-scrollbars-vertical;
+    line-height: 1.2;
+    color: inherit;
+}
+
+header {
+    background-color: #000000;
+    text-align: center;
+    height: 15vh;
+    font-size: 100%;
+    opacity: 0.5;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+main {
+    margin: 0 auto;
+    font-size: 150%;
+    width: 70vw;
+    padding: 5vh 0;
+}
+
+footer {
+    text-align: center;
+    background-color: #000000;
+    height: 15vh;
+    font-size: 100%;
+    opacity: 0.5;
+    bottom: 0;
+}
+
+.button {
+    position: fixed;
+    width: 15vh;
+    height: 15vh;
+    background-color: #000000;
+    opacity: 0.1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.button:hover {
+    opacity: 0.5;
+}
+
+/* 個別のスタイル */
+.top_right {
+    top: 0;
+    right: 0;
+    clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.top_left {
+    top: 0;
+    left: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+.bottom_left {
+    bottom: 0;
+    left: 0;
+    clip-path: polygon(0 100%, 100% 100%, 0 0);
+}
+
+.bottom_right {
+    bottom: 0;
+    right: 0;
+    clip-path: polygon(100% 100%, 0 100%, 100% 0);
+}
+
+.menu {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+}
+
+.menu p {
+    margin-bottom: 10px;
+}

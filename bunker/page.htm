@@ -31,10 +31,11 @@ https://www.unic.or.jp/activities/humanrights/document/bill_of_rights/universal_
         <div class="copyrights">Copyright © 2010-2024 SoraFlete. All Rights Resarved.</div>
     </footer>
 </body>
-        <div class="button top_right"><a href="#"></a></div>
-        <div class="button top_left"><a href="#"></a></div>
-        <div class="button bottom_right"><a href="#"></a></div>
+        <div class="button top_left"><!-- タブ1 --><label class="button top_left" for="tab-1">⚓</label><input type="checkbox" id="tab-1"><div><p>タブ 1 の内容です。</p><p>タブ 1 の内容2です。</p></div></div>
         <div class="button bottom_left"><a href="#"></a></div>
+        <div class="button top_right"><a href="#"></a></div>
+        <div class="button bottom_right"><a href="#"></a></div>
+
 </html>
 
 
@@ -52,9 +53,9 @@ https://www.unic.or.jp/activities/humanrights/document/bill_of_rights/universal_
 
 html {
     background: linear-gradient(to bottom, #005f80, #001d2e) !important;
-    font-family: 'DM Mono', monospace;
-    /* DM Mono フォントの適用 */
+    font-family: 'DM Mono', monospace; /* DM Mono フォントの適用 */
     font-size: 2vw; /* 画面の幅の2%に設定 */
+    word-break: break-all;
     color: #333;
 
 }
@@ -68,7 +69,6 @@ body {
     overflow: auto;
     overflow: -moz-scrollbars-vertical;
     line-height: 1.2;
-    word-break: break-all;
     color: inherit;
 
 }
@@ -86,11 +86,12 @@ main {
     margin: 0 auto;
     font-size: 150%;
     width: 70vw;
+    padding: 5vh 0;
 }
 
 footer {
     text-align: center;
-    background-color: #ffffff;
+    background-color: #000000;
     height: 15vh;
     font-size: 100%;
     opacity: 0.5;
@@ -104,10 +105,12 @@ footer {
     height: 15vh;
     background-color: #000000;
     opacity: 0.1;
+
 }
 
 .button:hover {
     opacity: 0.5;
+    cursor: pointer;
 }
 
 /* 個別のスタイル */
