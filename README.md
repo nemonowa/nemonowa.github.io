@@ -16,7 +16,7 @@ start https://nemonowa.github.io/
 ❱ Website: ⚓｜𝐋𝐈𝐍𝐊 𝐨𝐟 𝐍𝐄𝐗𝐔𝐒
 ❱ Versiton: ver1.0 for FireFox
 ❱ Copyright: SoraFlete(c)
-❱ Release: 2024/7/17
+❱ Release: 2025/1/16
 ❱ Author: argonaute_nemo
 ```
 
