@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord OAuth2 Redirect</title>
+  <script>
+    // URLパラメータからcodeを取得
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // サーバーにcodeを送信
+    async function sendCodeToServer(code) {
+      try {
+        const response = await fetch('/api/auth/discord', { // ここをバックエンドのエンドポイントに変更
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ code }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          // 認証成功時の処理
+          console.log('Login successful:', data);
+          document.getElementById('message').textContent = 'ログイン成功！';
+        } else {
+          // エラー処理
+          console.error('Error:', data);
+          document.getElementById('message').textContent = 'ログイン失敗：' + (data.error || '不明なエラー');
+        }
+      } catch (error) {
+        console.error('Request failed:', error);
+        document.getElementById('message').textContent = 'サーバーへの接続に失敗しました。';
+      }
+    }
+
+    // ページ読み込み時に実行
+    document.addEventListener('DOMContentLoaded', () => {
+      const code = getQueryParam('code');
+      if (code) {
+        document.getElementById('message').textContent = 'ログイン処理中...';
+        sendCodeToServer(code); // サーバーにcodeを送信
+      } else {
+        document.getElementById('message').textContent = 'ログインコードが見つかりません。';
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Discord OAuth2 Redirect</h1>
+  <p id="message">リダイレクト処理中...</p>
+</body>
+</html>
