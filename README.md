@@ -1,9 +1,9 @@
 # ⚓｜𝐋𝐈𝐍𝐊 𝐨𝐟 𝐍𝐄𝐗𝐔𝐒
 ## ❱ はじめに【README】
-[preview](https://github.com/nemonowa/twow)
-[community](https://discord.gg/nqx8esTwzS)
-[sourcecode](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
-[README](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
+* [preview](https://github.com/nemonowa/twow)
+* [community](https://discord.gg/nqx8esTwzS)
+* [sourcecode](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
+* [README](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
 
 ## ❱ 説明【Description】
 窓口。 
