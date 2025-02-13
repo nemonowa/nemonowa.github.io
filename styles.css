@@ -114,54 +114,6 @@ footer {
 
 /* 個別のスタイル */
 
-
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    background: linear-gradient(to bottom, #005f80, #001d2e);
-    animation: fadeInAnimation ease 3s; /* フェードイン処理 */
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-  }
-
-  @keyframes fadeInAnimation {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-
-  #ocean {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  #overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* 半透明のオーバーレイ */
-    display: none; /* 最初は非表示 */
-  }
-
-  #content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-    z-index: 1000;
-  }
-
   h1 {
     font-size: 3rem;
     user-select: none; /* 選択を禁止 */
@@ -182,60 +134,6 @@ body, html {
 
   button:hover {
     background-color: #ff6347; /* ホバー時の色 */
-  }
-
-  .bubble {
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.6);
-    width: 20px; /* 大きさを20pxに変更 */
-    height: 20px; /* 大きさを20pxに変更 */
-    border-radius: 50%;
-    pointer-events: auto; /* マウスイベントを有効化 */
-    animation: bubbleRise 10s linear infinite; /* 10秒かけて画面全体に上昇 */
-    cursor: pointer; /* ポインターを指定 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem; /* 絵文字のサイズ */
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.6); /* 初期の発光効果 */
-  }
-
-  .bubble.clicked {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 1); /* クリック時の発光効果 */
-  }
-
-  @keyframes bubbleRise {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-100vh) scale(0.5);
-      opacity: 0;
-    }
-  }
-
-  #score {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    font-size: 2rem;
-    color: white;
-    z-index: 1000;
-    opacity: 0; /* 最初は非表示 */
-    transition: opacity 1.5s ease; /* 徐々にフェードアウト */
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
-  }
-
-  @media (max-width: 600px) {
-    h1 {
-      font-size: 2rem;
-    }
-
-    button {
-      font-size: 1.5rem;
-      padding: 10px 20px;
-    }
   }
 
   .fullscreen-notice {
