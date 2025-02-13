@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タイトル</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 外部から読み込み -->
     <link rel="stylesheet" href="https://nemonowa.github.io/styles.css">
 </head>
 <body>
-    <header>
-        <h1>タイトル</h1>
-    </header>
+  <!-- headerは保守性のために外部から読み込み -->
+  <header id="header"></header>
     <main>
         <button class="button1" onclick="location.href='./page/map.html'">ceresta map</button>
         <p>> 前文
@@ -26,10 +26,8 @@
 
 https://www.unic.or.jp/activities/humanrights/document/bill_of_rights/universal_declaration/</p>
     </main>
-    <footer>
-        <div class="icon-grfft_logo">（ここにいい感じのロゴを挿入）</div>
-        <div class="copyrights">Copyright © 2010-2024 SoraFlete. All Rights Reserved.</div>
-    </footer>
+    <!-- footerは保守性のために外部から読み込み -->
+    <footer id="footer"></footer>
 
     <div class="button top_left" onclick="toggleMenu('menu1')">⚓</div>
     <div class="button bottom_left" onclick="toggleMenu('menu2')">🔗</div>
@@ -60,6 +58,7 @@ https://www.unic.or.jp/activities/humanrights/document/bill_of_rights/universal_
         <p>タブ 4 の内容2です。</p>
     </div>
 
+    <!-- 外部から読み込み -->
     <script src="https://nemonowa.github.io/scripts.js"></script>
 </body>
 </html>
