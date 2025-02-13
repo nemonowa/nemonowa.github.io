@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>GitHub ファイル一覧</title>
+  <script>
+    async function fetchGitHubFiles() {
+      const response = await fetch('https://api.github.com/repos/nemonowa/nemonowa.github.io/contents/source/page');
+      const data = await response.json();
+      const fileList = document.getElementById('file-list');
+
+      data.forEach(file => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = file.html_url;
+        a.textContent = file.name;
+        li.appendChild(a);
+        fileList.appendChild(li);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchGitHubFiles);
+  </script>
+</head>
+<body>
+  <h1>source/page 以下のファイル一覧</h1>
+  <ul id="file-list"></ul>
+</body>
+</html>

@@ -36,3 +36,8 @@ fetch('https://nemonowa.github.io/ui.html')
     document.getElementById('ui').innerHTML = data;
   })
   .catch(error => console.error('Error loading UI:', error));
+
+// HTMLのタイトルをファイル名に同期させる
+let currentFileName = decodeURIComponent(location.pathname.split('/').pop() || 'empty.html');// 現在のパスからファイル名を取得してデコード
+currentFileName = currentFileName.replace(/\.[^/.]+$/, ''); // 拡張子を除去（最後のドット以降を削除）
+document.title = currentFileName;

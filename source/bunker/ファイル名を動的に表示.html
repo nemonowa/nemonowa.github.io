@@ -10,15 +10,17 @@
     <h1>ファイル名をタイトルに設定するサンプル</h1>
     <p>このファイル名は <span id="file-name"></span> です。</p>
 
+    <script>
+        // 現在のパスからファイル名を取得してデコード
+        let currentFileName = decodeURIComponent(location.pathname.split('/').pop() || 'empty.html');
+
+        // 拡張子を除去（最後のドット以降を削除）
+        currentFileName = currentFileName.replace(/\.[^/.]+$/, '');
+
+        // HTMLのタイトルと <span> 要素にファイル名を設定
+        document.title = currentFileName;
+        document.getElementById('file-name').textContent = currentFileName;
+    </script>
+
 </body>
 </html>
-
-
-    <script>
-        // 現在のファイル名を取得.split('/').pop()
-        const currentFileName = location.pathname;
-
-        // HTMLのタイトルをファイル名に設定。
-        document.getElementById('file-name').textContent = currentFileName;
-
-    </script>

@@ -1,0 +1,54 @@
+<!-- 名称：The NEXUS Anchor (Internet：ウェブページ) -->
+<!-- 説明：Project-NEXUSの一般公開可能な情報を発信する艦外通信網であり最外殻機構。 -->
+<!-- 著作：Creat by nemo. Copyright © SoraFlete. All Rights Resarved. -->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイトル</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 外部から読み込み -->
+    <link rel="stylesheet" href="https://nemonowa.github.io/styles.css">
+    <script src="https://nemonowa.github.io/scripts.js"></script>
+    
+</head>
+<body>
+  <header id="header"></header>
+    <main>
+
+      <!-- ** ↓↓ 汎用記入枠 ↓↓ ** -->
+
+      <ul id="file-list"></ul>
+
+      <script>
+        async function fetchGitHubFiles() {
+          const response = await fetch('https://api.github.com/repos/nemonowa/nemonowa.github.io/contents/source/region');
+          const data = await response.json();
+          const fileList = document.getElementById('file-list');
+      
+          data.forEach(file => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = file.html_url;
+            a.textContent = file.name;
+            li.appendChild(a);
+            fileList.appendChild(li);
+          });
+        }
+      
+        document.addEventListener('DOMContentLoaded', fetchGitHubFiles);
+      </script>
+
+      <!-- ** ↑↑ 汎用記入枠 ↑↑ ** -->
+
+    </main>
+    <footer id="footer"></footer>
+    <div id="ui"></div>
+
+</body>
+</html>
+
+<!-- 招待：https://discord.gg/nqx8esTwzS  NeoCode:071 -->
+<!-- 記憶：Howdy? ようこそ、私の創った余剰階層へ。𝑪𝒂𝒕𝒄𝒉 𝒎𝒆 𝒊𝒇 𝒚𝒐𝒖 𝒄𝒂𝒏 -->
