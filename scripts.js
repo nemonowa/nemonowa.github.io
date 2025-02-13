@@ -1,4 +1,7 @@
-// メニューの表示・非表示を切り替える関数
+// 名称：NeoScripts ("C:\nexusource\admin\project-neo\nexusource.github.io\scripts.js")
+// 説明：メニューの表示・非表示を切り替える関数。
+// 著作：Creat by nemo. Copyright © SoraFlete. All Rights Resarved.
+
 function toggleMenu(menuId) {
     const menus = document.querySelectorAll('.menu');
     menus.forEach(menu => {
