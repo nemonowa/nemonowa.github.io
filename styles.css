@@ -116,7 +116,6 @@ footer {
 
   h1 {
     font-size: 3rem;
-    user-select: none; /* 選択を禁止 */
     color: white; /* 文字色を白に設定 */
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
   }
@@ -134,14 +133,4 @@ footer {
 
   button:hover {
     background-color: #ff6347; /* ホバー時の色 */
-  }
-
-  .fullscreen-notice {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1em;
-    color: white;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
   }
