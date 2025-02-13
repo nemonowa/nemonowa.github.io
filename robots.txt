@@ -1,0 +1,17 @@
+# 著作：Creat by nemo. Copyright © SoraFlete. All Rights Resarved.
+# すべての検索エンジンに対して、サイトの全ページをクロールすることを許可
+User-agent: *
+Disallow: 
+
+# 特定の検索エンジン（例: Googlebot）に対して、指定したページをクロールしないように指示
+User-agent: Googlebot
+Disallow: /private/
+Disallow: /secret/
+
+# 特定の検索エンジン（例: Bingbot）に対して、特定のディレクトリをクロールしないように指示
+User-agent: Bingbot
+Disallow: /no-bing/
+
+# 特定の検索エンジン（例: Yahoo!）に対して、すべてのページをクロールしないように指示
+# User-agent: Yahoo
+# Disallow: /
