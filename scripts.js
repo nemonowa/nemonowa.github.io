@@ -25,3 +25,11 @@ fetch('https://nemonowa.github.io/footer.html')
     document.getElementById('footer').innerHTML = data;
   })
   .catch(error => console.error('Error loading footer:', error));
+
+// ui.html を読み込む
+fetch('https://nemonowa.github.io/ui/ui.html')
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById('ui').innerHTML = data;
+  })
+  .catch(error => console.error('Error loading UI:', error));
