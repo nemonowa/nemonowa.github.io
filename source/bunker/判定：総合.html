@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS・デバイス判別 & IPアドレス取得</title>
+</head>
+<body>
+    <h2>識別子参照</h2>
+    <p id="device-info">デバイス: 取得中...</p>
+    <p id="os-info">OS: 取得中...</p>
+    <p id="browser-info">ブラウザ: 取得中...</p>
+    <p id="screen-info">画面サイズ: 取得中...</p>
+    <p id="ip-info">IPアドレス: 取得中...</p>
+
+    <script>
+        // ブラウザ名の判定
+        function getBrowserName() {
+            let userAgent = navigator.userAgent;
+            let browserName = "不明";
+
+            if (/chrome|crios|crmo/i.test(userAgent)) browserName = "Google Chrome";
+            if (/firefox|fxios/i.test(userAgent)) browserName = "Mozilla Firefox";
+            if (/safari/i.test(userAgent) && !/chrome|crios|crmo/i.test(userAgent)) browserName = "Apple Safari";
+            if (/msie|trident/i.test(userAgent)) browserName = "Internet Explorer";
+            if (/edge/i.test(userAgent)) browserName = "Microsoft Edge";
+            if (/opera|opr/i.test(userAgent)) browserName = "Opera";
+            if (/android/i.test(userAgent)) browserName = "Android Browser";
+            if (/iphone|ipad|ipod/i.test(userAgent)) browserName = "iOS Safari";
+
+            return browserName;
+        }
+
+        // 画面サイズの取得
+        function getScreenSize() {
+            return `${window.innerWidth} x ${window.innerHeight}`;
+        }
+
+        // 画面に表示
+        function displayDeviceInfo() {
+            let browser = getBrowserName();
+            let screenSize = getScreenSize();
+
+            document.getElementById("browser-info").textContent = `ブラウザ: ${browser}`;
+            document.getElementById("screen-info").textContent = `画面サイズ: ${screenSize}`;
+        }
+
+        displayDeviceInfo();
+
+        // OS & デバイス判定
+        function detectDeviceAndOS() {
+            let userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let os = "Unknown OS";
+            let device = "PC";
+
+            if (/windows/i.test(userAgent)) os = "Windows";
+            if (/macintosh|mac os x/i.test(userAgent)) os = "macOS";
+            if (/linux/i.test(userAgent)) os = "Linux";
+            if (/android/i.test(userAgent)) {
+                os = "Android";
+                device = "スマホ/タブレット";
+            }
+            if (/iphone|ipad|ipod/i.test(userAgent)) {
+                os = "iOS";
+                device = "スマホ/タブレット";
+            }
+
+            return { os, device };
+        }
+
+        // IPアドレス取得（外部API利用）
+        async function getIPAddress() {
+            try {
+                let response = await fetch("https://api64.ipify.org?format=json");
+                let data = await response.json();
+                return data.ip;
+            } catch (error) {
+                return "取得失敗";
+            }
+        }
+
+        // 画面に反映
+        async function displayInfo() {
+            let info = detectDeviceAndOS();
+            document.getElementById("os-info").textContent = `OS: ${info.os}`;
+            document.getElementById("device-info").textContent = `デバイス: ${info.device}`;
+            
+            let ip = await getIPAddress();
+            document.getElementById("ip-info").textContent = `IPアドレス: ${ip}`;
+        }
+
+        displayInfo();
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フルティガーエアロ</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #00aaff, #99ddff);
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-button {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .glass-button:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .floating-bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 10s infinite ease-in;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-120vh);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-bubbles"></div>
+    <div class="container">
+        <h1>フルティガーエアロ風サイト</h1>
+        <a href="#" class="glass-button">ボタン</a>
+    </div>
+    <script>
+        function createBubble() {
+            const bubble = document.createElement("div");
+            bubble.classList.add("bubble");
+            document.querySelector(".floating-bubbles").appendChild(bubble);
+            bubble.style.left = Math.random() * 100 + "vw";
+            bubble.style.animationDuration = Math.random() * 5 + 5 + "s";
+            setTimeout(() => bubble.remove(), 10000);
+        }
+        setInterval(createBubble, 500);
+    </script>
+</body>
+</html>

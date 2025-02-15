@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Webhook送信</title>
+</head>
+<body>
+    <button id="sendMessage">メッセージを送信</button>
+    
+    <script>
+        document.getElementById("sendMessage").addEventListener("click", function() {
+            const url = "https://discord.com/api/webhooks/1302564938740400140/lvukUZeArDJe8Xf7BcMovwU4ZnMbGhF8x5VTdv_NosxceUPIXUi8ncO9Bul2LtQE7ZW9";
+            const data = {
+                content: "At.nemo. At.nemo. This is C.A.I. This signal is sent from HTML. over."
+            };
+            
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => console.log("成功:", data))
+            .catch(error => console.error("エラー:", error));
+        });
+    </script>
+</body>
+</html>

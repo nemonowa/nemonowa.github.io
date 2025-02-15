@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS・デバイス判別 & IPアドレス取得</title>
+</head>
+<body>
+    <h2>あなたの情報</h2>
+    <p id="os-info">OS: 取得中...</p>
+    <p id="device-info">デバイス: 取得中...</p>
+    <p id="ip-info">IPアドレス: 取得中...</p>
+
+    <script>
+        // OS & デバイス判定
+        function detectDeviceAndOS() {
+            let userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let os = "Unknown OS";
+            let device = "PC";
+
+            if (/windows/i.test(userAgent)) os = "Windows";
+            if (/macintosh|mac os x/i.test(userAgent)) os = "macOS";
+            if (/linux/i.test(userAgent)) os = "Linux";
+            if (/android/i.test(userAgent)) {
+                os = "Android";
+                device = "スマホ/タブレット";
+            }
+            if (/iphone|ipad|ipod/i.test(userAgent)) {
+                os = "iOS";
+                device = "スマホ/タブレット";
+            }
+
+            return { os, device };
+        }
+
+        // IPアドレス取得（外部API利用）
+        async function getIPAddress() {
+            try {
+                let response = await fetch("https://api64.ipify.org?format=json");
+                let data = await response.json();
+                return data.ip;
+            } catch (error) {
+                return "取得失敗";
+            }
+        }
+
+        // 画面に反映
+        async function displayInfo() {
+            let info = detectDeviceAndOS();
+            document.getElementById("os-info").textContent = `OS: ${info.os}`;
+            document.getElementById("device-info").textContent = `デバイス: ${info.device}`;
+            
+            let ip = await getIPAddress();
+            document.getElementById("ip-info").textContent = `IPアドレス: ${ip}`;
+        }
+
+        displayInfo();
+    </script>
+</body>
+</html>
