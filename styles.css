@@ -12,7 +12,7 @@ html {
     font-family: 'DM Mono', monospace; /* DM Mono フォントの適用 */
     font-size: 2vw; /* 画面の幅の2%に設定 */
     word-break: break-all;
-    color: #333;
+    color: #F0F8FF; /* 月白 */
 }
 
 body {
