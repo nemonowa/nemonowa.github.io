@@ -99,6 +99,7 @@ footer {
     position: fixed;
     top: 20%;
     left: 10%;
+    right: 10%;
     width: 80%;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
