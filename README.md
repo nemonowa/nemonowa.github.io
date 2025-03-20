@@ -6,7 +6,7 @@
 * [README](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
 
 ## ❱ 説明【Description】
-窓口。 test
+窓口。 test、てすと
 
 ## ❱ 導入【Introduction】
 上記のアドレスを見つけ出し、オンライン環境下で潜航する。
