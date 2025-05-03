@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>404 Not Found</title>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    <div class="notice">
+        <p>*** ERROR ***</p>
+        <p>Depth Level : 404 |  Missing Link...</p>
+        <p>Lore : The AACK object you were looking for has disappeared beyond the event horizon.</p>
+        <p>HTTP Status Code : 404 Not Found</p>
+<button class="reconnect-button" onclick="location.href='./index.html'">Will you Re;dive to NEXUS?</button>
+        <div id="popup" class="popup">
+            <span>...ここは未定義領域。多くは急ぎ足で過ぎ去る世界だ。<br>ここにいる君はその「羅針」が揺れていたのか？<br>それとも、君の意志で「流れ星」に立ち止まったのかな？<br>無尽に連なる電子の海で君の探しものを見つけるのは困難かもしれない。<br>それでも、ただひとつだけ覚えておいて欲しいことがある。<br>この世界での君は誰よりも何よりも自由だ。Bon voyage(それでは良い旅を)</span>
+        </div>
+    </div>
+</body>
+</html>
+
+
+    <style>
+        @supports (padding-top: env(safe-area-inset-top)) {
+            body {
+                padding: 0;
+                height: calc(100% + env(safe-area-inset-top));
+            }
+        }
+        body {
+            background: black;
+            overflow: hidden;
+            margin: 0;
+            font-family: 'DM Mono', monospace;
+            font-size: 2em;
+            text-align: center;
+            color: #00ff00;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+        }
+
+        .notice {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: fadeInAnimation ease 3s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            text-align: center;
+            text-shadow: 0 0 3px #00ff00, 0 0 5px #00ff00;
+        }
+
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .reconnect-button {
+            display: inline-block;
+            background: none;
+            border: none;
+            font-size: 1em;
+            color: #00ff00;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s;
+        }
+
+        .reconnect-button:hover {
+            color: white;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            background: black;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #00ff00;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: left;
+            font-size: 0.5em;
+            white-space: pre-wrap;
+            overflow-wrap: break-word; /* テキスト折り返しの追加 */
+            line-height: 1.5em;
+        }
+
+        .popup span {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            animation: typing 5s steps(100, end), blink-caret .75s step-end infinite;
+            border-right: 2px solid #00ff00;
+            font-family: 'DM Mono', monospace;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #00ff00; }
+        }
+    </style>
+
+
+
+
+    <script>
+        // Matrix like digital rain effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'ｲﾛﾊﾆﾎｴﾄﾁﾘﾇﾙｦﾜｶﾖﾀﾚｿﾂﾈﾅﾗﾑ';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ff00';
+            ctx.font = fontSize + 'px DM Mono';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Show popup with typing effect on hover
+        const popup = document.getElementById('popup');
+        document.querySelector('.reconnect-button').addEventListener('mouseover', () => {
+            popup.style.display = 'block';
+        });
+
+        document.querySelector('.reconnect-button').addEventListener('mouseout', () => {
+            popup.style.display = 'none';
+        });
+    </script>
