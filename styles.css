@@ -137,14 +137,32 @@ footer {
   }
 
 /*テキストボックス*/
-search-input {
-  width: 70vw;               /* 画面幅の70% */
-  max-width: 800px;          /* 大きすぎる画面での上限 */
-  padding: 1em;              /* 文字サイズに依存したパディング */
-  font-size: 1em;            /* 共通htmlの3vwと整合する */
-  font-family: 'DM Mono', monospace;
-  border: 2px solid #3c3d82;
-  border-radius: 0.5em;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #F0F8FF;
+#search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 75vh;
+  text-align: center;
+  gap: 2vh;
+}
+
+#site-title {
+  font-size: 4rem;
+  margin-bottom: 2vh;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+#search-input {
+  width: 70vw;
+  max-width: 600px;
+  font-size: 1.5rem;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+#search-form button {
+  margin-top: 1.5vh;
 }
