@@ -25,6 +25,17 @@
     </div>
   </main>
 </body>
+
+<script>
+  document.getElementById('search-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const input = document.getElementById('search-input').value.trim();
+    if (input) {
+      window.location.href = `https://nemonowa.github.io/${encodeURIComponent(input)}`;
+    }
+  });
+</script>
+
 </html>
 
 <!-- 招待：https://discord.gg/nqx8esTwzS  NeoCode:071 -->
