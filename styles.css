@@ -135,3 +135,16 @@ footer {
   button:hover {
     background-color: #ff6347; /* ホバー時の色 */
   }
+
+/*テキストボックス*/
+search-input {
+  width: 70vw;               /* 画面幅の70% */
+  max-width: 800px;          /* 大きすぎる画面での上限 */
+  padding: 1em;              /* 文字サイズに依存したパディング */
+  font-size: 1em;            /* 共通htmlの3vwと整合する */
+  font-family: 'DM Mono', monospace;
+  border: 2px solid #3c3d82;
+  border-radius: 0.5em;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #F0F8FF;
+}
