@@ -1,0 +1,85 @@
+<!-- 名称：The NEXUS Anchor (Internet：ウェブページ) -->
+<!-- 説明：Project-NEXUSの一般公開可能な情報を発信する艦外通信網であり最外殻機構。 -->
+<!-- 著作：Creat by nemo. Copyright © SoraFlete. All Rights Resarved. -->
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイトル</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 外部から読み込み -->
+    <link rel="stylesheet" href="https://nemonowa.github.io/styles.css">
+    <script src="https://nemonowa.github.io/scripts.js"></script>
+    
+<body>
+  <header id="header"></header>
+
+  <main>
+    <div id="search-container">
+      <form id="search-form">
+        <input type="text" id="search-input" placeholder="ジャンプ先を入力" required>
+        <button type="submit">移動</button>
+      </form>
+    </div>
+  </main>
+
+  <footer id="footer"></footer>
+  <div id="ui"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('search-form');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const input = document.getElementById('search-input').value.trim();
+        if (input !== '') {
+          window.location.href = `https://nemonowa.github.io/${input}`;
+        }
+      });
+    });
+  </script>
+
+  <style>
+    #search-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+      flex-direction: column;
+    }
+
+    #search-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    #search-input {
+      width: 300px;
+      padding: 12px;
+      font-size: 18px;
+      font-family: 'DM Mono', monospace;
+      border: 2px solid #3c3d82;
+      border-radius: 4px;
+    }
+
+    #search-form button {
+      padding: 12px 20px;
+      font-size: 18px;
+      background-color: #3c3d82;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #search-form button:hover {
+      background-color: #2b2d5d;
+    }
+  </style>
+</body>
+</html>
+
+<!-- 招待：https://discord.gg/nqx8esTwzS  NeoCode:071 -->
+<!-- 記憶：Howdy? ようこそ、私の創った余剰階層へ。𝑪𝒂𝒕𝒄𝒉 𝒎𝒆 𝒊𝒇 𝒚𝒐𝒖 𝒄𝒂𝒏 -->
