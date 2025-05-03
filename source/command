@@ -12,7 +12,7 @@
     <!-- 外部から読み込み -->
     <link rel="stylesheet" href="https://nemonowa.github.io/styles.css">
     <script src="https://nemonowa.github.io/scripts.js"></script>
-    
+</head>
 <body>
   <header id="header"></header>
 
