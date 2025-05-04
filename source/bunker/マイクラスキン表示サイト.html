@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraftスキンビューア</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    input, button {
+      font-size: 16px;
+      padding: 10px;
+      margin: 5px;
+    }
+    #skinView {
+      margin-top: 20px;
+    }
+    img {
+      width: 128px;
+      height: 128px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Minecraftスキン横回転ビュー</h1>
+  <input type="text" id="playerName" placeholder="プレイヤー名を入力">
+  <button onclick="startRotation()">表示</button>
+  <div id="skinView">
+    <p>プレイヤーのスキンがここに表示されます</p>
+  </div>
+
+  <script>
+    let currentAngle = 0;
+    let intervalId;
+
+    function startRotation() {
+      const name = document.getElementById('playerName').value;
+      if (!name) return;
+
+      const view = document.getElementById('skinView');
+      clearInterval(intervalId); // 前回の回転を止める
+
+      intervalId = setInterval(() => {
+        const img = `<img src="https://crafatar.com/renders/head/${name}?overlay&scale=10&default=MHF_Steve&angle=${currentAngle}" alt="${name}">`;
+        view.innerHTML = img;
+        currentAngle = (currentAngle + 15) % 360;
+      }, 300);
+    }
+  </script>
+</body>
+</html>
