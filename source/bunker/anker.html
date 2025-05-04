@@ -41,7 +41,7 @@
 
         const detailedFiles = await Promise.all(htmlFiles.map(async file => {
           try {
-            const commitRes = await fetch(`https://api.github.com/repos/nemonowa/nemonowa.github.io/commits?path=source/region/${file.name}&per_page=1`);
+            const commitRes = await fetch(`https://api.github.com/repos/nemonowa/nemonowa.github.io/commits?path=source/bunker/${file.name}&per_page=1`);
             const commits = await commitRes.json();
             const updatedAt = commits[0]?.commit?.committer?.date || '1970-01-01T00:00:00Z';
             return {
