@@ -34,7 +34,7 @@
       let sortOrder = 'name';
 
       async function fetchGitHubFiles() {
-        const response = await fetch('https://api.github.com/repos/nemonowa/nemonowa.github.io/contents/source/region');
+        const response = await fetch('https://api.github.com/repos/nemonowa/nemonowa.github.io/contents/source/bunker');
         const data = await response.json();
 
         const htmlFiles = data.filter(file => file.name.endsWith('.html'));
