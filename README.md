@@ -6,7 +6,7 @@
 * [README](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
 
 ## ❱ 説明【Description】
-窓口。 test、てすと
+Project-NEXUSの一般公開可能な情報を発信する艦外通信網であり最外殻機構。
 
 ## ❱ 導入【Introduction】
 上記のアドレスを見つけ出し、オンライン環境下で潜航する。
