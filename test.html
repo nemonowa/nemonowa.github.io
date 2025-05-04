@@ -2,77 +2,97 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Minecraft UUID変換ツール</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タイトル</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://nemonowa.github.io/styles.css">
+  <script src="https://nemonowa.github.io/scripts.js"></script>
   <style>
-    body {
-      background: #1e1e1e;
-      color: #ffffff;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 30px;
+    #sort-buttons {
+      margin: 1em 0;
     }
-    input[type="text"] {
-      width: 320px;
-      padding: 8px;
-      margin: 5px;
-      font-size: 16px;
-    }
-    button {
-      padding: 8px 12px;
-      margin-left: 5px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .row {
-      margin-bottom: 15px;
+    #sort-buttons button {
+      margin-right: 1em;
     }
   </style>
 </head>
 <body>
-  <h1>Minecraft UUID変換＆コピー</h1>
+  <header id="header"></header>
+  <main>
 
-  <div class="row">
-    <input type="text" id="mcName" placeholder="プレイヤー名を入力">
-    <button onclick="fetchUUID()">UUID取得</button>
-  </div>
+    <!-- ↓↓ 汎用記入枠 ↓↓ -->
 
-  <div class="row">
-    <input type="text" id="uuidRaw" placeholder="ハイフンなしUUID">
-    <button onclick="copyToClipboard('uuidRaw')">コピー</button>
-  </div>
+    <div id="sort-buttons">
+      <button id="sortByName">名前順</button>
+      <button id="sortByDate">更新日時順</button>
+    </div>
 
-  <div class="row">
-    <input type="text" id="uuidDashed" placeholder="ハイフン付きUUID">
-    <button onclick="copyToClipboard('uuidDashed')">コピー</button>
-  </div>
+    <ul id="file-list"></ul>
 
-  <script>
-    async function fetchUUID() {
-      const name = document.getElementById('mcName').value.trim();
-      if (!name) return alert("プレイヤー名を入力してください。");
+    <script>
+      let filesData = [];
+      let sortOrder = 'name';
 
-      try {
-        const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`);
-        if (!res.ok) throw new Error("プレイヤーが見つかりません。");
-        const data = await res.json();
+      async function fetchGitHubFiles() {
+        const response = await fetch('https://api.github.com/repos/nemonowa/nemonowa.github.io/contents/source/region');
+        const data = await response.json();
 
-        const rawUUID = data.id;
-        const dashedUUID = rawUUID.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
+        // 拡張子が .html のファイルだけを対象に
+        const htmlFiles = data.filter(file => file.name.endsWith('.html'));
 
-        document.getElementById('uuidRaw').value = rawUUID;
-        document.getElementById('uuidDashed').value = dashedUUID;
-      } catch (e) {
-        alert("エラー: " + e.message);
+        // 各ファイルの詳細（更新日時）を取得
+        const detailedFiles = await Promise.all(htmlFiles.map(async file => {
+          const res = await fetch(file.url);
+          const json = await res.json();
+          return {
+            name: file.name,
+            html_url: file.html_url,
+            updated_at: json.git_url ? (await fetch(json.git_url).then(r => r.json())).committer.date : '1970-01-01T00:00:00Z'
+          };
+        }));
+
+        filesData = detailedFiles;
+        displayFiles();
       }
-    }
 
-    function copyToClipboard(id) {
-      const input = document.getElementById(id);
-      input.select();
-      input.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-      alert("コピーしました: " + input.value);
-    }
-  </script>
+      function displayFiles() {
+        const fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+
+        let sorted = [...filesData];
+        if (sortOrder === 'name') {
+          sorted.sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+          sorted.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        }
+
+        sorted.forEach(file => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = file.html_url;
+          a.textContent = `${file.name}（更新日: ${new Date(file.updated_at).toLocaleString()}）`;
+          li.appendChild(a);
+          fileList.appendChild(li);
+        });
+      }
+
+      document.getElementById('sortByName').addEventListener('click', () => {
+        sortOrder = 'name';
+        displayFiles();
+      });
+
+      document.getElementById('sortByDate').addEventListener('click', () => {
+        sortOrder = 'date';
+        displayFiles();
+      });
+
+      document.addEventListener('DOMContentLoaded', fetchGitHubFiles);
+    </script>
+
+    <!-- ↑↑ 汎用記入枠 ↑↑ -->
+
+  </main>
+  <footer id="footer"></footer>
+  <div id="ui"></div>
 </body>
 </html>
