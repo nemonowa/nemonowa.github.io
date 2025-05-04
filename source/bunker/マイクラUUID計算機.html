@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Minecraft UUID変換ツール</title>
+  <style>
+    body {
+      background: #1e1e1e;
+      color: #ffffff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    input[type="text"] {
+      width: 320px;
+      padding: 8px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-left: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .row {
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Minecraft UUID変換＆コピー</h1>
+
+  <div class="row">
+    <input type="text" id="mcName" placeholder="プレイヤー名を入力">
+    <button onclick="fetchUUID()">UUID取得</button>
+  </div>
+
+  <div class="row">
+    <input type="text" id="uuidRaw" placeholder="ハイフンなしUUID">
+    <button onclick="copyToClipboard('uuidRaw')">コピー</button>
+  </div>
+
+  <div class="row">
+    <input type="text" id="uuidDashed" placeholder="ハイフン付きUUID">
+    <button onclick="copyToClipboard('uuidDashed')">コピー</button>
+  </div>
+
+  <script>
+    async function fetchUUID() {
+      const name = document.getElementById('mcName').value.trim();
+      if (!name) return alert("プレイヤー名を入力してください。");
+
+      try {
+        const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`);
+        if (!res.ok) throw new Error("プレイヤーが見つかりません。");
+        const data = await res.json();
+
+        const rawUUID = data.id;
+        const dashedUUID = rawUUID.replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/, '$1-$2-$3-$4-$5');
+
+        document.getElementById('uuidRaw').value = rawUUID;
+        document.getElementById('uuidDashed').value = dashedUUID;
+      } catch (e) {
+        alert("エラー: " + e.message);
+      }
+    }
+
+    function copyToClipboard(id) {
+      const input = document.getElementById(id);
+      input.select();
+      input.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      alert("コピーしました: " + input.value);
+    }
+  </script>
+</body>
+</html>
