@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タイトル</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://nemonowa.github.io/styles.css">
+  <script src="https://nemonowa.github.io/scripts.js"></script>
+  <style>
+    #sort-buttons {
+      margin: 1em 0;
+    }
+    #sort-buttons button {
+      margin-right: 1em;
+    }
+  </style>
+</head>
+<body>
+  <header id="header"></header>
+  <main>
+
+    <!-- ↓↓ 汎用記入枠 ↓↓ -->
+
+    <div id="sort-buttons">
+      <button id="sortByName">名前順</button>
+      <button id="sortByDate">更新日時順</button>
+    </div>
+
+    <ul id="file-list"></ul>
+
+    <script>
+      let filesData = [];
+      let sortOrder = 'name';
+
+      async function fetchGitHubFiles() {
+        const response = await fetch('https://api.github.com/repos/nemonowa/nemonowa.github.io/contents/source/region');
+        const data = await response.json();
+
+        // 拡張子が .html のファイルだけを対象に
+        const htmlFiles = data.filter(file => file.name.endsWith('.html'));
+
+        // 各ファイルの詳細（更新日時）を取得
+        const detailedFiles = await Promise.all(htmlFiles.map(async file => {
+          const res = await fetch(file.url);
+          const json = await res.json();
+          return {
+            name: file.name,
+            html_url: file.html_url,
+            updated_at: json.git_url ? (await fetch(json.git_url).then(r => r.json())).committer.date : '1970-01-01T00:00:00Z'
+          };
+        }));
+
+        filesData = detailedFiles;
+        displayFiles();
+      }
+
+      function displayFiles() {
+        const fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+
+        let sorted = [...filesData];
+        if (sortOrder === 'name') {
+          sorted.sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+          sorted.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+        }
+
+        sorted.forEach(file => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = file.html_url;
+          a.textContent = `${file.name}（更新日: ${new Date(file.updated_at).toLocaleString()}）`;
+          li.appendChild(a);
+          fileList.appendChild(li);
+        });
+      }
+
+      document.getElementById('sortByName').addEventListener('click', () => {
+        sortOrder = 'name';
+        displayFiles();
+      });
+
+      document.getElementById('sortByDate').addEventListener('click', () => {
+        sortOrder = 'date';
+        displayFiles();
+      });
+
+      document.addEventListener('DOMContentLoaded', fetchGitHubFiles);
+    </script>
+
+    <!-- ↑↑ 汎用記入枠 ↑↑ -->
+
+  </main>
+  <footer id="footer"></footer>
+  <div id="ui"></div>
+</body>
+</html>
