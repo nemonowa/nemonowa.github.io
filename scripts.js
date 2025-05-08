@@ -42,3 +42,27 @@ let currentFileName = decodeURIComponent(location.pathname.split('/').pop() || '
 currentFileName = currentFileName.replace(/\.[^/.]+$/, ''); // 拡張子を除去（最後のドット以降を削除）
 document.title = currentFileName;
 document.getElementById('file-name').textContent = currentFileName;
+
+// og:image をファイル名に応じて動的に設定する処理（追加部分）
+const customImage = currentFileName + '.png';
+const defaultImage = 'default.png'; // 同階層に配置された汎用画像
+
+function setOgImage(path) {
+  const metaTag = document.querySelector('meta[property="og:image"]');
+  if (metaTag) {
+    metaTag.setAttribute('content', path);
+  } else {
+    const newMeta = document.createElement('meta');
+    newMeta.setAttribute('property', 'og:image');
+    newMeta.setAttribute('content', path);
+    document.head.appendChild(newMeta);
+  }
+}
+
+fetch(customImage, { method: 'HEAD' })
+  .then(response => {
+    setOgImage(response.ok ? customImage : defaultImage);
+  })
+  .catch(() => {
+    setOgImage(defaultImage);
+  });
