@@ -45,7 +45,7 @@ document.getElementById('file-name').textContent = currentFileName;
 
 // og:image をファイル名に応じて動的に設定する処理（追加部分）
 const customImage = currentFileName + '.png';
-const defaultImage = 'default.png'; // 同階層に配置された汎用画像
+const defaultImage = 'icon.png'; // 同階層に配置された汎用画像
 
 function setOgImage(path) {
   const metaTag = document.querySelector('meta[property="og:image"]');
