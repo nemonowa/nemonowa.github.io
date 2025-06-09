@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Javaエスケープツール</title>
+    <style>
+        body {
+            font-family: Consolas, monospace;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+        textarea {
+            width: 48%;
+            height: 90vh;
+            white-space: pre;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="input" placeholder="ここにJava用の文字列を入力してください..."></textarea>
+    <textarea id="output" placeholder="ここにエスケープ結果が表示されます..." readonly></textarea>
+
+    <script>
+        function escapeJavaString(text) {
+            return text
+                .replace(/\\/g, '\\\\')  // ステップ1: バックスラッシュ → \\
+                .replace(/"/g, '\\"')        // ステップ2: ダブルクォート → \"
+                .replace(/\n/g, '\\n')      // ステップ3: 既存の 
+ を \n に
+                .replace(/\t/g, '\\t')      // ステップ4: 	 を \t に
+                .replace(/\r/g, '\\r')      // 任意:  を \r に
+                .replace(/(?<!\\)\n/g, '\\n') // 改行を \n に（非エスケープ済み）
+                .replace(/(?<!\\)\t/g, '\\t'); // タブを \t に（非エスケープ済み）
+        }
+
+        document.getElementById("input").addEventListener("input", function () {
+            const inputText = this.value;
+            const escaped = escapeJavaString(inputText);
+            document.getElementById("output").value = escaped;
+        });
+    </script>
+</body>
+</html>
