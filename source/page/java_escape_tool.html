@@ -3,44 +3,88 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Javaエスケープツール</title>
+    <title>Javaエスケープツール（ボタン付き）</title>
     <style>
         body {
             font-family: Consolas, monospace;
             display: flex;
+            flex-direction: row;
             gap: 20px;
             padding: 20px;
         }
-        textarea {
+        .panel {
             width: 48%;
-            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        textarea {
+            height: 75vh;
             white-space: pre;
+            font-size: 14px;
+            width: 100%;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        button {
+            padding: 8px 12px;
             font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <textarea id="input" placeholder="ここにJava用の文字列を入力してください..."></textarea>
-    <textarea id="output" placeholder="ここにエスケープ結果が表示されます..." readonly></textarea>
+    <div class="panel">
+        <textarea id="input" placeholder="ここにJava用の文字列を入力してください..."></textarea>
+        <div class="buttons">
+            <button onclick="convert()">変換する</button>
+            <button onclick="clearInput()">クリア</button>
+        </div>
+    </div>
+    <div class="panel">
+        <textarea id="output" placeholder="ここにエスケープ結果が表示されます..." readonly></textarea>
+        <div class="buttons">
+            <button onclick="copyOutput()">コピー</button>
+            <button onclick="clearOutput()">クリア</button>
+        </div>
+    </div>
 
     <script>
         function escapeJavaString(text) {
             return text
-                .replace(/\\/g, '\\\\')  // ステップ1: バックスラッシュ → \\
-                .replace(/"/g, '\\"')        // ステップ2: ダブルクォート → \"
-                .replace(/\n/g, '\\n')      // ステップ3: 既存の 
- を \n に
-                .replace(/\t/g, '\\t')      // ステップ4: 	 を \t に
-                .replace(/\r/g, '\\r')      // 任意:  を \r に
-                .replace(/(?<!\\)\n/g, '\\n') // 改行を \n に（非エスケープ済み）
-                .replace(/(?<!\\)\t/g, '\\t'); // タブを \t に（非エスケープ済み）
+                .replace(/\\/g, '\\\\')  // ステップ1: バックスラッシュ
+                .replace(/"/g, '\\"')        // ステップ2: ダブルクォート
+                .replace(/\t/g, '\\t')      // ステップ3: すでに 	 として入力された場合
+                .replace(/\n/g, '\\n')      // ステップ4: すでに 
+ として入力された場合
+                .replace(/\r/g, '\\r')      // 任意: 
+                .replace(/
+/g, '\\r')       // 実際のキャリッジリターン
+                .replace(/
+/g, '\\n')       // 実際の改行
+                .replace(/	/g, '\\t');      // 実際のタブ
         }
 
-        document.getElementById("input").addEventListener("input", function () {
-            const inputText = this.value;
+        function convert() {
+            const inputText = document.getElementById("input").value;
             const escaped = escapeJavaString(inputText);
             document.getElementById("output").value = escaped;
-        });
+        }
+
+        function clearInput() {
+            document.getElementById("input").value = '';
+        }
+
+        function clearOutput() {
+            document.getElementById("output").value = '';
+        }
+
+        function copyOutput() {
+            const output = document.getElementById("output");
+            output.select();
+            document.execCommand("copy");
+        }
     </script>
 </body>
 </html>
