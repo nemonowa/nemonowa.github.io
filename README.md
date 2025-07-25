@@ -1,8 +1,5 @@
 # ⚓｜𝐏𝐫𝐨𝐣𝐞𝐜𝐭-𝐍𝐄𝐗𝐔𝐒
 新世界へ繋ぐ未知の情報媒体。ネクサスを司るソースファイル群であり、内部には理解可能な未知の言語で「The NEXUS Anchor (クオリアを繋ぐ異空の錨鎖：インストーラー兼ランチャー兼アップデーター)」と描かれている。
-* [![nexusource](https://raw.githubusercontent.com/nemonowa/nemonowa.github.io/refs/heads/main/banner.png)](https://nexusource.github.io)
-* [Discord-Community](https://discord.gg/nqx8esTwzS)
-* [Github-README&Preview&SourceCode](https://github.com/nemonowa/nemonowa.github.io)
 
 ## ❱ 導入【Introduction】
 1. 配布サイトから「𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒.zip」をダウンロード！
