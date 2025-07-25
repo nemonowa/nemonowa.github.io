@@ -15,7 +15,7 @@
 8. ゲーム開始！常に最新のワールドに更新されてるよ！ようこそ新世界へ！
 
 ## ❱ 概要【Information】
-[![nexusource](https://resources.abblix.com/imgs/jpg/abblix-oidc-server-github-banner.jpg)](https://nexusource.github.io)
+[![nexusource](https://raw.githubusercontent.com/nemonowa/nemonowa.github.io/refs/heads/main/banner.png)](https://nexusource.github.io)
 [![Discord](https://img.shields.io/discord/1233036571243188296?color=5865f2&label=&logo=discord&logoColor=ffffff)](https://discord.gg/nqx8esTwzS)
 [![Twitter](https://img.shields.io/badge/X-@yourhandle-000000?logo=x&logoColor=ffffff)](https://x.com/yourhandle)
 [![YouTube](https://img.shields.io/badge/YouTube-チャンネルを見る-ff0000?logo=youtube&logoColor=ffffff)](https://www.youtube.com/@あなたのチャンネルID)
