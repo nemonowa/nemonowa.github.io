@@ -15,15 +15,6 @@
 8. ゲーム開始！常に最新のワールドに更新されてるよ！ようこそ新世界へ！
 
 ## ❱ 概要【Information】
-```
-❱ Project: 𝐍𝐄𝐗𝐔𝐒
-❱ DataPack: 𝐍𝐞𝐨𝐅𝐮𝐧𝐜𝐭𝐢𝐨𝐧𝐬
-❱ ResourcePacks: 𝐍𝐞𝐨𝐓𝐞𝐱𝐭𝐮𝐫𝐞𝐬
-❱ Version: Build v0.0.0 for MC1.20.4
-❱ Copyright: SoraFlete(c)
-❱ Release: 2025/7/26 ~
-❱ Author: 𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒
-```
 [![nexusource](https://resources.abblix.com/imgs/jpg/abblix-oidc-server-github-banner.jpg)](https://nexusource.github.io)
 [![Discord](https://img.shields.io/discord/1233036571243188296?color=5865f2&label=&logo=discord&logoColor=ffffff)](https://discord.gg/nqx8esTwzS)
 [![Twitter](https://img.shields.io/badge/X-@yourhandle-000000?logo=x&logoColor=ffffff)](https://x.com/yourhandle)
@@ -33,8 +24,15 @@
 [![GitHub](https://img.shields.io/badge/GitHub-nemonowa-24292e?logo=github&logoColor=ffffff)](https://github.com/nemonowa)
 [![Version](https://img.shields.io/github/v/release/nemonowa/nemonowa.github.io?style=flat&label=version)](https://github.com/nemonowa/nemonowa.github.io/releases)
 [![Downloads](https://img.shields.io/github/downloads/nemonowa/nemonowa.github.io/total?label=Downloads&style=flat)](https://github.com/nemonowa/nemonowa.github.io/releases)
-* [README](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
-* [sourcecode](https://github.com/nemonowa/nemonowa.github.io/edit/main/README.md)
+```
+❱ Project: 𝐍𝐄𝐗𝐔𝐒
+❱ DataPack: 𝐍𝐞𝐨𝐅𝐮𝐧𝐜𝐭𝐢𝐨𝐧𝐬
+❱ ResourcePacks: 𝐍𝐞𝐨𝐓𝐞𝐱𝐭𝐮𝐫𝐞𝐬
+❱ Version: Build v0.0.0 for MC1.20.4
+❱ Copyright: SoraFlete(c)
+❱ Release: 2025/7/26 ~
+❱ Author: 𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒
+```
 
 ## ❱ 説明【Description】
 説明：新世界を構築する新奇な秩序。新たな世界の法則を記述し、君の頭に宿す常識を容易に再構築する。ようこそ新世界へ！
