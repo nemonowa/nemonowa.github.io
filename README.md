@@ -18,7 +18,7 @@
 ❱ Version: Build v0.0.0 for MC1.20.4
 ❱ Copyright: SoraFlete(c)
 ❱ Release: 2025/7/26 ~
-❱ Author: 𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒
+❱ Author: NEXUS異空旅団
 ```
 
 ## ❱ 導入【Introduction】
