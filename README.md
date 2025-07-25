@@ -4,17 +4,6 @@
 * [Discord-Community](https://discord.gg/nqx8esTwzS)
 * [Github-README&Preview&SourceCode](https://github.com/nemonowa/nemonowa.github.io)
 
-## ❱ 概要【Information】
-```
-❱ Project: 𝐍𝐄𝐗𝐔𝐒
-❱ DataPack: 𝐍𝐞𝐨𝐅𝐮𝐧𝐜𝐭𝐢𝐨𝐧𝐬
-❱ ResourcePacks: 𝐍𝐞𝐨𝐓𝐞𝐱𝐭𝐮𝐫𝐞𝐬
-❱ Version: Build v0.0.0 for MC1.20.4
-❱ Copyright: SoraFlete(c)
-❱ Release: 2025/7/26 ~
-❱ Author: 𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒
-```
-
 ## ❱ 導入【Introduction】
 1. 配布サイトから「𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒.zip」をダウンロード！
 2. 配布サイトのREADMEを読む。
@@ -25,8 +14,16 @@
 7. サーバーが解放されたらMinecraft1.20.4のマルチプレイで「localhost」を選択（※内部サーバーでありインターネットには公開されていません）
 8. ゲーム開始！常に最新のワールドに更新されてるよ！ようこそ新世界へ！
 
-
-## ❱ はじめに【README】
+## ❱ 概要【Information】
+```
+❱ Project: 𝐍𝐄𝐗𝐔𝐒
+❱ DataPack: 𝐍𝐞𝐨𝐅𝐮𝐧𝐜𝐭𝐢𝐨𝐧𝐬
+❱ ResourcePacks: 𝐍𝐞𝐨𝐓𝐞𝐱𝐭𝐮𝐫𝐞𝐬
+❱ Version: Build v0.0.0 for MC1.20.4
+❱ Copyright: SoraFlete(c)
+❱ Release: 2025/7/26 ~
+❱ Author: 𝐏𝐫𝐨𝐣𝐞𝐜𝐭✯𝐍𝐄𝐗𝐔𝐒
+```
 [![nexusource](https://resources.abblix.com/imgs/jpg/abblix-oidc-server-github-banner.jpg)](https://nexusource.github.io)
 [![Discord](https://img.shields.io/discord/1233036571243188296?color=5865f2&label=&logo=discord&logoColor=ffffff)](https://discord.gg/nqx8esTwzS)
 [![Twitter](https://img.shields.io/badge/X-@yourhandle-000000?logo=x&logoColor=ffffff)](https://x.com/yourhandle)
