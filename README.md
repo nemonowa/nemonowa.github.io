@@ -10,7 +10,7 @@
 [![SUZURI](https://img.shields.io/badge/SUZURI-グッズを見る-222222?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABWElEQVQ4jZXTvU4CURTG8Y9xFTpYwU/gCa7AKjhZWBgo6sXLn4AVbKBbn9VQBO7MIRP4AMdphhRhuEIsEm2EK3i59x3knt93WGHf6zt/3P+f9/zPCEzjHGoA5zjAPfjELsN8Z2YxFqjDPWvYwXlgG1neZ1n8xVwXtgK6YhwHYiwvU+2YQFcZf+wOhFzrA+R3iMx7RK2ZkwVXUCPZnUeHcf3CPYt1Y4eGAa3tEXcRe4Y9GBpaHq4wTXM39r3V51gXGmMtvH1nWAU6uqO+yr/GEU1hh5PbtWYrcAdMT7LJGkScnxpymk+vRbT7OKSTjZ7yp4ZoN86YxEpzjN+fYL7MW6Ib6+PXlAAAAAElFTkSuQmCC&logoColor=white)](https://suzuri.jp/argonautenemo)
 [![GitHub](https://img.shields.io/badge/GitHub-nemonowa-24292e?logo=github&logoColor=ffffff)](https://github.com/nemonowa)
 [![Version](https://img.shields.io/github/v/release/nemonowa/nemonowa.github.io?style=flat&label=version)](https://github.com/nemonowa/nemonowa.github.io/releases)
-[![Downloads](https://img.shields.io/github/)](https://drive.usercontent.google.com/download?id=1_fTZHy7KvKvKPt16z1krUL47wZPkO43T&export=download&authuser=0)
+[![Download](https://img.shields.io/badge/Download-AnchorDrive-blue?logo=google-drive&logoColor=white)](https://drive.google.com/uc?id=1_fTZHy7KvKvKPt16z1krUL47wZPkO43T&export=download)
 ```
 ❱ Project: 𝐍𝐄𝐗𝐔𝐒
 ❱ DataPack: 𝐍𝐞𝐨𝐅𝐮𝐧𝐜𝐭𝐢𝐨𝐧𝐬
