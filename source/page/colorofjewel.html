@@ -1,0 +1,371 @@
+// 命名：gem-color-gallery
+// 説明：宝石・鉱石名を冠した色をファンシーに一覧表示する単一HTMLファイル（スウォッチ、名前、HEX表示、クリックでコピー）
+// =./gem-color-gallery.html
+// >.
+// 使用例：
+// 開くだけで見れる単一ファイル。ブラウザで開いて確認してください。
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>宝石・鉱石カラーギャラリー</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+      :root{
+        --bg:#0b0710;
+        --card:#0f1724;
+        --glass: rgba(255,255,255,0.04);
+        --accent: #8be9fd;
+        --radius:14px;
+        --gap:18px;
+      }
+
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        background:
+          radial-gradient(1200px 600px at 10% 10%, rgba(88,116,255,0.08), transparent 6%),
+          radial-gradient(900px 400px at 90% 90%, rgba(180,80,230,0.06), transparent 6%),
+          var(--bg);
+        color:#e6eef8;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        padding:34px;
+      }
+
+      header{
+        display:flex;
+        gap:16px;
+        align-items:center;
+        margin-bottom:20px;
+      }
+
+      .logo{
+        width:64px;
+        height:64px;
+        border-radius:12px;
+        display:grid;
+        place-items:center;
+        background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        box-shadow: 0 6px 18px rgba(8,6,12,0.6), inset 0 -8px 30px rgba(255,255,255,0.02);
+        border:1px solid rgba(255,255,255,0.04);
+        font-weight:800;
+        font-family:"Playfair Display", serif;
+        font-size:22px;
+        color:var(--accent);
+        transform:rotate(-6deg);
+      }
+
+      h1{
+        font-family:"Playfair Display", serif;
+        font-weight:600;
+        font-size:20px;
+        margin:0;
+        letter-spacing:0.6px;
+      }
+      p.lead{
+        margin:2px 0 0 0;
+        color:rgba(230,238,248,0.7);
+        font-size:13px;
+      }
+
+      main{
+        margin-top:18px;
+      }
+
+      .grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+        gap:var(--gap);
+      }
+
+      .card{
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+        border-radius:var(--radius);
+        padding:12px;
+        border:1px solid rgba(255,255,255,0.04);
+        box-shadow: 0 8px 20px rgba(2,4,10,0.6);
+        transition:transform .22s ease, box-shadow .22s ease;
+        cursor:pointer;
+        overflow:hidden;
+      }
+
+      .card:hover{
+        transform:translateY(-6px);
+        box-shadow: 0 18px 40px rgba(2,4,18,0.7);
+      }
+
+      .swatch{
+        height:110px;
+        border-radius:10px;
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        padding:10px;
+        color:rgba(255,255,255,0.92);
+        font-weight:700;
+        font-size:13px;
+        text-shadow:0 2px 12px rgba(0,0,0,0.45);
+        background-image: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+        margin-bottom:10px;
+      }
+
+      .meta{
+        display:flex;
+        justify-content:space-between;
+        gap:8px;
+        align-items:center;
+      }
+      .name{
+        font-weight:600;
+        font-size:14px;
+      }
+      .hex{
+        font-family:monospace;
+        background:var(--glass);
+        padding:6px 8px;
+        border-radius:8px;
+        font-size:12px;
+        color:#eaf6ff;
+      }
+
+      .hint{
+        margin-top:12px;
+        color:rgba(230,238,248,0.6);
+        font-size:13px;
+      }
+
+      footer{
+        margin-top:22px;
+        color:rgba(230,238,248,0.45);
+        font-size:13px;
+      }
+
+      /* small badge */
+      .badge{
+        font-size:11px;
+        padding:6px 8px;
+        background:rgba(255,255,255,0.03);
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,0.02);
+        color:rgba(255,255,255,0.9);
+      }
+
+      @media (max-width:560px){
+        body{padding:18px}
+        .swatch{height:96px}
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Gem</div>
+      <div>
+        <h1>宝石・鉱石カラーギャラリー</h1>
+        <p class="lead">宝石や鉱石の名を冠した美しい色を一覧で表示。カードをクリックすると HEX がコピーされます。</p>
+      </div>
+      <div style="margin-left:auto"><span class="badge">Fancy Palette</span></div>
+    </header>
+
+    <main>
+      <div class="grid" id="grid">
+
+        <!-- 各色カード -->
+        <!-- name, hex, text color (light/dark) are provided as data attributes -->
+        <article class="card" data-hex="#0047AB" data-text="light">
+          <div class="swatch" style="background:#0047AB;">
+            <div style="opacity:0.92">コバルトブルー</div>
+            <div style="opacity:0.18;font-size:12px">●</div>
+          </div>
+          <div class="meta">
+            <div class="name">コバルトブルー</div>
+            <div class="hex">#0047AB</div>
+          </div>
+        </article>
+
+        <article class="card" data-hex="#0F52BA" data-text="light">
+          <div class="swatch" style="background:#0F52BA">サファイアブルー<span style="opacity:0.18">●</span></div>
+          <div class="meta"><div class="name">サファイアブルー</div><div class="hex">#0F52BA</div></div>
+        </article>
+
+        <article class="card" data-hex="#7FFFD4" data-text="dark">
+          <div class="swatch" style="background:#7FFFD4">アクアマリン<span style="opacity:0.18">●</span></div>
+          <div class="meta"><div class="name">アクアマリン</div><div class="hex">#7FFFD4</div></div>
+        </article>
+
+        <article class="card" data-hex="#40E0D0" data-text="dark">
+          <div class="swatch" style="background:#40E0D0">ターコイズ</div>
+          <div class="meta"><div class="name">ターコイズ</div><div class="hex">#40E0D0</div></div>
+        </article>
+
+        <article class="card" data-hex="#50C878" data-text="dark">
+          <div class="swatch" style="background:#50C878">エメラルドグリーン</div>
+          <div class="meta"><div class="name">エメラルドグリーン</div><div class="hex">#50C878</div></div>
+        </article>
+
+        <article class="card" data-hex="#26619C" data-text="light">
+          <div class="swatch" style="background:#26619C">ラピスラズリ（瑠璃）</div>
+          <div class="meta"><div class="name">ラピスラズリ</div><div class="hex">#26619C</div></div>
+        </article>
+
+        <article class="card" data-hex="#A3C1AD" data-text="dark">
+          <div class="swatch" style="background:#A3C1AD">アレキサンドライト（緑寄り）</div>
+          <div class="meta"><div class="name">アレキサンドライト系</div><div class="hex">#A3C1AD</div></div>
+        </article>
+
+        <article class="card" data-hex="#E0115F" data-text="light">
+          <div class="swatch" style="background:#E0115F">ルビー</div>
+          <div class="meta"><div class="name">ルビー</div><div class="hex">#E0115F</div></div>
+        </article>
+
+        <article class="card" data-hex="#7B1B1B" data-text="light">
+          <div class="swatch" style="background:#7B1B1B">ガーネット</div>
+          <div class="meta"><div class="name">ガーネット</div><div class="hex">#7B1B1B</div></div>
+        </article>
+
+        <article class="card" data-hex="#F7CAC9" data-text="dark">
+          <div class="swatch" style="background:#F7CAC9;color:#3a2b2b">ローズクォーツ</div>
+          <div class="meta"><div class="name">ローズクォーツ</div><div class="hex">#F7CAC9</div></div>
+        </article>
+
+        <article class="card" data-hex="#FF66CC" data-text="dark">
+          <div class="swatch" style="background:#FF66CC">ピンクトパーズ</div>
+          <div class="meta"><div class="name">ピンクトパーズ</div><div class="hex">#FF66CC</div></div>
+        </article>
+
+        <article class="card" data-hex="#FF7F50" data-text="dark">
+          <div class="swatch" style="background:#FF7F50">コーラル</div>
+          <div class="meta"><div class="name">コーラル</div><div class="hex">#FF7F50</div></div>
+        </article>
+
+        <article class="card" data-hex="#FFBF00" data-text="dark">
+          <div class="swatch" style="background:#FFBF00;color:#222">アンバー（琥珀）</div>
+          <div class="meta"><div class="name">アンバー</div><div class="hex">#FFBF00</div></div>
+        </article>
+
+        <article class="card" data-hex="#FFC87C" data-text="dark">
+          <div class="swatch" style="background:#FFC87C;color:#222">トパーズ（黄玉）</div>
+          <div class="meta"><div class="name">トパーズ</div><div class="hex">#FFC87C</div></div>
+        </article>
+
+        <article class="card" data-hex="#E4D00A" data-text="dark">
+          <div class="swatch" style="background:#E4D00A;color:#222">シトリン</div>
+          <div class="meta"><div class="name">シトリン</div><div class="hex">#E4D00A</div></div>
+        </article>
+
+        <article class="card" data-hex="#B53B3B" data-text="light">
+          <div class="swatch" style="background:#B53B3B">カーネリアン</div>
+          <div class="meta"><div class="name">カーネリアン</div><div class="hex">#B53B3B</div></div>
+        </article>
+
+        <article class="card" data-hex="#9966CC" data-text="light">
+          <div class="swatch" style="background:#9966CC">アメシスト</div>
+          <div class="meta"><div class="name">アメシスト</div><div class="hex">#9966CC</div></div>
+        </article>
+
+        <article class="card" data-hex="#5D3FD3" data-text="light">
+          <div class="swatch" style="background:#5D3FD3">タンザナイト</div>
+          <div class="meta"><div class="name">タンザナイト</div><div class="hex">#5D3FD3</div></div>
+        </article>
+
+        <article class="card" data-hex="#5A4FCF" data-text="light">
+          <div class="swatch" style="background:#5A4FCF">アイオライト</div>
+          <div class="meta"><div class="name">アイオライト</div><div class="hex">#5A4FCF</div></div>
+        </article>
+
+        <article class="card" data-hex="#8A2BE2" data-text="light">
+          <div class="swatch" style="background:#8A2BE2">スピネルバイオレット</div>
+          <div class="meta"><div class="name">スピネル（紫）</div><div class="hex">#8A2BE2</div></div>
+        </article>
+
+        <article class="card" data-hex="#0F0F0F" data-text="light">
+          <div class="swatch" style="background:#0F0F0F">オニキスブラック</div>
+          <div class="meta"><div class="name">オニキス（黒）</div><div class="hex">#0F0F0F</div></div>
+        </article>
+
+        <article class="card" data-hex="#F0EAD6" data-text="dark">
+          <div class="swatch" style="background:#F0EAD6;color:#3a2b2b">パールホワイト</div>
+          <div class="meta"><div class="name">パールホワイト</div><div class="hex">#F0EAD6</div></div>
+        </article>
+
+        <article class="card" data-hex="#CFECEC" data-text="dark">
+          <div class="swatch" style="background:#CFECEC;color:#1b2b2b">オパール風</div>
+          <div class="meta"><div class="name">オパール（風）</div><div class="hex">#CFECEC</div></div>
+        </article>
+
+        <article class="card" data-hex="#F2F8FF" data-text="dark">
+          <div class="swatch" style="background:#F2F8FF;color:#0a1320">ムーンストーン</div>
+          <div class="meta"><div class="name">ムーンストーン</div><div class="hex">#F2F8FF</div></div>
+        </article>
+
+        <article class="card" data-hex="#0B8B5A" data-text="light">
+          <div class="swatch" style="background:#0B8B5A">マラカイトグリーン</div>
+          <div class="meta"><div class="name">マラカイト</div><div class="hex">#0B8B5A</div></div>
+        </article>
+
+      </div>
+
+      <div class="hint">カードをクリックすると HEX コードがコピーされ、右上に通知が出ます（モバイルでも動作します）。</div>
+    </main>
+
+    <footer>
+      表示色は見本（近似値）です。用途に応じて微調整してください。
+    </footer>
+
+    <script>
+      // クリックで HEX をコピーし、簡単な通知を出す処理
+      (function(){
+        const grid = document.getElementById('grid');
+
+        function showToast(text){
+          const t = document.createElement('div');
+          t.textContent = text;
+          Object.assign(t.style,{
+            position:'fixed',
+            right:'20px',
+            bottom:'22px',
+            padding:'10px 14px',
+            background:'rgba(10,10,20,0.85)',
+            color:'#eaf6ff',
+            borderRadius:'10px',
+            boxShadow:'0 8px 20px rgba(2,4,12,0.7)',
+            zIndex:9999,
+            fontFamily:'monospace',
+            fontSize:'13px',
+            opacity: '0',
+            transition:'opacity .22s ease, transform .22s ease',
+            transform:'translateY(8px)'
+          });
+          document.body.appendChild(t);
+          requestAnimationFrame(()=>{ t.style.opacity='1'; t.style.transform='translateY(0)'; });
+          setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(8px)'; }, 1400);
+          setTimeout(()=>t.remove(), 1800);
+        }
+
+        grid.addEventListener('click', (e) => {
+          const card = e.target.closest('.card');
+          if(!card) return;
+          const hex = card.getAttribute('data-hex') || '';
+          if(!hex) return;
+          // コピー
+          navigator.clipboard?.writeText(hex).then(()=>{
+            showToast(hex + ' をコピーしました');
+          }).catch(()=>{
+            // フォールバック
+            const ta = document.createElement('textarea');
+            ta.value = hex;
+            document.body.appendChild(ta);
+            ta.select();
+            try{ document.execCommand('copy'); showToast(hex + ' をコピーしました'); }
+            catch{ showToast('コピーに失敗しました'); }
+            ta.remove();
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
