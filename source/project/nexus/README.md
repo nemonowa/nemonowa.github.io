@@ -13,3 +13,5 @@
 
 ## 貢献｜Special Thanks
 * SoraFlete©, Evmanz, 白くまP, Ravbug, PixelMoth, mozel, Pikamine, peritune, uniquegear, 魔王魂, VOICEVOX, Iophiel, Yukary, Lunex42, 枝垂巧雪, and you...
+
+
