@@ -25,28 +25,27 @@
 
       footer {
         width: 100%;
+        height: 15vh; /* 画面高さの15% */
         background: rgba(0, 0, 0, 0.65);
         backdrop-filter: blur(8px);
         color: #f0f8ff;
-        text-align: center;
-        padding: 3vh 2vw;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
+        justify-content: center; /* 高さに対して中央揃え */
+        text-align: center;
       }
 
       .icon-grfft_logo {
         font-size: 2rem;
         font-weight: bold;
         text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-        /* ここにSVGや画像ロゴを挿入可能 */
       }
 
       .social-icons {
         display: flex;
         gap: 1.5rem;
+        margin: 0.5rem 0;
       }
 
       .social-icon {
@@ -62,7 +61,6 @@
       .copyrights {
         font-size: 0.9rem;
         color: var(--muted, #a0b0c0);
-        margin-top: 0.5rem;
       }
 
       @media (max-width: 600px) {
