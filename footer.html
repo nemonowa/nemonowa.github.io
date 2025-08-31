@@ -5,29 +5,31 @@
 
 <footer>
   <div class="icon-grfft_logo">（ここにいい感じのロゴを挿入）</div>
+
   <div class="social-icons">
     <a
       href="https://twitter.com/yourusername"
       target="_blank"
       class="social-icon"
     >
-      <i class="fab fa-twitter fa-2x"></i>
+      <i class="fab fa-twitter"></i>
     </a>
     <a
       href="https://discord.com/invite/yourinvitecode"
       target="_blank"
       class="social-icon"
     >
-      <i class="fab fa-discord fa-2x"></i>
+      <i class="fab fa-discord"></i>
     </a>
     <a
       href="https://www.youtube.com/channel/yourchannel"
       target="_blank"
       class="social-icon"
     >
-      <i class="fab fa-youtube fa-2x"></i>
+      <i class="fab fa-youtube"></i>
     </a>
   </div>
+
   <div class="copyrights">
     Copyright © 2010-2027 SoraFlete. All Rights Reserved.
   </div>
@@ -35,13 +37,43 @@
 
 <style>
   footer {
-    height: 15vh; /* 枠の高さを固定 */
+    height: 15vh; /* 高さを固定 */
     display: flex;
+    flex-direction: column; /* 縦に並べる */
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.6);
     text-align: center;
+    color: #fff;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
       0 0 10px rgba(255, 255, 255, 0.8);
+    overflow: hidden; /* はみ出しを防止 */
+  }
+
+  .icon-grfft_logo {
+    font-size: 1rem; /* ロゴ部分 */
+    margin-bottom: 0.3rem;
+  }
+
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; /* アイコン間の間隔 */
+    margin: 0.3rem 0;
+  }
+
+  .social-icon {
+    color: #fff;
+    font-size: 1.5rem; /* アイコン小さめ */
+    transition: color 0.3s ease;
+  }
+
+  .social-icon:hover {
+    color: #1da1f2; /* hover時の色（例: Twitterブルー） */
+  }
+
+  footer .copyrights {
+    font-size: 0.7rem; /* コピーライト小さめ */
+    margin-top: 0.3rem;
   }
 </style>
