@@ -117,14 +117,12 @@ footer {
 /* 個別のスタイル */
 
 h1 {
-  font-size: 3rem;
   color: white; /* 文字色を白に設定 */
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
     0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
 }
 
 button {
-  font-size: 2rem;
   padding: 15px 30px;
   background-color: #ff7f50; /* オレンジ色のボタン */
   color: white;
@@ -170,4 +168,38 @@ button:hover {
 
 #search-form button {
   margin-top: 1.5vh;
+}
+
+/* Grid Overlay 共通化 */
+#nexus-root .grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 1;
+}
+
+#nexus-root .grid-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mix-blend-mode: overlay;
+}
+
+@media (max-width: 980px) {
+  #nexus-root .content-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  #nexus-root .content-grid {
+    grid-template-columns: 1fr;
+  }
 }
