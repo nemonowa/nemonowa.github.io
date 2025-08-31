@@ -26,15 +26,143 @@
   </head>
   <body>
     <header id="header"></header>
-    <main>
-      <!-- ** ↓↓ 汎用記入枠 ↓↓ ** -->
-      <div style="white-space: pre-wrap">
-        # 前文
-        人類社会のすべての構成員の固有の尊厳と平等で譲ることのできない権利とを承認することは、世界における自由正義及び平和の基礎であるので、人権の無視及び軽侮が人類の良心を踏みにじった野蛮行為をもたらし、言論及び信仰の自由が受けられ恐怖及び欠乏のない世界の到来が、一般の人々の最高の願望として宣言されたので、人間が専制と圧迫とに対する最後の手段として反逆に訴えることがないようにするためには法の支配によって人権保護することが肝要であるので、諸国間の友好関係の発展を促進することが、肝要であるので、国際連合の諸国民は、国際連合憲章において、基本的人権人間の尊厳及び価値並びに男女の同権についての信念を再確認し、かつ、一層大きな自由のうちで社会的進歩と生活水準の向上とを促進することを決意したので、加盟国は、国際連合と協力して、人権及び基本的自由の普遍的な尊重及び遵守の促進を達成することを誓約したので、これらの権利及び自由に対する共通の理解は、この誓約を完全にするためにもっとも重要であるので、よって、ここに、国際連合総会は、社会の各個人及び各機関が、この世界人権宣言を常に念頭に置きながら、加盟国自身の人民の間にも、また、加盟国の管轄下にある地域の人民の間にも、これらの権利と自由との尊重を指導及び教育によって促進すること並びにそれらの普遍的かつ効果的な承認と遵守とを国内的及び国際的な漸進的措置によって確保することに努力するように、すべての人民とすべての国とが達成すべき共通の基準として、この世界人権宣言を公布する。
-        https://www.unic.or.jp/activities/humanrights/document/bill_of_rights/universal_declaration/
-      </div>
-      <!-- ** ↑↑ 汎用記入枠 ↑↑ ** -->
+    <main id="main-content">
+      <!-- 固定記事スライダー -->
+      <section id="featured-posts">
+        <h2>固定記事</h2>
+        <div class="slider">
+          <div class="slides"></div>
+        </div>
+      </section>
+
+      <!-- 最新記事 -->
+      <section id="latest-posts">
+        <h2>最新記事</h2>
+        <ul class="latest-list"></ul>
+      </section>
+
+      <!-- タグ一覧 -->
+      <section id="tags">
+        <h2>タグ一覧</h2>
+        <div class="tag-list"></div>
+      </section>
+
+      <style>
+        /* ===== 固定記事スライダー ===== */
+        #featured-posts {
+          margin-bottom: 5vh;
+        }
+        #featured-posts h2 {
+          margin-bottom: 1vh;
+        }
+        .slider {
+          overflow: hidden;
+          position: relative;
+          width: 100%;
+          height: 25vh;
+        }
+        .slides {
+          display: flex;
+          gap: 1rem;
+          transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+          min-width: 80%;
+          background: rgba(255, 255, 255, 0.05);
+          padding: 1rem;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+          flex-shrink: 0;
+        }
+
+        /* ===== 最新記事 ===== */
+        #latest-posts {
+          margin-bottom: 5vh;
+        }
+        .latest-list {
+          list-style: none;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .latest-list li {
+          background: rgba(255, 255, 255, 0.05);
+          padding: 0.8rem 1rem;
+          border-radius: 8px;
+        }
+
+        /* ===== タグ一覧 ===== */
+        #tags .tag-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        .tag-list button {
+          background: rgba(255, 255, 255, 0.05);
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .tag-list button:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      </style>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          // --- 固定記事スライダー ---
+          const featuredPosts = [
+            "固定記事1：世界人権宣言の概要",
+            "固定記事2：国際連合の取り組み",
+            "固定記事3：自由と平等の価値",
+            "固定記事4：平和維持活動の実例",
+            "固定記事5：歴史的背景の解説",
+          ];
+          const slidesContainer = document.querySelector(".slides");
+          featuredPosts.forEach((post) => {
+            const div = document.createElement("div");
+            div.className = "slide";
+            div.textContent = post;
+            slidesContainer.appendChild(div);
+          });
+
+          let slideIndex = 0;
+          setInterval(() => {
+            slideIndex = (slideIndex + 1) % featuredPosts.length;
+            slidesContainer.style.transform = `translateX(-${
+              slideIndex * 80
+            }%)`;
+          }, 3000);
+
+          // --- 最新記事 ---
+          const latestPosts = [
+            "最新記事1：ニュース速報",
+            "最新記事2：技術記事更新",
+            "最新記事3：イベント情報",
+            "最新記事4：おすすめリソース",
+            "最新記事5：アップデート情報",
+          ];
+          const latestList = document.querySelector(".latest-list");
+          latestPosts.forEach((post) => {
+            const li = document.createElement("li");
+            li.textContent = post;
+            latestList.appendChild(li);
+          });
+
+          // --- タグ一覧 ---
+          const tags = ["国際法", "平和", "人権", "歴史", "教育", "社会"];
+          const tagList = document.querySelector(".tag-list");
+          tags.forEach((tag) => {
+            const btn = document.createElement("button");
+            btn.textContent = tag;
+            tagList.appendChild(btn);
+          });
+        });
+      </script>
     </main>
+
     <footer id="footer"></footer>
     <div id="ui"></div>
   </body>
