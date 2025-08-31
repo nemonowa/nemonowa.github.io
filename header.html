@@ -1,6 +1,31 @@
 <header>
-  <nav>
-    <h1>Welcome to the NEXUS</h1>
-    <h2><span id="file-name"></span></h2>
+  <nav class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">✯ Welcome to the NEXUS ✯</h1>
+      <h2 class="page-title"><span id="file-name">読み込み中...</span></h2>
+    </div>
   </nav>
 </header>
+
+<style>
+  .site-header {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    padding: 2vh 4vw;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .site-title {
+    font-size: 2.5rem;
+    color: #f0f8ff;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  }
+
+  .page-title {
+    font-size: 1.2rem;
+    color: var(--muted, #a0b0c0);
+    font-weight: normal;
+  }
+</style>
