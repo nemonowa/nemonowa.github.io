@@ -157,58 +157,9 @@
         </a>
       </div>
 
-      <!-- UIボタン -->
-      <div class="button top_left" onclick="toggleMenu('menu1')">⚓</div>
-      <div class="button bottom_left" onclick="toggleMenu('menu2')">🔗</div>
-      <div class="button top_right" onclick="toggleMenu('menu3')">🔍</div>
-      <div class="button bottom_right" onclick="toggleMenu('menu4')">🎖️</div>
-
       <div class="copyrights">
         Copyright © 2010-2027 SoraFlete. All Rights Reserved.
       </div>
     </footer>
-
-    <!-- メニュー -->
-    <div class="menu" id="menu1">
-      <p>1st-Tab FastTravel</p>
-      <a href="https://nemonowa.github.io/">⌖ Link to NEXUS</a><br />
-      <a href="https://nemonowa.github.io/nexus">⌖ Link to HOMEBASE</a><br />
-      <a href="https://nemonowa.github.io/404">⌖ Link to 404</a><br />
-    </div>
-    <div class="menu" id="menu2">
-      <p>2nd-Tab CreateLink＆Tools</p>
-      <a href="https://nemonowa.github.io/login.html">⌖ Login</a><br />
-      <a href="https://nemonowa.github.io/nexus.html">⌖ About</a><br />
-      <a href="https://nemonowa.github.io/login.html">⌖ Contact</a><br />
-    </div>
-    <div class="menu" id="menu3">
-      <p>3rd-Tab AccountSettings</p>
-      <br />
-      <a href="https://nemonowa.github.io/login.html">⌖ Login</a><br />
-      <a href="https://nemonowa.github.io/source/teleport.html">⌖ search</a
-      ><br />
-      <a href="https://nemonowa.github.io/source/teleport.html">⌖ teleport</a
-      ><br />
-    </div>
-    <div class="menu" id="menu4">
-      <p>4th-Tab Scoreboard</p>
-      <a href="https://nemonowa.github.io/">⌖ Home</a><br />
-      <a href="https://nemonowa.github.io/nexus.html">⌖ About</a><br />
-      <a href="https://nemonowa.github.io/login.html">⌖ Contact</a><br />
-    </div>
-
-    <script>
-      function toggleMenu(menuId) {
-        const menus = document.querySelectorAll(".menu");
-        menus.forEach((menu) => {
-          menu.style.display =
-            menu.id === menuId
-              ? menu.style.display === "block"
-                ? "none"
-                : "block"
-              : "none";
-        });
-      }
-    </script>
   </body>
 </html>
