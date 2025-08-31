@@ -1,80 +1,100 @@
-/* CSS: root.css */
+/* CSS */
 @charset "utf-8";
 
-/* 全体リセット */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   -webkit-text-size-adjust: 100%;
 }
 
 html {
-  font-family: "DM Mono", monospace;
-  font-size: 3vw;
+  background: linear-gradient(to bottom, #005f80, #001d2e) !important;
+  font-family: "DM Mono", monospace; /* DM Mono フォントの適用 */
+  font-size: 3vw; /* 画面の幅の3%に設定 */
   word-break: break-all;
-  background: linear-gradient(to bottom, #005f80, #001d2e);
-  color: #f0f8ff;
+  color: #f0f8ff; /* 月白 */
 }
 
 body {
+  padding: 0;
+  margin: 0;
   width: 100%;
-  overflow-x: hidden;
+  overflow: auto;
+  overflow: -moz-scrollbars-vertical;
   line-height: 1.2;
   color: inherit;
 }
 
-/* メイン */
-main {
-  margin: 0 auto;
-  width: 90vw;
-  padding: 5vh 0;
-  font-size: 150%;
+header {
+  background-color: #000000;
+  text-align: center;
+  height: 15vh;
+  font-size: 100%;
+  opacity: 0.5;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.8);
 }
 
-/* ボタン */
+main {
+  margin: 0 auto;
+  font-size: 150%;
+  width: 90vw;
+  padding: 5vh 0;
+}
+
+footer {
+  text-align: center;
+  background-color: #000000;
+  height: 15vh;
+  font-size: 100%;
+  opacity: 0.5;
+  bottom: 0;
+}
+
 .button {
   position: fixed;
   width: 15vh;
   height: 15vh;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: #000000;
+  opacity: 0.25;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   font-size: 2rem;
-  color: #fff;
   cursor: pointer;
   z-index: 10;
-  transition: opacity 0.2s;
 }
 
 .button:hover {
   opacity: 0.5;
 }
 
-/* 角配置ボタン */
+/* 個別のスタイル */
 .top_right {
   top: 0;
   right: 0;
   clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
+
 .top_left {
   top: 0;
   left: 0;
   clip-path: polygon(0 0, 100% 0, 0 100%);
 }
+
 .bottom_left {
   bottom: 0;
   left: 0;
   clip-path: polygon(0 100%, 100% 100%, 0 0);
 }
+
 .bottom_right {
   bottom: 0;
   right: 0;
   clip-path: polygon(100% 100%, 0 100%, 100% 0);
 }
 
-/* メニュー */
 .menu {
   display: none;
   position: fixed;
@@ -94,30 +114,35 @@ main {
   margin-bottom: 10px;
 }
 
-/* 見出し・ボタン */
+/* 個別のスタイル */
+
 h1 {
+  font-size: 3rem;
+  color: white; /* 文字色を白に設定 */
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
-    0 0 10px rgba(255, 255, 255, 0.8);
+    0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
 }
 
 button {
+  font-size: 2rem;
   padding: 15px 30px;
-  background-color: #ff7f50;
+  background-color: #ff7f50; /* オレンジ色のボタン */
   color: white;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
-    0 0 10px rgba(255, 255, 255, 0.8);
+    0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
 }
 
 button:hover {
-  background-color: #ff6347;
+  background-color: #ff6347; /* ホバー時の色 */
 }
 
-/* 検索フォーム */
+/*テキストボックス*/
 #search-container {
   display: flex;
+  font-family: "DM Mono", monospace;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -127,13 +152,16 @@ button:hover {
 }
 
 #site-title {
+  font-size: 4rem;
   margin-bottom: 2vh;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 #search-input {
   width: 70vw;
+  font-family: "DM Mono", monospace;
   max-width: 600px;
+  font-size: 1.5rem;
   padding: 10px;
   border-radius: 5px;
   border: none;
@@ -142,54 +170,4 @@ button:hover {
 
 #search-form button {
   margin-top: 1.5vh;
-}
-
-/* レスポンシブ */
-@media (max-width: 600px) {
-  html {
-    font-size: 4vw;
-  }
-  #site-title {
-    font-size: 3rem;
-  }
-  .menu {
-    font-size: 5vw;
-  }
-  button {
-    font-size: 1.5rem;
-    padding: 10px 20px;
-  }
-}
-/* グリットを記載 */
-#nexus-root .grid-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999;
-  opacity: 1;
-}
-
-#nexus-root .grid-overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 1px
-    ),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mix-blend-mode: overlay;
-}
-
-@media (max-width: 980px) {
-  #nexus-root .content-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  #nexus-root .content-grid {
-    grid-template-columns: 1fr;
-  }
 }
