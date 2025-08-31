@@ -2,327 +2,261 @@
 <!-- 説明：Project-NEXUSの一般公開可能な情報を発信する艦外通信網であり最外殻機構。 -->
 <!-- 著作：Creat by nemo. Copyright © SoraFlete. All Rights  Reserved. -->
 
-
 <!DOCTYPE html>
 <html lang="ja" itemtype="http://schema.org/WebPage">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>NEXUS — Page Index (nemonowa default)</title>
-<meta name="theme-color" content="#1e28d2" />
-<link rel="icon" href="/icon.png" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet" />
-<style>
-:root {
-  --bg-1: linear-gradient(180deg, #071028 0%, #0b1430 40%, #08122a 100%);
-  --muted: rgba(230, 238, 246, 0.6);
-  --card-bg: rgba(255, 255, 255, 0.02);
-  --accent: #6ee7b7;
-}
-html, body {
-  height: 100%;
-  margin: 0;
-  background: var(--bg-1);
-  font-family: "DM Mono", monospace;
-  color: #e6eef6;
-  overflow-x: hidden;
-}
-#nexus-root {
-  max-width: 1000px;
-  width: 95%;
-  margin: 28px auto;
-  padding: 10px;
-  box-sizing: border-box;
-}
-#nexus-root header {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-  border: 1px solid rgba(255,255,255,0.03);
-  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-}
-#nexus-root .brand {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-#nexus-root .brand .mark {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: conic-gradient(from 200deg, rgba(124,92,255,0.18), rgba(110,231,183,0.06));
-}
-#nexus-root h1 {
-  font-size: 1.1rem;
-  margin: 0;
-}
-#nexus-root p.lead {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-#nexus-root .controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-#nexus-root .controls input[type="text"] {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.03);
-  padding: 8px 10px;
-  border-radius: 8px;
-  color: inherit;
-  outline: none;
-  flex: 1 1 120px;
-  min-width: 100px;
-}
-#nexus-root .controls button {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.06);
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: inherit;
-  cursor: pointer;
-}
-#nexus-root .hero {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 16px 0;
-  padding: 14px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, var(--card-bg), transparent);
-  border: 1px solid rgba(255,255,255,0.03);
-}
-#nexus-root .content-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-top: 12px;
-}
-#nexus-root .card {
-  padding: 12px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
-  border: 1px solid rgba(255,255,255,0.03);
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-#nexus-root .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(2,6,23,0.6);
-}
-#nexus-root .thumb {
-  width: 100%;
-  aspect-ratio: 2 / 1;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.02);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-#nexus-root .thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-#nexus-root .meta {
-  color: var(--accent);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-}
-#nexus-root .list-view { display: none; flex-direction: column; gap: 8px; }
-#nexus-root .list-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.01);
-  border: 1px solid rgba(255,255,255,0.02);
-}
-#nexus-root .pagination {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-#nexus-root .pagination button {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.04);
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-}
-#nexus-root .modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(2,6,23,0.7);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-}
-#nexus-root .modal img {
-  max-width: 90%;
-  max-height: 85%;
-  border-radius: 10px;
-  box-shadow: 0 20px 60px rgba(2,6,23,0.8);
-}
-footer {
-  margin-top: 18px;
-  padding: 12px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
-  border: 1px solid rgba(255,255,255,0.03);
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-.muted { color: var(--muted); }
-.btn-small {
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.04);
-  background: transparent;
-  color: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-</style>
-</head>
-<body>
-<div id="nexus-root" role="main" aria-labelledby="page-title">
-<header role="banner">
-  <div class="brand">
-    <div class="mark" id="logo" title="NEXUS" aria-hidden="true"></div>
-    <div>
-      <h1 id="page-title">NEXUS — Page Index</h1>
-      <p class="lead">`nemonowa.github.io/source/page` を初期で読み込みます — 12件/ページ</p>
-    </div>
-  </div>
-  <div class="controls">
-    <input id="owner" type="text" placeholder="owner" value="nemonowa"/>
-    <input id="repo" type="text" placeholder="repo" value="nemonowa.github.io"/>
-    <input id="path" type="text" placeholder="path" value="source/page"/>
-    <button id="fetchBtn" class="btn-small">取得</button>
-    <button id="loadDemo" class="btn-small">デモ</button>
-  </div>
-</header>
-
-<main>
-  <section class="hero">
-    <div class="left">
-      <strong>説明</strong>
-      <div class="muted" style="margin-top:6px">
-        初期で <code>https://nemonowa.github.io/source/page</code> を読み込みます。カードクリックでページへリダイレクト。
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NEXUS — Page Index (nemonowa default)</title>
+    <meta name="theme-color" content="#1e28d2" />
+    <link rel="icon" href="/icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-1: linear-gradient(180deg, #071028 0%, #0b1430 40%, #08122a 100%);
+        --muted: rgba(230, 238, 246, 0.6);
+        --card-bg: rgba(255, 255, 255, 0.02);
+        --accent: #6ee7b7;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "DM Mono", monospace;
+        color: #e6eef6;
+        background: var(--bg-1);
+      }
+      #nexus-root {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+        border: 1px solid rgba(255,255,255,0.03);
+        box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+        margin-bottom: 16px;
+      }
+      .brand {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .mark {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: conic-gradient(from 200deg, rgba(124,92,255,0.18), rgba(110,231,183,0.06));
+      }
+      .brand h1 { margin: 0; font-size: 1.1rem; }
+      .lead { margin: 0; font-size: 0.85rem; color: var(--muted); }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .controls input[type=text] {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.03);
+        border-radius: 8px;
+        padding: 8px 10px;
+        color: inherit;
+        outline: none;
+        width: 200px;
+      }
+      .controls button {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: inherit;
+        cursor: pointer;
+      }
+      .hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 16px 0;
+        padding: 14px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, var(--card-bg), transparent);
+        border: 1px solid rgba(255,255,255,0.03);
+      }
+      .left { max-width: 100%; }
+      .right { text-align: right; }
+      .content-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 12px;
+      }
+      .card {
+        padding: 12px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+        border: 1px solid rgba(255,255,255,0.03);
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+      .card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.6); }
+      .thumb { width: 100%; aspect-ratio: 2/1; border-radius: 8px; background: rgba(255,255,255,0.02); display:grid; place-items:center; overflow:hidden; }
+      .thumb img { width: 100%; height:100%; object-fit: cover; }
+      .meta { display: flex; justify-content: space-between; align-items:center; gap:8px; font-size:0.85rem; color: var(--accent); }
+      .muted { color: var(--muted); }
+      .pagination { display: flex; gap: 8px; justify-content: center; align-items:center; margin-top: 14px; flex-wrap: wrap; }
+      .pagination button { padding: 8px 12px; border-radius: 8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color: inherit; cursor:pointer; }
+      @media(max-width:1100px){.content-grid{grid-template-columns:repeat(2,1fr);}}
+      @media(max-width:720px){.content-grid{grid-template-columns:1fr;}}
+    </style>
+  </head>
+  <body>
+    <div id="nexus-root">
+      <header>
+        <div class="brand">
+          <div class="mark"></div>
+          <div>
+            <h1>NEXUS — Page Index</h1>
+            <p class="lead">`nemonowa.github.io/source/page` を初期で読み込みます — 12件/ページ</p>
+          </div>
+        </div>
+        <div class="controls">
+          <input id="owner" type="text" placeholder="owner" value="nemonowa">
+          <input id="repo" type="text" placeholder="repo" value="nemonowa.github.io">
+          <input id="path" type="text" placeholder="path" value="source/page">
+          <button id="fetchBtn">取得</button>
+          <button id="loadDemo">デモ</button>
+        </div>
+      </header>
+      <section class="hero">
+        <div class="left">
+          <strong>説明</strong>
+          <div class="muted" style="margin-top:6px;">
+            初期で <code>https://nemonowa.github.io/source/page</code> を読み込みます。カードクリックでページへリダイレクト。
+          </div>
+        </div>
+        <div class="right">
+          <div class="muted">件数: <span id="count">--</span></div>
+          <div class="muted" style="margin-top:6px;">最終更新: <span id="lastUpdated">--</span></div>
+        </div>
+      </section>
+      <main>
+        <div id="gridArea" class="content-grid"></div>
+        <div class="pagination">
+          <button id="prevBtn">前へ</button>
+          <div class="muted" style="min-width:140px;text-align:center;">ページ <span id="pageNum">1</span> / <span id="pageTotal">1</span></div>
+          <button id="nextBtn">次へ</button>
+        </div>
+      </main>
+      <footer>© <span id="year"></span> NEXUS — Crafted by SoraFlete</footer>
+      <div id="imgModal" class="modal" style="display:none;">
+        <img id="modalImg" alt="preview image" />
       </div>
     </div>
-    <div class="right" style="text-align:right">
-      <div class="muted">件数: <span id="count">--</span></div>
-      <div class="muted" style="margin-top:6px">最終更新: <span id="lastUpdated">--</span></div>
-    </div>
-  </section>
-
-  <section>
-    <div id="gridArea" class="content-grid" role="list"></div>
-    <div id="listArea" class="list-view" role="list"></div>
-    <div class="pagination">
-      <button id="prevBtn" class="btn-small">前へ</button>
-      <div class="muted" style="min-width:140px;text-align:center">
-        ページ <span id="pageNum">1</span> / <span id="pageTotal">1</span>
-      </div>
-      <button id="nextBtn" class="btn-small">次へ</button>
-    </div>
-  </section>
-</main>
-
-<footer>© <span id="year"></span> NEXUS — Crafted by SoraFlete</footer>
-<div id="imgModal" class="modal">
-  <img id="modalImg" alt="preview image"/>
-</div>
-
-<script>
-(function(){
-document.getElementById("year").textContent=new Date().getFullYear();
-const DEFAULT_OWNER="nemonowa",DEFAULT_REPO="nemonowa.github.io",DEFAULT_PATH="source/page";
-const state={owner:DEFAULT_OWNER,repo:DEFAULT_REPO,path:DEFAULT_PATH,items:[],page:1,perPage:12};
-const ownerEl=document.getElementById("owner"),repoEl=document.getElementById("repo"),pathEl=document.getElementById("path");
-const fetchBtn=document.getElementById("fetchBtn"),loadDemoBtn=document.getElementById("loadDemo");
-const gridArea=document.getElementById("gridArea"),listArea=document.getElementById("listArea");
-const countEl=document.getElementById("count"),lastUpdatedEl=document.getElementById("lastUpdated");
-const prevBtn=document.getElementById("prevBtn"),nextBtn=document.getElementById("nextBtn");
-const pageNumEl=document.getElementById("pageNum"),pageTotalEl=document.getElementById("pageTotal");
-const imgModal=document.getElementById("imgModal"),modalImg=document.getElementById("modalImg");
-
-function extOf(name){return name.split(".").pop().toLowerCase();}
-function openModal(src){modalImg.src=src;imgModal.style.display="flex";}
-imgModal.addEventListener("click",()=>imgModal.style.display="none");
-
-async function fetchDir(){
-  const url=`https://api.github.com/repos/${state.owner}/${state.repo}/contents/${state.path}`;
-  const res=await fetch(url);
-  const data=await res.json();
-  if(!Array.isArray(data)){ alert("Failed to fetch or invalid path"); return; }
-  state.items=data.filter(f=>["html","htm","md"].includes(extOf(f.name)))
-    .map(f=>({name:f.name,path:f.path,html_url:`https://${state.repo}/source/page/${f.name}`}));
-  state.page=1; renderPage();
-}
-
-function renderPage(){
-  const start=(state.page-1)*state.perPage,end=start+state.perPage;
-  const pageItems=state.items.slice(start,end);
-  countEl.textContent=state.items.length;
-  lastUpdatedEl.textContent="--";
-  pageNumEl.textContent=state.page;
-  pageTotalEl.textContent=Math.ceil(state.items.length/state.perPage);
-
-  gridArea.innerHTML=""; listArea.innerHTML="";
-  pageItems.forEach(item=>{
-    const card=document.createElement("div");
-    card.className="card"; card.tabIndex=0; card.role="listitem";
-    card.addEventListener("click",()=>window.location.href=item.html_url);
-    card.innerHTML=`<div class="thumb"></div><div style="margin-top:6px"><strong>${item.name}</strong></div>
-      <div class="meta"><span></span><span></span><span class="open-file">open file</span></div>`;
-    gridArea.appendChild(card);
-
-    const listItem=document.createElement("div");
-    listItem.className="list-item"; listItem.textContent=item.name;
-    listItem.addEventListener("click",()=>window.location.href=item.html_url);
-    listArea.appendChild(listItem);
-  });
-}
-
-prevBtn.addEventListener("click",()=>{if(state.page>1){state.page--;renderPage();}});
-nextBtn.addEventListener("click",()=>{if(state.page<Math.ceil(state.items.length/state.perPage)){state.page++;renderPage();}});
-fetchBtn.addEventListener("click",()=>{
-  state.owner=ownerEl.value||DEFAULT_OWNER;
-  state.repo=repoEl.value||DEFAULT_REPO;
-  state.path=pathEl.value||DEFAULT_PATH;
-  fetchDir();
-});
-loadDemoBtn.addEventListener("click",()=>fetchDir());
-
-fetchDir();
-})();
-</script>
-</body>
+    <script>
+      (function(){
+        const DEFAULT_OWNER="nemonowa", DEFAULT_REPO="nemonowa.github.io", DEFAULT_PATH="source/page";
+        const state={owner:DEFAULT_OWNER,repo:DEFAULT_REPO,path:DEFAULT_PATH,items:[],page:1,perPage:12};
+        const ownerEl=document.getElementById("owner"), repoEl=document.getElementById("repo"), pathEl=document.getElementById("path");
+        const fetchBtn=document.getElementById("fetchBtn"), loadDemoBtn=document.getElementById("loadDemo");
+        const gridArea=document.getElementById("gridArea"), countEl=document.getElementById("count"), lastUpdatedEl=document.getElementById("lastUpdated");
+        const prevBtn=document.getElementById("prevBtn"), nextBtn=document.getElementById("nextBtn");
+        const pageNumEl=document.getElementById("pageNum"), pageTotalEl=document.getElementById("pageTotal");
+        const imgModal=document.getElementById("imgModal"), modalImg=document.getElementById("modalImg");
+        document.getElementById("year").textContent=new Date().getFullYear();
+        function extOf(name){return(name.split(".").pop()||"").toLowerCase();}
+        function basename(name){return name.replace(/\.[^/.]+$/,"");}
+        function render(){
+          const items=state.items;
+          countEl.textContent=items.length;
+          const totalPages=Math.max(1,Math.ceil(items.length/state.perPage));
+          pageTotalEl.textContent=totalPages;
+          pageNumEl.textContent=state.page;
+          if(items.length>0){
+            const latest=items.slice().sort((a,b)=>new Date(b.updated_at||0)-new Date(a.updated_at||0))[0];
+            lastUpdatedEl.textContent=latest.updated_at?new Date(latest.updated_at).toLocaleString():"--";
+          }else lastUpdatedEl.textContent="--";
+          const start=(state.page-1)*state.perPage;
+          const pageItems=items.slice(start,start+state.perPage);
+          gridArea.innerHTML="";
+          pageItems.forEach(it=>{
+            const card=document.createElement("article");
+            card.className="card";
+            card.addEventListener("click",()=>{window.location.href=`https://${state.repo.replace(/\/$/,"")}/${encodeURI(it.path)}`;});
+            const thumb=document.createElement("div"); thumb.className="thumb";
+            if(it.image){const img=document.createElement("img"); img.src=it.image; img.alt=basename(it.name); img.addEventListener("click",(ev)=>{ev.stopPropagation(); modalImg.src=it.image; imgModal.style.display="flex";}); thumb.appendChild(img);}
+            else thumb.innerHTML='<div style="padding:8px;color:var(--muted);font-size:0.9rem">No image</div>';
+            const title=document.createElement("div");
+            title.innerHTML='<strong style="display:block;margin:6px 0;font-size:1rem">'+basename(it.name)+'</strong><div class="muted" style="font-size:0.9rem;min-height:36px">'+(it.desc||"")+'</div>';
+            const metaRow=document.createElement("div"); metaRow.className="meta";
+            const left=document.createElement("div"); left.textContent=it.author||""; 
+            const right=document.createElement("div"); right.textContent=it.updated_at?new Date(it.updated_at).toLocaleDateString():"--";
+            metaRow.appendChild(left); metaRow.appendChild(right);
+            card.appendChild(thumb); card.appendChild(title); card.appendChild(metaRow);
+            gridArea.appendChild(card);
+          });
+          prevBtn.disabled=state.page<=1; nextBtn.disabled=state.page>=totalPages||state.items.length===0;
+        }
+        async function fetchFromGitHub(owner,repo,path){
+          const apiBase="https://api.github.com";
+          try{
+            const url=`${apiBase}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+            const res=await fetch(url);
+            if(!res.ok)throw new Error("Contents fetch failed: "+res.status);
+            const contents=await res.json();
+            const files=Array.isArray(contents)?contents:[];
+            const imageExts=["png","jpg","jpeg","webp","gif","svg"];
+            const images={};
+            files.forEach(f=>{const e=extOf(f.name); if(imageExts.includes(e)) images[basename(f.name)]=f.download_url||f.html_url||f.url;});
+            const htmlFiles=files.filter(f=>["html","htm","md"].includes(extOf(f.name)));
+            const items=[];
+            htmlFiles.forEach(f=>{
+              const it={name:f.name,path:f.path,html_url:f.html_url||f.download_url||"",download_url:f.download_url||"",desc:"",author:"",updated_at:"",image:null};
+              const base=basename(f.name);
+              if(images[base]) it.image=images[base];
+              if(!it.image){for(const[k,v]of Object.entries(images)){if(k.startsWith(base)||base.startsWith(k)){it.image=v;break;}}}
+              items.push(it);
+            });
+            // まとめて最新コミットを取得（1回のリクエスト）
+            const commitsUrl=`${apiBase}/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=100`;
+            const commitRes=await fetch(commitsUrl);
+            if(commitRes.ok){
+              const commits=await commitRes.json();
+              items.forEach(it=>{
+                const commit=commits.find(c=>c.commit&&c.commit.author&&c.commit.author.date&&c.html_url&&c.commit.message&&c.commit.message.includes(it.name));
+                if(commit){it.updated_at=commit.commit.author.date; it.author=commit.commit.author.name;}
+              });
+            }
+            return items;
+          }catch(e){console.error(e);return[];}
+        }
+        fetchBtn.addEventListener("click",async()=>{state.owner=ownerEl.value; state.repo=repoEl.value; state.path=pathEl.value; state.page=1; state.items=await fetchFromGitHub(state.owner,state.repo,state.path); render();});
+        loadDemoBtn.addEventListener("click",async()=>{state.page=1; state.items=await fetchFromGitHub(DEFAULT_OWNER,DEFAULT_REPO,DEFAULT_PATH); render();});
+        prevBtn.addEventListener("click",()=>{if(state.page>1){state.page--;render();}});
+        nextBtn.addEventListener("click",()=>{const totalPages=Math.max(1,Math.ceil(state.items.length/state.perPage)); if(state.page<totalPages){state.page++;render();}});
+        imgModal.addEventListener("click",()=>{imgModal.style.display="none"; modalImg.src="";});
+        // 初期読み込み
+        (async()=>{state.items=await fetchFromGitHub(DEFAULT_OWNER,DEFAULT_REPO,DEFAULT_PATH); render();})();
+      })();
+    </script>
+  </body>
 </html>
 
 <!-- 招待：https://discord.gg/nqx8esTwzS  NeoCode:071 -->
