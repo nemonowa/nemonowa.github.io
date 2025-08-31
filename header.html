@@ -1,86 +1,21 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NEXUS Header</title>
-    <style>
-      /* 全体リセットとベース */
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+<header>
+  <h1 class="site-title">✯ Welcome to the NEXUS ✯</h1>
+</header>
 
-      body {
-        font-family: "Segoe UI", "Yu Gothic", sans-serif;
-        background: transparent;
-      }
+<style>
+  header {
+    height: 15vh; /* 枠の高さを固定 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+      0 0 10px rgba(255, 255, 255, 0.8);
+  }
 
-      header {
-        width: 100%;
-      }
-
-      .site-header {
-        background: rgba(0, 0, 0, 0.65);
-        backdrop-filter: blur(8px);
-        padding: 2vh 4vw;
-        text-align: center;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .site-title {
-        font-size: clamp(2rem, 5vw, 2.5rem);
-        color: #f0f8ff;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.85);
-        font-weight: 700;
-      }
-
-      .page-title {
-        font-size: clamp(1rem, 2vw, 1.2rem);
-        color: var(--muted, #a0b0c0);
-        font-weight: 400;
-      }
-
-      /* レスポンシブ微調整 */
-      @media (max-width: 600px) {
-        .site-title {
-          font-size: 1.8rem;
-        }
-        .page-title {
-          font-size: 1rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <nav class="site-header">
-        <div class="header-inner">
-          <h1 class="site-title">✯ Welcome to the NEXUS ✯</h1>
-          <h2 class="page-title"><span id="file-name">読み込み中...</span></h2>
-        </div>
-      </nav>
-    </header>
-
-    <script>
-      // 現在表示中のHTMLファイル名を自動取得
-      (function () {
-        const fileNameSpan = document.getElementById("file-name");
-        if (fileNameSpan) {
-          const path = window.location.pathname;
-          const name =
-            path.substring(path.lastIndexOf("/") + 1) || "index.html";
-          fileNameSpan.textContent = decodeURIComponent(name);
-        }
-      })();
-    </script>
-  </body>
-</html>
+  .site-title {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    color: #f0f8ff;
+  }
+</style>
