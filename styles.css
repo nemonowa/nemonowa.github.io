@@ -152,31 +152,19 @@ button:hover {
 }
 
 /* Grid Overlay 自動描画 */
-#nexus-root::before {
+body::before {
   content: "";
-  position: fixed;
-  inset: 0; /* top:0; right:0; bottom:0; left:0 と同じ */
-  pointer-events: none; /* クリックを通す */
-  z-index: 999;
+  position: fixed; /* スクロールしても固定 */
+  inset: 0; /* 画面全体に広げる */
+  pointer-events: none; /* クリック操作を邪魔しない */
+  z-index: -1; /* 本文の背面に配置 */
   opacity: 1;
+
   background-image: linear-gradient(
-      rgba(255, 255, 255, 0.02) 1px,
+      rgba(255, 255, 255, 0.05) 1px,
       transparent 1px
     ),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mix-blend-mode: overlay;
-}
-
-/* レスポンシブ列変更 */
-@media (max-width: 980px) {
-  #nexus-root .content-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  #nexus-root .content-grid {
-    grid-template-columns: 1fr;
-  }
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px; /* グリッド間隔 */
+  mix-blend-mode: overlay; /* 下の背景に馴染ませる */
 }
