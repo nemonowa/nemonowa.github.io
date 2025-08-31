@@ -151,7 +151,7 @@ button:hover {
   margin-top: 1.5vh;
 }
 
-/* Grid Overlay 共通化 */
+/* Grid Overlay 自動描画 */
 #nexus-root::before {
   content: "";
   position: fixed;
