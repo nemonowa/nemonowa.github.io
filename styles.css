@@ -1,145 +1,146 @@
-/* CSS */
+/* CSS: root.css */
 @charset "utf-8";
 
+/* 全体リセット */
 * {
-    margin: 0;
-    padding: 0;
-    -webkit-text-size-adjust: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-text-size-adjust: 100%;
 }
 
 html {
-    background: linear-gradient(to bottom, #005f80, #001d2e) !important;
-    font-family: 'DM Mono', monospace; /* DM Mono フォントの適用 */
-    font-size: 3vw; /* 画面の幅の3%に設定 */
-    word-break: break-all;
-    color: #F0F8FF; /* 月白 */
+  font-family: "DM Mono", monospace;
+  font-size: 3vw;
+  word-break: break-all;
+  background: linear-gradient(to bottom, #005f80, #001d2e);
+  color: #f0f8ff;
 }
 
 body {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    overflow: auto;
-    overflow: -moz-scrollbars-vertical;
-    line-height: 1.2;
-    color: inherit;
+  width: 100%;
+  overflow-x: hidden;
+  line-height: 1.2;
+  color: inherit;
 }
 
+/* ヘッダー */
 header {
-    background-color: #000000;
-    text-align: center;
-    height: 15vh;
-    font-size: 100%;
-    opacity: 0.5;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 15vh;
+  text-align: center;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* メイン */
 main {
-    margin: 0 auto;
-    font-size: 150%;
-    width: 90vw;
-    padding: 5vh 0;
+  margin: 0 auto;
+  width: 90vw;
+  padding: 5vh 0;
+  font-size: 150%;
 }
 
+/* フッター */
 footer {
-    text-align: center;
-    background-color: #000000;
-    height: 15vh;
-    font-size: 100%;
-    opacity: 0.5;
-    bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 15vh;
+  text-align: center;
+  padding: 1rem 0;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
+/* ボタン */
 .button {
-    position: fixed;
-    width: 15vh;
-    height: 15vh;
-    background-color: #000000;
-    opacity: 0.25;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    z-index: 10;
+  position: fixed;
+  width: 15vh;
+  height: 15vh;
+  background-color: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10;
+  transition: opacity 0.2s;
 }
 
 .button:hover {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
-/* 個別のスタイル */
+/* 角配置ボタン */
 .top_right {
-    top: 0;
-    right: 0;
-    clip-path: polygon(100% 0, 100% 100%, 0 0);
+  top: 0;
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
-
 .top_left {
-    top: 0;
-    left: 0;
-    clip-path: polygon(0 0, 100% 0, 0 100%);
+  top: 0;
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
 }
-
 .bottom_left {
-    bottom: 0;
-    left: 0;
-    clip-path: polygon(0 100%, 100% 100%, 0 0);
+  bottom: 0;
+  left: 0;
+  clip-path: polygon(0 100%, 100% 100%, 0 0);
 }
-
 .bottom_right {
-    bottom: 0;
-    right: 0;
-    clip-path: polygon(100% 100%, 0 100%, 100% 0);
+  bottom: 0;
+  right: 0;
+  clip-path: polygon(100% 100%, 0 100%, 100% 0);
 }
 
+/* メニュー */
 .menu {
-    display: none;
-    position: fixed;
-    top: 20%;
-    left: 10%;
-    right: 10%;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    z-index: 5;
-    font-size: 4vw;
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 10%;
+  right: 10%;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  font-size: 4vw;
 }
 
 .menu p {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
-/* 個別のスタイル */
+/* 見出し・ボタン */
+h1 {
+  font-size: 3rem;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.8);
+}
 
-  h1 {
-    font-size: 3rem;
-    color: white; /* 文字色を白に設定 */
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
-  }
+button {
+  font-size: 2rem;
+  padding: 15px 30px;
+  background-color: #ff7f50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+    0 0 10px rgba(255, 255, 255, 0.8);
+}
 
-  button {
-    font-size: 2rem;
-    padding: 15px 30px;
-    background-color: #ff7f50; /* オレンジ色のボタン */
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.8); /* 発光効果 */
-  }
+button:hover {
+  background-color: #ff6347;
+}
 
-  button:hover {
-    background-color: #ff6347; /* ホバー時の色 */
-  }
-
-/*テキストボックス*/
+/* 検索フォーム */
 #search-container {
   display: flex;
-  font-family: 'DM Mono', monospace;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -156,7 +157,6 @@ footer {
 
 #search-input {
   width: 70vw;
-  font-family: 'DM Mono', monospace;
   max-width: 600px;
   font-size: 1.5rem;
   padding: 10px;
@@ -167,4 +167,21 @@ footer {
 
 #search-form button {
   margin-top: 1.5vh;
+}
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+  html {
+    font-size: 4vw;
+  }
+  #site-title {
+    font-size: 3rem;
+  }
+  .menu {
+    font-size: 5vw;
+  }
+  button {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+  }
 }
