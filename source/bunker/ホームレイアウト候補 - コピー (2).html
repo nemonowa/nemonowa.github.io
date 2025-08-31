@@ -1,25 +1,24 @@
-<!-- 名称：The NEXUS Anchor (Internet：ウェブページ) -->
-<!-- 説明：Project-NEXUSの一般公開可能な情報を発信する艦外通信網であり最外殻機構。 -->
-<!-- 著作：Creat by nemo. Copyright © SoraFlete. All Rights  Reserved. -->
-
 <!DOCTYPE html>
 <html lang="ja" itemtype="http://schema.org/WebPage">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>NEXUS — Page Index (nemonowa default)</title>
+    <title>NEXUS — Page Index (Paginated)</title>
     <meta name="theme-color" content="#1e28d2" />
     <link rel="icon" href="/icon.png" />
+    <!-- DM Mono フォント -->
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <style>
+      /* Scoped styles under #nexus-root to avoid external collisions */
       :root {
         --bg-1: linear-gradient(180deg, #071028 0%, #0b1430 40%, #08122a 100%);
         --muted: rgba(230, 238, 246, 0.6);
         --card-bg: rgba(255, 255, 255, 0.02);
         --accent: #6ee7b7;
+        --glass: rgba(255, 255, 255, 0.03);
       }
       html,
       body {
@@ -35,6 +34,8 @@
         padding: 20px;
         box-sizing: border-box;
       }
+
+      /* header */
       #nexus-root header {
         display: flex;
         align-items: center;
@@ -75,9 +76,11 @@
         color: var(--muted);
         font-size: 0.85rem;
       }
+
+      /* controls */
       #nexus-root .controls {
         display: flex;
-        gap: 8px;
+        gap: 10px;
         align-items: center;
       }
       #nexus-root .controls input[type="text"] {
@@ -97,6 +100,8 @@
         color: inherit;
         cursor: pointer;
       }
+
+      /* hero info */
       #nexus-root .hero {
         display: flex;
         gap: 16px;
@@ -108,6 +113,14 @@
         background: linear-gradient(180deg, var(--card-bg), transparent);
         border: 1px solid rgba(255, 255, 255, 0.03);
       }
+      #nexus-root .hero .left {
+        max-width: 65%;
+      }
+      #nexus-root .hero small {
+        color: var(--muted);
+      }
+
+      /* grid & pagination */
       #nexus-root .content-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -134,9 +147,17 @@
         transform: translateY(-6px);
         box-shadow: 0 18px 40px rgba(2, 6, 23, 0.6);
       }
+      #nexus-root .card .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
       #nexus-root .thumb {
         width: 100%;
-        aspect-ratio: 2 / 1;
+        height: 96px;
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.02);
         display: grid;
@@ -147,15 +168,10 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
       }
-      #nexus-root .meta {
-        color: var(--accent);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.85rem;
-      }
+
+      /* list view (hidden by default) */
       #nexus-root .list-view {
         display: none;
         flex-direction: column;
@@ -170,6 +186,8 @@
         background: rgba(255, 255, 255, 0.01);
         border: 1px solid rgba(255, 255, 255, 0.02);
       }
+
+      /* pagination controls */
       #nexus-root .pagination {
         display: flex;
         gap: 8px;
@@ -185,6 +203,8 @@
         color: inherit;
         cursor: pointer;
       }
+
+      /* image modal */
       #nexus-root .modal {
         position: fixed;
         inset: 0;
@@ -200,7 +220,9 @@
         border-radius: 10px;
         box-shadow: 0 20px 60px rgba(2, 6, 23, 0.8);
       }
-      footer {
+
+      /* footer */
+      #nexus-root footer {
         margin-top: 18px;
         padding: 12px;
         border-radius: 10px;
@@ -214,6 +236,8 @@
         color: var(--muted);
         font-size: 0.9rem;
       }
+
+      /* small helpers */
       .muted {
         color: var(--muted);
       }
@@ -226,13 +250,8 @@
         font-size: 0.85rem;
         cursor: pointer;
       }
-      #nexus-root .card .open-file {
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-      #nexus-root .card:hover .open-file {
-        opacity: 1;
-      }
+
+      /* responsive */
       @media (max-width: 1100px) {
         #nexus-root .content-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -253,6 +272,7 @@
       <header role="banner" class="panel">
         <div class="brand">
           <div class="mark" id="logo" title="NEXUS" aria-hidden="true">
+            <!-- simple mark -->
             <svg
               width="36"
               height="36"
@@ -278,8 +298,8 @@
           <div>
             <h1 id="page-title">NEXUS — Page Index</h1>
             <p class="lead">
-              `nemonowa.github.io/source/page` を初期で読み込みます —
-              10件/ページ
+              source/page 配下の HTML をプレビュー一覧（10件/ページ） —
+              画像サムネイルと更新日時を表示
             </p>
           </div>
         </div>
@@ -288,14 +308,14 @@
           <input
             id="owner"
             type="text"
-            placeholder="owner (例: nemonowa)"
-            value="nemonowa"
+            placeholder="owner (例: nexusource)"
+            value="nexusource"
           />
           <input
             id="repo"
             type="text"
-            placeholder="repo (例: nemonowa.github.io)"
-            value="nemonowa.github.io"
+            placeholder="repo (例: nexusource.github.io)"
+            value="nexusource.github.io"
           />
           <input
             id="path"
@@ -306,7 +326,7 @@
           <button id="fetchBtn" class="btn-small" title="Fetch from GitHub">
             取得
           </button>
-          <button id="loadDemo" class="btn-small">デモ</button>
+          <button id="loadDemo" class="btn-small">デモ投入</button>
         </div>
       </header>
 
@@ -315,10 +335,11 @@
           <div class="left">
             <strong>説明</strong>
             <div class="muted" style="margin-top: 6px">
-              初期で
-              <code>https://nemonowa.github.io/source/page</code>
-              を読み込みます。カードクリックでページへリダイレクト。Open
-              fileはホバーで表示。
+              ここでは指定リポジトリの `source/page` 相当フォルダの *.html
+              ファイルを一覧表示します。カードをクリックすると
+              <code>https://nemonowa.github.io/</code>
+              を開きます。ファイル単体を直接開くにはカード内の
+              <em>Open file</em> を使ってください。
             </div>
           </div>
           <div class="right" style="text-align: right">
@@ -353,8 +374,12 @@
         </section>
       </main>
 
-      <footer>© <span id="year"></span> NEXUS — Crafted by SoraFlete</footer>
+      <footer>
+        © <span id="year"></span> NEXUS — Crafted by SoraFlete · Tips:
+        ロゴを5回クリックでイースター要素
+      </footer>
 
+      <!-- modal for image preview -->
       <div id="imgModal" class="modal" role="dialog" aria-hidden="true">
         <img id="modalImg" alt="preview image" />
       </div>
@@ -362,33 +387,36 @@
 
     <script>
       (function () {
-        const DEFAULT_OWNER = "nemonowa",
-          DEFAULT_REPO = "nemonowa.github.io",
-          DEFAULT_PATH = "source/page";
+        // state
         const state = {
-          owner: DEFAULT_OWNER,
-          repo: DEFAULT_REPO,
-          path: DEFAULT_PATH,
-          items: [],
+          owner: "nexusource",
+          repo: "nexusource.github.io",
+          path: "source/page",
+          items: [], // {name, path, html_url, download_url, updated_at, author, image}
           page: 1,
-          perPage: 12,
+          perPage: 10,
         };
-        const ownerEl = document.getElementById("owner"),
-          repoEl = document.getElementById("repo"),
-          pathEl = document.getElementById("path");
-        const fetchBtn = document.getElementById("fetchBtn"),
-          loadDemoBtn = document.getElementById("loadDemo");
-        const gridArea = document.getElementById("gridArea"),
-          listArea = document.getElementById("listArea");
-        const countEl = document.getElementById("count"),
-          lastUpdatedEl = document.getElementById("lastUpdated");
-        const prevBtn = document.getElementById("prevBtn"),
-          nextBtn = document.getElementById("nextBtn");
-        const pageNumEl = document.getElementById("pageNum"),
-          pageTotalEl = document.getElementById("pageTotal");
-        const imgModal = document.getElementById("imgModal"),
-          modalImg = document.getElementById("modalImg");
+
+        // DOM
+        const ownerEl = document.getElementById("owner");
+        const repoEl = document.getElementById("repo");
+        const pathEl = document.getElementById("path");
+        const fetchBtn = document.getElementById("fetchBtn");
+        const loadDemoBtn = document.getElementById("loadDemo");
+        const gridArea = document.getElementById("gridArea");
+        const listArea = document.getElementById("listArea");
+        const countEl = document.getElementById("count");
+        const lastUpdatedEl = document.getElementById("lastUpdated");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const pageNumEl = document.getElementById("pageNum");
+        const pageTotalEl = document.getElementById("pageTotal");
+        const imgModal = document.getElementById("imgModal");
+        const modalImg = document.getElementById("modalImg");
+
         document.getElementById("year").textContent = new Date().getFullYear();
+
+        // helpers
         function extOf(name) {
           return (name.split(".").pop() || "").toLowerCase();
         }
@@ -396,16 +424,18 @@
           return name.replace(/\.[^/.]+$/, "");
         }
 
+        // Render page
         function render() {
           const items = state.items;
-          countEl.textContent = items.length;
-          const totalPages = Math.max(
+          const total = items.length;
+          countEl.textContent = total;
+          pageTotalEl.textContent = Math.max(
             1,
-            Math.ceil(items.length / state.perPage)
+            Math.ceil(total / state.perPage)
           );
-          pageTotalEl.textContent = totalPages;
           pageNumEl.textContent = state.page;
 
+          // last updated
           if (items.length > 0) {
             const latest = items
               .slice()
@@ -416,32 +446,43 @@
             lastUpdatedEl.textContent = latest.updated_at
               ? new Date(latest.updated_at).toLocaleString()
               : "--";
-          } else lastUpdatedEl.textContent = "--";
+          } else {
+            lastUpdatedEl.textContent = "--";
+          }
 
+          // slice for pagination
           const start = (state.page - 1) * state.perPage;
           const pageItems = items.slice(start, start + state.perPage);
+
+          // clear
           gridArea.innerHTML = "";
           listArea.innerHTML = "";
 
+          // build cards
           pageItems.forEach((it) => {
+            // card
             const card = document.createElement("article");
             card.className = "card";
+            // click -> open fixed root as required
             card.addEventListener("click", (e) => {
-              if (e.target.closest(".thumb") || e.target.closest(".meta"))
+              // if clicking the small "open-file" anchor or thumb, don't open the root
+              if (
+                e.target.closest(".open-file") ||
+                e.target.closest(".thumb") ||
+                e.target.closest(".meta")
+              )
                 return;
-              const pagesUrl = `https://${state.repo.replace(
-                /\/$/,
-                ""
-              )}/${encodeURI(it.path)}`;
-              window.location.href = pagesUrl;
+              window.open("https://nemonowa.github.io/", "_blank");
             });
 
+            // thumb
             const thumb = document.createElement("div");
             thumb.className = "thumb";
             if (it.image) {
               const img = document.createElement("img");
               img.src = it.image;
-              img.alt = basename(it.name);
+              img.alt = it.name;
+              // clicking thumb -> open modal
               img.addEventListener("click", (ev) => {
                 ev.stopPropagation();
                 modalImg.src = it.image;
@@ -449,14 +490,15 @@
                 imgModal.setAttribute("aria-hidden", "false");
               });
               thumb.appendChild(img);
-            } else
+            } else {
               thumb.innerHTML =
                 '<div style="padding:8px;color:var(--muted);font-size:0.9rem">No image</div>';
+            }
 
             const title = document.createElement("div");
             title.innerHTML =
               '<strong style="display:block;margin:6px 0;font-size:1rem">' +
-              basename(it.name) +
+              it.name +
               '</strong><div class="muted" style="font-size:0.9rem;min-height:36px">' +
               (it.desc || "") +
               "</div>";
@@ -471,21 +513,35 @@
             right.textContent = it.updated_at
               ? new Date(it.updated_at).toLocaleDateString()
               : "--";
+
             metaRow.appendChild(left);
             metaRow.appendChild(right);
 
+            const openLink = document.createElement("a");
+            openLink.href = it.html_url || it.download_url || "#";
+            openLink.target = "_blank";
+            openLink.rel = "noopener noreferrer";
+            openLink.className = "open-file";
+            openLink.textContent = "Open file";
+            openLink.style.cssText =
+              "font-size:0.85rem;color:var(--accent);text-decoration:none;margin-top:8px;display:inline-block";
+
+            // assemble
             card.appendChild(thumb);
             card.appendChild(title);
             card.appendChild(metaRow);
+            card.appendChild(openLink);
+
             gridArea.appendChild(card);
 
+            // list row
             const li = document.createElement("div");
             li.className = "list-item";
             li.innerHTML =
               '<div><a href="' +
               (it.html_url || "#") +
               '" target="_blank" rel="noopener noreferrer">' +
-              basename(it.name) +
+              it.name +
               '</a><div class="muted" style="font-size:0.85rem">' +
               (it.desc || "") +
               '</div></div><div style="text-align:right"><div class="muted">' +
@@ -496,14 +552,17 @@
             listArea.appendChild(li);
           });
 
+          // disable/enable page buttons
           prevBtn.disabled = state.page <= 1;
           nextBtn.disabled =
-            state.page >= totalPages || state.items.length === 0;
+            state.page >= Math.ceil(total / state.perPage) || total === 0;
         }
 
+        // fetch contents from GitHub
         async function fetchFromGitHub(owner, repo, path) {
           const apiBase = "https://api.github.com";
           try {
+            // list directory
             const url = `${apiBase}/repos/${owner}/${repo}/contents/${encodeURIComponent(
               path
             )}`;
@@ -511,6 +570,8 @@
             if (!res.ok)
               throw new Error("Contents fetch failed: " + res.status);
             const contents = await res.json();
+            // filter files and map
+            // collect images map
             const files = Array.isArray(contents) ? contents : [];
             const imageExts = ["png", "jpg", "jpeg", "webp", "gif", "svg"];
             const images = {};
@@ -520,9 +581,11 @@
                 images[basename(f.name)] =
                   f.download_url || f.html_url || f.url;
             });
+            // html files
             const htmlFiles = files.filter((f) =>
               ["html", "htm", "md"].includes(extOf(f.name))
             );
+            // For each html file, try to get last commit (per-file) to obtain updated_at/author
             const items = [];
             for (const f of htmlFiles) {
               const it = {
@@ -530,13 +593,15 @@
                 path: f.path,
                 html_url: f.html_url || f.download_url || "",
                 download_url: f.download_url || "",
-                desc: "",
+                desc: "", // no description stored - keep path info
                 author: "",
                 updated_at: "",
                 image: null,
               };
+              // try to attach image by same base name
               const base = basename(f.name);
               if (images[base]) it.image = images[base];
+              // otherwise attempt to find any image with same base prefix
               if (!it.image) {
                 for (const [k, v] of Object.entries(images)) {
                   if (k.startsWith(base) || base.startsWith(k)) {
@@ -545,6 +610,7 @@
                   }
                 }
               }
+              // commit API
               try {
                 const commitsRes = await fetch(
                   `${apiBase}/repos/${owner}/${repo}/commits?path=${encodeURIComponent(
@@ -565,31 +631,35 @@
                         : c.author && c.author.login
                         ? c.author.login
                         : "";
+                    // set description to commit message excerpt
                     it.desc =
                       c.commit && c.commit.message
                         ? c.commit.message.split("\n")[0]
                         : "";
                   }
                 }
-              } catch (e) {}
+              } catch (e) {
+                // ignore per-file commit error
+              }
               items.push(it);
             }
+
+            // sort by updated_at desc
             items.sort(
               (a, b) =>
                 new Date(b.updated_at || 0) - new Date(a.updated_at || 0)
             );
-            state.owner = owner;
-            state.repo = repo;
-            state.path = path;
+            // update state
             state.items = items;
             state.page = 1;
             render();
           } catch (err) {
             console.error(err);
-            alert("GitHub 取得に失敗しました（コンソール参照）");
+            alert("GitHub 取得に失敗しました。コンソールを確認してください。");
           }
         }
 
+        // demo loader
         function loadDemo() {
           const DEMO = [];
           for (let i = 1; i <= 18; i++) {
@@ -601,7 +671,10 @@
               desc: `デモ記事 ${i}`,
               author: "demo",
               updated_at: new Date(Date.now() - i * 86400000).toISOString(),
-              image: `https://picsum.photos/seed/demo${i}/256/256`,
+              image:
+                i % 3 === 0
+                  ? "https://picsum.photos/seed/demo" + i + "/800/400"
+                  : null,
             });
           }
           state.items = DEMO;
@@ -609,13 +682,19 @@
           render();
         }
 
+        // event handlers
         fetchBtn.addEventListener("click", () => {
-          const owner = (ownerEl.value || "").trim() || DEFAULT_OWNER;
-          const repo = (repoEl.value || "").trim() || DEFAULT_REPO;
-          const path = (pathEl.value || "").trim() || DEFAULT_PATH;
+          const owner = (ownerEl.value || "").trim() || state.owner;
+          const repo = (repoEl.value || "").trim() || state.repo;
+          const path = (pathEl.value || "").trim() || state.path;
+          state.owner = owner;
+          state.repo = repo;
+          state.path = path;
           fetchFromGitHub(owner, repo, path);
         });
+
         loadDemoBtn.addEventListener("click", () => loadDemo());
+
         prevBtn.addEventListener("click", () => {
           if (state.page > 1) {
             state.page--;
@@ -629,12 +708,15 @@
             render();
           }
         });
+
+        // modal close
         imgModal.addEventListener("click", () => {
           imgModal.style.display = "none";
           imgModal.setAttribute("aria-hidden", "true");
           modalImg.src = "";
         });
 
+        // logo easter (5 clicks)
         (function () {
           const logo = document.getElementById("logo");
           let clicks = 0,
@@ -650,17 +732,12 @@
           });
         })();
 
-        (function init() {
-          ownerEl.value = DEFAULT_OWNER;
-          repoEl.value = DEFAULT_REPO;
-          pathEl.value = DEFAULT_PATH;
-          fetchFromGitHub(DEFAULT_OWNER, DEFAULT_REPO, DEFAULT_PATH);
-        })();
+        // init: load demo so page is not empty
+        loadDemo();
+
+        // Expose for debug if needed
         window.NEXUS_INDEX = { state, render, fetchFromGitHub };
       })();
     </script>
   </body>
 </html>
-
-<!-- 招待：https://discord.gg/nqx8esTwzS  NeoCode:071 -->
-<!-- 記憶：Howdy? ようこそ、私の創った余剰階層へ。 -->

@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NEXUS — /source/page プレビュー一覧</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: linear-gradient(180deg, #071028 0%, #0b1430 40%, #08122a 100%);
+        --muted: rgba(230, 238, 246, 0.6);
+        --accent: #6ee7b7;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: "DM Mono", ui-sans-serif, system-ui, "Yu Gothic",
+          sans-serif;
+        background: var(--bg);
+        color: #e6eef6;
+        line-height: 1.45;
+      }
+      .wrap {
+        max-width: 1150px;
+        margin: 28px auto;
+        padding: 18px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 18px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      header .brand {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: conic-gradient(
+          from 200deg,
+          rgba(124, 92, 255, 0.18),
+          rgba(110, 231, 183, 0.06)
+        );
+        font-weight: 700;
+      }
+      header h1 {
+        font-size: 1.05rem;
+      }
+      header .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      /* controls */
+      .inputs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .inputs input[type="text"],
+      .inputs input[type="password"],
+      select {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 8px;
+        border-radius: 8px;
+        color: inherit;
+      }
+      .btn {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: inherit;
+      }
+      .small {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      /* status */
+      .status {
+        margin-top: 8px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      /* content area */
+      .controls-bar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 8px 0;
+      }
+      .stats {
+        margin-left: auto;
+        color: var(--muted);
+      }
+
+      /* layout grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 12px;
+      }
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.01),
+          transparent
+        );
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+      .card h3 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+      }
+      .card p {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin-bottom: 8px;
+      }
+      .meta {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .tag {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.02);
+      }
+      .card a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* list fallback */
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* responsive */
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 640px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap" id="nexus-root">
+      <header role="banner">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">★</div>
+          <div>
+            <h1>NEXUS — /source/page プレビュー</h1>
+            <div class="small">
+              指定ディレクトリ内の HTML/MD 等を一覧・プレビュー表示します
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="inputs">
+            <input
+              id="owner"
+              type="text"
+              placeholder="owner"
+              value="nexusource"
+            />
+            <input
+              id="repo"
+              type="text"
+              placeholder="repo"
+              value="nexusource.github.io"
+            />
+            <input
+              id="path"
+              type="text"
+              placeholder="path"
+              value="source/page"
+            />
+            <input
+              id="token"
+              type="password"
+              placeholder="(optional) GitHub token"
+            />
+            <button id="fetchBtn" class="btn">取得</button>
+          </div>
+        </div>
+      </header>
+
+      <div>
+        <div class="controls-bar">
+          <div class="row">
+            <label class="small">表示: </label>
+            <select id="viewSelect" class="small">
+              <option value="grid">カード</option>
+              <option value="list">リスト</option>
+            </select>
+            <label class="small">ソート: </label>
+            <select id="sortSelect" class="small">
+              <option value="name">名前</option>
+              <option value="date_desc">更新日 新→古</option>
+              <option value="date_asc">更新日 古→新</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label class="small">フィルタ: </label>
+            <select id="tagFilter" class="small">
+              <option value="all">すべて</option>
+            </select>
+          </div>
+
+          <div class="stats small" id="stats">取得件数: --</div>
+        </div>
+
+        <div id="contentArea">
+          <div id="grid" class="grid" role="list" aria-live="polite"></div>
+          <div id="list" class="list" style="display: none"></div>
+        </div>
+
+        <div class="status" id="status">準備完了</div>
+      </div>
+
+      <footer
+        style="
+          padding: 12px;
+          border-radius: 12px;
+          background: rgba(255, 255, 255, 0.01);
+          border: 1px solid rgba(255, 255, 255, 0.03);
+          color: var(--muted);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <div>© <span id="year"></span> NEXUS — SoraFlete</div>
+        <div class="small">
+          Tips: トークンを入れると速度と成功率が上がります
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (async function () {
+        // ---- helpers ----
+        const el = (id) => document.getElementById(id);
+        const ownerEl = el("owner"),
+          repoEl = el("repo"),
+          pathEl = el("path"),
+          tokenEl = el("token");
+        const fetchBtn = el("fetchBtn"),
+          statusEl = el("status"),
+          gridEl = el("grid"),
+          listEl = el("list");
+        const statsEl = el("stats"),
+          tagFilter = el("tagFilter"),
+          viewSelect = el("viewSelect"),
+          sortSelect = el("sortSelect");
+
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        function setStatus(s) {
+          statusEl.textContent = s;
+        }
+        function authHeaders(token) {
+          return token ? { Authorization: "token " + token } : {};
+        }
+
+        // safe fetch with optional token and JSON parsing
+        async function ghFetchJSON(url, token) {
+          const res = await fetch(url, {
+            headers: Object.assign(
+              { Accept: "application/vnd.github.v3+json" },
+              authHeaders(token)
+            ),
+          });
+          if (!res.ok)
+            throw new Error(`HTTP ${res.status} ${res.statusText} (${url})`);
+          return res.json();
+        }
+
+        // small concurrency limiter
+        function pMap(list, fn, concurrency = 6) {
+          let i = 0,
+            results = [];
+          const workers = new Array(concurrency).fill(0).map(async () => {
+            while (i < list.length) {
+              const idx = i++;
+              try {
+                results[idx] = await fn(list[idx], idx);
+              } catch (err) {
+                results[idx] = { error: err };
+              }
+            }
+          });
+          return Promise.all(workers).then(() => results);
+        }
+
+        // parse YAML frontmatter if any (returns object) - naive but effective
+        function parseFrontmatter(text) {
+          const m = text.match(/^---\s*([\s\S]*?)\s*---/);
+          if (!m) return null;
+          const fm = {};
+          const body = m[1];
+          body.split(/\r?\n/).forEach((line) => {
+            const kv = line.match(/^(\w+):\s*(.+)$/);
+            if (kv) {
+              const key = kv[1].trim();
+              let val = kv[2].trim();
+              // simple array parser: tags: [a, b]
+              if (val.startsWith("[") && val.endsWith("]")) {
+                val = val
+                  .slice(1, -1)
+                  .split(",")
+                  .map((s) => s.trim().replace(/^['"]|['"]$/g, ""));
+              } else if (/^\d{4}/.test(val) || /\d{4}-\d{2}-\d{2}/.test(val)) {
+                // date like
+              }
+              fm[key] = val;
+            }
+          });
+          return fm;
+        }
+
+        // extract tags from html meta or frontmatter
+        function extractTagsFromText(text) {
+          // frontmatter
+          const fm = parseFrontmatter(text);
+          if (fm) {
+            if (fm.tags) {
+              if (typeof fm.tags === "string")
+                return fm.tags.split(",").map((s) => s.trim());
+              if (Array.isArray(fm.tags)) return fm.tags;
+            }
+            if (fm.tag) return ("" + fm.tag).split(",").map((s) => s.trim());
+          }
+          // html meta
+          const metaMatch = text.match(
+            /<meta\s+name=["']tags["']\s+content=["']([^"']+)["']/i
+          );
+          if (metaMatch) return metaMatch[1].split(",").map((s) => s.trim());
+          // <meta property="article:tag" content="x">
+          const tagMatches = [
+            ...text.matchAll(
+              /<meta\s+(?:property|name)=["'](?:article:)?tag["']\s+content=["']([^"']+)["']/gi
+            ),
+          ];
+          if (tagMatches.length) return tagMatches.map((m) => m[1]);
+          return [];
+        }
+
+        // extract title (from frontmatter or <title> or first h1)
+        function extractTitle(text, fileName) {
+          const fm = parseFrontmatter(text);
+          if (fm && fm.title) return fm.title;
+          const t = text.match(/<title[^>]*>([^<]+)<\/title>/i);
+          if (t) return t[1].trim();
+          const h1 = text.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+          if (h1) return h1[1].trim();
+          // fallback: filename
+          return fileName.replace(/\.[^/.]+$/, "");
+        }
+
+        // extract excerpt: first paragraph or first ~160 chars of body
+        function extractExcerpt(text) {
+          // remove frontmatter if present
+          const fmRemoved = text.replace(/^---[\s\S]*?---\s*/, "");
+          // try <p>...</p>
+          const p = fmRemoved.match(/<p[^>]*>([\s\S]*?)<\/p>/i);
+          if (p)
+            return p[1]
+              .replace(/<[^>]+>/g, "")
+              .trim()
+              .slice(0, 250);
+          // fallback plain text
+          const txt = fmRemoved
+            .replace(/<[^>]+>/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+          return txt.slice(0, 250);
+        }
+
+        // get last commit date for a file (use commits endpoint)
+        async function getLastCommitDate(owner, repo, filePath, token) {
+          const api = `https://api.github.com/repos/${owner}/${repo}/commits?path=${encodeURIComponent(
+            filePath
+          )}&per_page=1`;
+          const j = await ghFetchJSON(api, token);
+          if (Array.isArray(j) && j[0] && j[0].commit && j[0].commit.committer)
+            return j[0].commit.committer.date;
+          if (Array.isArray(j) && j[0] && j[0].commit && j[0].commit.author)
+            return j[0].commit.author.date;
+          return null;
+        }
+
+        // render helpers
+        function renderCards(items) {
+          gridEl.innerHTML = "";
+          listEl.innerHTML = "";
+          items.forEach((item) => {
+            const card = document.createElement("article");
+            card.className = "card";
+            card.role = "listitem";
+            card.innerHTML = `
+        <a href="${
+          item.html_url || item.download_url || "#"
+        }" target="_blank" rel="noopener noreferrer">
+          <div>
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.excerpt || "")}</p>
+          </div>
+          <div class="meta">
+            <div class="tags">${(item.tags || [])
+              .slice(0, 4)
+              .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
+              .join("")}</div>
+            <div class="small">${
+              item.updated_at
+                ? new Date(item.updated_at).toLocaleString()
+                : "--"
+            }</div>
+          </div>
+        </a>`;
+            gridEl.appendChild(card);
+
+            const li = document.createElement("div");
+            li.className = "card";
+            li.style.flexDirection = "row";
+            li.style.alignItems = "center";
+            li.style.justifyContent = "space-between";
+            li.innerHTML = `<div style="flex:1">
+                        <strong>${escapeHtml(
+                          item.title
+                        )}</strong><div class="small">${(item.tags || []).join(
+              " · "
+            )}</div>
+                      </div>
+                      <div class="small">${
+                        item.updated_at
+                          ? new Date(item.updated_at).toLocaleString()
+                          : "--"
+                      }</div>`;
+            li.addEventListener("click", () =>
+              window.open(item.html_url || item.download_url || "#", "_blank")
+            );
+            listEl.appendChild(li);
+          });
+        }
+
+        function escapeHtml(s) {
+          if (!s) return "";
+          return String(s).replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              }[c])
+          );
+        }
+
+        // filtering/sorting
+        function applyFilterAndRender(allItems) {
+          let items = Array.from(allItems);
+          const selTag = tagFilter.value;
+          if (selTag && selTag !== "all")
+            items = items.filter((it) => (it.tags || []).includes(selTag));
+          const sort = sortSelect.value;
+          if (sort === "name")
+            items.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+          else if (sort === "date_desc")
+            items.sort(
+              (a, b) =>
+                new Date(b.updated_at || 0) - new Date(a.updated_at || 0)
+            );
+          else if (sort === "date_asc")
+            items.sort(
+              (a, b) =>
+                new Date(a.updated_at || 0) - new Date(b.updated_at || 0)
+            );
+          renderCards(items);
+          statsEl.textContent = `取得件数: ${items.length} / 全 ${allItems.length}`;
+        }
+
+        // UI events
+        viewSelect.addEventListener("change", () => {
+          if (viewSelect.value === "grid") {
+            gridEl.style.display = "grid";
+            listEl.style.display = "none";
+          } else {
+            gridEl.style.display = "none";
+            listEl.style.display = "block";
+          }
+        });
+        sortSelect.addEventListener("change", () =>
+          applyFilterAndRender(latestFetchedItems)
+        );
+        tagFilter.addEventListener("change", () =>
+          applyFilterAndRender(latestFetchedItems)
+        );
+
+        // store
+        let latestFetchedItems = [];
+
+        // ---- main fetching routine ----
+        fetchBtn.addEventListener("click", async () => {
+          const owner = ownerEl.value.trim();
+          const repo = repoEl.value.trim();
+          const path = pathEl.value.trim().replace(/^\/+|\/+$/g, "");
+          const token = tokenEl.value.trim() || null;
+          if (!owner || !repo || !path) {
+            setStatus("owner/repo/path を入力してください");
+            return;
+          }
+          setStatus("ディレクトリ一覧を取得中...");
+          gridEl.innerHTML = "";
+          listEl.innerHTML = "";
+          latestFetchedItems = [];
+          try {
+            // 1) list contents
+            const apiContents = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(
+              path
+            )}`;
+            const contents = await ghFetchJSON(apiContents, token);
+            // filter files and sort
+            const files = Array.isArray(contents)
+              ? contents.filter(
+                  (f) =>
+                    f.type === "file" &&
+                    /\.(html?|md|markdown|txt)$/i.test(f.name)
+                )
+              : [];
+            setStatus(
+              `ファイル数: ${files.length}（メタ取得中） — GitHub API rate-limitに注意`
+            );
+            if (files.length === 0) {
+              setStatus(
+                "対象ディレクトリに HTML/MD/TXT ファイルが見つかりません。"
+              );
+              statsEl.textContent = "取得件数: 0";
+              return;
+            }
+
+            // 2) fetch file content (concurrent, limited)
+            const fileDetails = await pMap(
+              files,
+              async (f) => {
+                const downloadUrl = f.download_url;
+                // fetch raw
+                try {
+                  const raw = await fetch(downloadUrl).then((r) =>
+                    r.ok
+                      ? r.text()
+                      : Promise.reject(new Error("raw fetch failed"))
+                  );
+                  const title = extractTitle(raw, f.name);
+                  const tags = extractTagsFromText(raw) || [];
+                  // prefer frontmatter date
+                  const fm = parseFrontmatter(raw);
+                  let date = null;
+                  if (fm && fm.date) date = fm.date;
+                  // commit date fallback later
+                  return {
+                    name: f.name,
+                    path: f.path,
+                    download_url: downloadUrl,
+                    html_url: f.html_url,
+                    title,
+                    tags,
+                    excerpt: extractExcerpt(raw),
+                    updated_at: date,
+                  };
+                } catch (err) {
+                  // if raw fetch fails, still include with minimal info
+                  return {
+                    name: f.name,
+                    path: f.path,
+                    download_url: f.download_url,
+                    html_url: f.html_url,
+                    title: f.name,
+                    tags: [],
+                    excerpt: "",
+                    updated_at: null,
+                    error: err.message,
+                  };
+                }
+              },
+              6
+            );
+
+            setStatus(
+              "更新日時を補完中（frontmatter が無ければ commits API を呼びます）"
+            );
+            // 3) for items without updated_at use commits API to get last commit date
+            await pMap(
+              fileDetails.filter((d) => !d.updated_at),
+              async (d) => {
+                try {
+                  const dt = await getLastCommitDate(
+                    owner,
+                    repo,
+                    d.path,
+                    token
+                  );
+                  d.updated_at = dt || null;
+                } catch (e) {
+                  d.updated_at = null;
+                }
+                return d;
+              },
+              4
+            );
+
+            // prepare tags list
+            const tagSet = new Set();
+            fileDetails.forEach((d) =>
+              (d.tags || []).forEach((t) => tagSet.add(t))
+            );
+            // populate tagFilter
+            tagFilter.innerHTML = `<option value="all">すべて</option>`;
+            Array.from(tagSet)
+              .sort()
+              .forEach((t) => {
+                const o = document.createElement("option");
+                o.value = t;
+                o.textContent = t;
+                tagFilter.appendChild(o);
+              });
+
+            latestFetchedItems = fileDetails;
+            applyFilterAndRender(latestFetchedItems);
+            setStatus("取得完了");
+          } catch (err) {
+            console.error(err);
+            setStatus("取得中にエラー: " + (err.message || err));
+          }
+        });
+
+        // auto-invoke initial fetch with defaults
+        fetchBtn.click();
+      })();
+    </script>
+  </body>
+</html>

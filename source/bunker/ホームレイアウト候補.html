@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=3.0" />
+  <title>NEXUS — 固定記事スライダー / 最新記事 / タグ</title>
+
+  <!-- フォント（任意） -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* -------------------------
+       Reset + ベース（基準16px）
+       ------------------------- */
+    :root {
+      font-size: 16px; /* ブラウザ基準 */
+      --bg-1: linear-gradient(180deg,#071028 0%,#0b1430 40%,#08122a 100%);
+      --muted: rgba(230,238,246,0.65);
+      --card: rgba(255,255,255,0.03);
+      --accent: #6ee7b7;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html,body { height:100%; }
+    body {
+      font-family: "DM Mono", ui-sans-serif, system-ui, "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+      background: var(--bg-1);
+      color: #e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width:100%; height:auto; display:block; }
+
+    /* -------------------------
+       Page layout
+       ------------------------- */
+    .container {
+      max-width: 1150px;
+      margin: 28px auto;
+      padding: 20px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+
+    header.site {
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      border:1px solid rgba(255,255,255,0.03);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 12px;
+    }
+    header .brand {
+      display:flex; gap:12px; align-items:center;
+    }
+    .brand .logo {
+      width:48px; height:48px; border-radius:10px;
+      background: conic-gradient(from 200deg, rgba(124,92,255,0.18), rgba(110,231,183,0.06));
+      display:grid; place-items:center;
+      font-weight:700; font-size:1.1rem;
+    }
+    header h1 { font-size: 1.125rem; margin:0; }
+    header p { margin:0; color:var(--muted); font-size:0.875rem; }
+
+    main {
+      display:block;
+    }
+
+    /* -------------------------
+       Featured slider
+       ------------------------- */
+    .section {
+      margin-bottom: 22px;
+    }
+    .section h2 {
+      font-size: 1rem; margin-bottom:10px; color:#dfe9f5;
+    }
+
+    .slider {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding: 12px;
+      border:1px solid rgba(255,255,255,0.03);
+    }
+
+    .slides {
+      display:flex;
+      transition: transform 560ms cubic-bezier(.2,.9,.2,1);
+      will-change: transform;
+    }
+
+    .slide {
+      min-width: 100%;
+      padding: 18px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+      box-shadow: 0 8px 20px rgba(2,6,23,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .slide h3 { font-size: 1.05rem; margin-bottom:6px; }
+    .slide p { color: var(--muted); font-size: 0.95rem; }
+
+    /* nav */
+    .slider-controls {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 10px;
+    }
+    .ctrl {
+      pointer-events: auto;
+      background: rgba(0,0,0,0.45);
+      border:1px solid rgba(255,255,255,0.03);
+      color: #fff;
+      width:36px; height:36px;
+      border-radius:8px;
+      display:grid; place-items:center;
+      cursor:pointer;
+      transition: transform .12s;
+    }
+    .ctrl:active { transform: scale(.96); }
+    .dots {
+      margin-top:10px; display:flex; gap:6px; justify-content:center;
+    }
+    .dot {
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(255,255,255,0.12);
+      cursor:pointer;
+    }
+    .dot.active { background: var(--accent); box-shadow:0 0 8px rgba(110,231,183,0.15); }
+
+    /* -------------------------
+       Latest list & Tag cloud
+       ------------------------- */
+    .grid-two {
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      align-items:start;
+    }
+
+    .latest {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding: 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.35);
+    }
+    .latest ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .latest li {
+      padding:10px; border-radius:8px; background: rgba(255,255,255,0.01);
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    }
+    .latest .meta { color:var(--muted); font-size:0.85rem; }
+
+    .tags {
+      padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    .tag-list { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag-list button {
+      background: rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.02);
+      color:inherit;
+      padding:6px 10px; border-radius:6px; cursor:pointer; font-size:0.9rem;
+    }
+    .tag-list button.active { background:var(--accent); color:#04221b; border-color:transparent; }
+
+    /* -------------------------
+       Footer
+       ------------------------- */
+    footer.site {
+      padding: 12px; text-align:center; border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      border:1px solid rgba(255,255,255,0.03);
+      color:var(--muted);
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+    }
+    footer .left { display:flex; gap:12px; align-items:center; }
+    footer .socials a { margin-left:8px; color:inherit; opacity:.9; }
+
+    /* -------------------------
+       Grid overlay (body full)
+       ------------------------- */
+    .grid-overlay {
+      position: fixed; inset:0; pointer-events:none; z-index:999;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mix-blend-mode: overlay;
+      opacity:1;
+    }
+
+    /* -------------------------
+       Responsive
+       ------------------------- */
+    @media (max-width: 980px) {
+      .grid-two { grid-template-columns: 1fr; }
+      .slider { height:auto; }
+      header.site { flex-direction:column; align-items:flex-start; gap:8px; }
+    }
+    @media (max-width:600px) {
+      .slide p { font-size:0.92rem; }
+      header h1 { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="nexus-root" role="main" aria-labelledby="page-title">
+
+    <!-- Header -->
+    <header class="site" role="banner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">★</div>
+        <div>
+          <h1 id="page-title">NEXUS — 掲示板</h1>
+          <p>固定記事 / 最新記事 / タグ — 簡潔に</p>
+        </div>
+      </div>
+      <div class="controls" aria-hidden="true">
+        <small style="color:var(--muted)">Tips: ロゴクリックで詩</small>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main>
+
+      <!-- 固定記事（スライダー） -->
+      <section class="section" aria-labelledby="featured-title">
+        <h2 id="featured-title">固定記事</h2>
+
+        <div class="slider" id="slider" aria-roledescription="carousel">
+          <div class="slides" id="slides" role="list"></div>
+
+          <div class="slider-controls">
+            <button class="ctrl" id="prev" aria-label="前へ">‹</button>
+            <div></div>
+            <button class="ctrl" id="next" aria-label="次へ">›</button>
+          </div>
+
+          <div class="dots" id="dots" aria-hidden="false"></div>
+        </div>
+      </section>
+
+      <!-- 最新記事 + タグ -->
+      <section class="section grid-two" aria-labelledby="latest-title">
+        <div class="latest" aria-labelledby="latest-title">
+          <h2 id="latest-title">最新記事</h2>
+          <ul id="latest-list" aria-live="polite"></ul>
+        </div>
+
+        <aside class="tags" aria-labelledby="tags-title">
+          <h2 id="tags-title">タグ一覧</h2>
+          <div class="tag-list" id="tag-list"></div>
+        </aside>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site" role="contentinfo">
+      <div class="left">
+        <div style="font-weight:600;">NEXUS</div>
+        <div style="color:var(--muted); font-size:0.9rem;">© <span id="year"></span> SoraFlete</div>
+      </div>
+      <div class="socials" aria-hidden="true">
+        <a href="#" title="twitter">T</a>
+        <a href="#" title="discord">D</a>
+        <a href="#" title="youtube">Y</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Grid overlay (page background) -->
+  <div class="grid-overlay" id="gridOverlay" aria-hidden="true"></div>
+
+  <script>
+    // -------------------------
+    // データ（実運用時はAPIから取得）
+    // -------------------------
+    const FEATURED = [
+      {
+        id: 'f1',
+        title: '固定: 世界人権宣言 — 概要',
+        excerpt: '人類の尊厳と基本的人権の普遍性について。導入と意義のまとめ。',
+        body: `上の本文は世界人権宣言の序文の抜粋に基づいています。要点: 尊厳、平等、自由。`
+      },
+      { id:'f2', title:'固定: 平和と国際協力', excerpt:'諸国間の友好関係と平和の促進についての考察。' },
+      { id:'f3', title:'固定: 自由と表現の保護', excerpt:'表現の自由がなぜ重要かを事例とともに解説。' },
+      { id:'f4', title:'固定: 教育による普及', excerpt:'教育が人権理解に果たす役割と実践例。' },
+      { id:'f5', title:'固定: 歴史的背景', excerpt:'宣言成立までの歴史的経緯の要約。' }
+    ];
+
+    const LATEST = [
+      { id:'l1', title:'速報：サイト更新', date:'2025-08-20', tags:['ニュース'] , excerpt:'トップページを小改修しました。'},
+      { id:'l2', title:'技術記事：静的サイト運用', date:'2025-08-18', tags:['技術','docs'], excerpt:'GitHub Pagesでの共通レイアウト手法。'},
+      { id:'l3', title:'イベント告知', date:'2025-08-15', tags:['イベント'], excerpt:'勉強会を開催します（詳細後日）。'},
+      { id:'l4', title:'リソース：画像集', date:'2025-07-30', tags:['メディア'], excerpt:'新規ギャラリーを公開しました。'},
+      { id:'l5', title:'記事：平和教育', date:'2025-07-12', tags:['教育','人権'], excerpt:'学校向け教材の紹介。'},
+      { id:'l6', title:'お知らせ：メンテナンス', date:'2025-06-05', tags:['ニュース'], excerpt:'システムメンテナンス実施報告。'}
+    ];
+
+    // -------------------------
+    // 初期レンダー
+    // -------------------------
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // render featured slides
+    const slidesEl = document.getElementById('slides');
+    const dotsEl = document.getElementById('dots');
+    FEATURED.forEach((f, i) => {
+      const slide = document.createElement('article');
+      slide.className = 'slide';
+      slide.setAttribute('role','listitem');
+      slide.innerHTML = `<h3>${escapeHtml(f.title)}</h3>
+                         <p>${escapeHtml(f.excerpt)}</p>`;
+      slidesEl.appendChild(slide);
+
+      const dot = document.createElement('button');
+      dot.className = 'dot';
+      dot.setAttribute('aria-label','スライド ' + (i+1));
+      dot.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(dot);
+    });
+
+    // clone first slide at end for smooth looping (optional approach)
+    // We'll use index modulo to cycle, so cloning unnecessary here.
+
+    // slider behavior
+    let idx = 0;
+    const total = FEATURED.length;
+    const goTo = (n) => {
+      idx = ( (n % total) + total ) % total;
+      slidesEl.style.transform = `translateX(-${idx * 100}%)`;
+      updateDots();
+    };
+    const next = () => goTo(idx + 1);
+    const prev = () => goTo(idx - 1);
+
+    // dots update
+    function updateDots(){
+      Array.from(dotsEl.children).forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+      });
+    }
+
+    // auto-play
+    let autoplay = setInterval(next, 3500);
+    const sliderRoot = document.getElementById('slider');
+    sliderRoot.addEventListener('mouseenter', () => clearInterval(autoplay));
+    sliderRoot.addEventListener('mouseleave', () => { clearInterval(autoplay); autoplay = setInterval(next, 3500); });
+
+    // prev/next controls
+    document.getElementById('prev').addEventListener('click', () => { prev(); resetAutoplay(); });
+    document.getElementById('next').addEventListener('click', () => { next(); resetAutoplay(); });
+
+    function resetAutoplay(){
+      clearInterval(autoplay);
+      autoplay = setInterval(next, 3500);
+    }
+
+    // keyboard support for carousel
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { prev(); resetAutoplay(); }
+      if (e.key === 'ArrowRight') { next(); resetAutoplay(); }
+    });
+
+    updateDots(); goTo(0);
+
+    // -------------------------
+    // 最新記事レンダリング & タグ機能
+    // -------------------------
+    const latestListEl = document.getElementById('latest-list');
+    const tagListEl = document.getElementById('tag-list');
+
+    // collect tags
+    const tagSet = new Set();
+    LATEST.forEach(item => (item.tags || []).forEach(t => tagSet.add(t)));
+    const tags = Array.from(tagSet).sort();
+
+    // render tags (include 'すべて')
+    const allBtn = document.createElement('button');
+    allBtn.textContent = 'すべて';
+    allBtn.classList.add('active');
+    allBtn.addEventListener('click', () => { filterBy(null); setActiveTagButton(allBtn); });
+    tagListEl.appendChild(allBtn);
+
+    const tagButtons = [allBtn];
+    tags.forEach(t => {
+      const b = document.createElement('button');
+      b.textContent = t;
+      b.addEventListener('click', () => { filterBy(t); setActiveTagButton(b); });
+      tagListEl.appendChild(b);
+      tagButtons.push(b);
+    });
+
+    function setActiveTagButton(activeBtn){
+      tagButtons.forEach(b => b.classList.toggle('active', b === activeBtn));
+    }
+
+    function renderLatest(list){
+      latestListEl.innerHTML = '';
+      list.forEach(it => {
+        const li = document.createElement('li');
+        li.innerHTML = `<div>
+                          <strong>${escapeHtml(it.title)}</strong><div class="meta">${escapeHtml(it.tags.join(' · '))}</div>
+                        </div>
+                        <div class="meta">${escapeHtml(it.date)}</div>
+                        <div style="display:none" class="excerpt">${escapeHtml(it.excerpt)}</div>`;
+        // clicking the item could open detail - placeholder:
+        li.addEventListener('click', () => alert(it.title + "\\n\\n" + (it.excerpt || '')));
+        latestListEl.appendChild(li);
+      });
+    }
+
+    function filterBy(tag){
+      if (!tag) {
+        renderLatest(LATEST);
+      } else {
+        renderLatest(LATEST.filter(it => (it.tags || []).includes(tag)));
+      }
+    }
+
+    // initial
+    renderLatest(LATEST);
+
+    // -------------------------
+    // small util
+    // -------------------------
+    function escapeHtml(s){
+      if(!s) return '';
+      return String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    // easter: logo click
+    document.querySelectorAll('.logo').forEach(el => {
+      let clicks=0,t;
+      el.addEventListener('click', () => {
+        clicks++; if(t) clearTimeout(t);
+        t = setTimeout(()=>clicks=0,1000);
+        if (clicks>=5) alert('詩: 星は鍵、沈黙は扉。歩め、光の欠片を数えよ。');
+      });
+    });
+
+    // grid toggle via 'g'
+    (function(){
+      const grid = document.getElementById('gridOverlay');
+      window.addEventListener('keydown', e => {
+        if (e.key.toLowerCase() === 'g') grid.style.display = (grid.style.display==='none'?'block':'none');
+      });
+    })();
+  </script>
+</body>
+</html>

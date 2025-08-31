@@ -1,7 +1,3 @@
-<!-- 名称：The NEXUS Anchor (Internet：ウェブページ) -->
-<!-- 説明：Project-NEXUSの一般公開可能な情報を発信する艦外通信網であり最外殻機構。 -->
-<!-- 著作：Creat by nemo. Copyright © SoraFlete. All Rights  Reserved. -->
-
 <!DOCTYPE html>
 <html lang="ja" itemtype="http://schema.org/WebPage">
   <head>
@@ -135,25 +131,27 @@
         box-shadow: 0 18px 40px rgba(2, 6, 23, 0.6);
       }
       #nexus-root .thumb {
-        width: 100%;
-        aspect-ratio: 2 / 1;
+        width: 100%; /* 枠の幅は親に合わせる */
+        aspect-ratio: 2 / 1; /* 横2:縦1 */
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.02);
         display: grid;
         place-items: center;
         overflow: hidden;
       }
+
       #nexus-root .thumb img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: cover; /* 枠いっぱいに画像をトリミング */
       }
+
       #nexus-root .meta {
-        color: var(--accent);
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 8px;
+        color: var(--muted);
         font-size: 0.85rem;
       }
       #nexus-root .list-view {
@@ -225,13 +223,6 @@
         color: inherit;
         font-size: 0.85rem;
         cursor: pointer;
-      }
-      #nexus-root .card .open-file {
-        opacity: 0;
-        transition: opacity 0.2s;
-      }
-      #nexus-root .card:hover .open-file {
-        opacity: 1;
       }
       @media (max-width: 1100px) {
         #nexus-root .content-grid {
@@ -315,10 +306,11 @@
           <div class="left">
             <strong>説明</strong>
             <div class="muted" style="margin-top: 6px">
-              初期で
-              <code>https://nemonowa.github.io/source/page</code>
-              を読み込みます。カードクリックでページへリダイレクト。Open
-              fileはホバーで表示。
+              初期で <code>https://nemonowa.github.io/source/page</code>（GitHub
+              Pages
+              上）を読み込みます。カードクリックでそのページへリダイレクトします。カード内の
+              <em>Open file</em> は GitHub
+              のファイルページを新しいタブで開きます。
             </div>
           </div>
           <div class="right" style="text-align: right">
@@ -362,33 +354,39 @@
 
     <script>
       (function () {
-        const DEFAULT_OWNER = "nemonowa",
-          DEFAULT_REPO = "nemonowa.github.io",
-          DEFAULT_PATH = "source/page";
+        // default set to the requested nemonowa path
+        const DEFAULT_OWNER = "nemonowa";
+        const DEFAULT_REPO = "nemonowa.github.io";
+        const DEFAULT_PATH = "source/page";
+
         const state = {
           owner: DEFAULT_OWNER,
           repo: DEFAULT_REPO,
           path: DEFAULT_PATH,
           items: [],
           page: 1,
-          perPage: 12,
+          perPage: 10,
         };
-        const ownerEl = document.getElementById("owner"),
-          repoEl = document.getElementById("repo"),
-          pathEl = document.getElementById("path");
-        const fetchBtn = document.getElementById("fetchBtn"),
-          loadDemoBtn = document.getElementById("loadDemo");
-        const gridArea = document.getElementById("gridArea"),
-          listArea = document.getElementById("listArea");
-        const countEl = document.getElementById("count"),
-          lastUpdatedEl = document.getElementById("lastUpdated");
-        const prevBtn = document.getElementById("prevBtn"),
-          nextBtn = document.getElementById("nextBtn");
-        const pageNumEl = document.getElementById("pageNum"),
-          pageTotalEl = document.getElementById("pageTotal");
-        const imgModal = document.getElementById("imgModal"),
-          modalImg = document.getElementById("modalImg");
+
+        // DOM
+        const ownerEl = document.getElementById("owner");
+        const repoEl = document.getElementById("repo");
+        const pathEl = document.getElementById("path");
+        const fetchBtn = document.getElementById("fetchBtn");
+        const loadDemoBtn = document.getElementById("loadDemo");
+        const gridArea = document.getElementById("gridArea");
+        const listArea = document.getElementById("listArea");
+        const countEl = document.getElementById("count");
+        const lastUpdatedEl = document.getElementById("lastUpdated");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const pageNumEl = document.getElementById("pageNum");
+        const pageTotalEl = document.getElementById("pageTotal");
+        const imgModal = document.getElementById("imgModal");
+        const modalImg = document.getElementById("modalImg");
+
         document.getElementById("year").textContent = new Date().getFullYear();
+
         function extOf(name) {
           return (name.split(".").pop() || "").toLowerCase();
         }
@@ -406,6 +404,7 @@
           pageTotalEl.textContent = totalPages;
           pageNumEl.textContent = state.page;
 
+          // last updated
           if (items.length > 0) {
             const latest = items
               .slice()
@@ -426,13 +425,23 @@
           pageItems.forEach((it) => {
             const card = document.createElement("article");
             card.className = "card";
+
+            // click on card => REDIRECT to GitHub Pages served URL for that path
             card.addEventListener("click", (e) => {
-              if (e.target.closest(".thumb") || e.target.closest(".meta"))
+              // don't redirect when clicking specific inner controls
+              if (
+                e.target.closest(".open-file") ||
+                e.target.closest(".thumb") ||
+                e.target.closest(".meta")
+              )
                 return;
+              // Construct Pages URL: https://<repo-host>/<file-path>
+              // For nemonowa.github.io, files under 'source/page/foo.html' are served at /source/page/foo.html
               const pagesUrl = `https://${state.repo.replace(
                 /\/$/,
                 ""
               )}/${encodeURI(it.path)}`;
+              // navigate current window (redirect)
               window.location.href = pagesUrl;
             });
 
@@ -441,7 +450,7 @@
             if (it.image) {
               const img = document.createElement("img");
               img.src = it.image;
-              img.alt = basename(it.name);
+              img.alt = it.name;
               img.addEventListener("click", (ev) => {
                 ev.stopPropagation();
                 modalImg.src = it.image;
@@ -449,14 +458,15 @@
                 imgModal.setAttribute("aria-hidden", "false");
               });
               thumb.appendChild(img);
-            } else
+            } else {
               thumb.innerHTML =
                 '<div style="padding:8px;color:var(--muted);font-size:0.9rem">No image</div>';
+            }
 
             const title = document.createElement("div");
             title.innerHTML =
               '<strong style="display:block;margin:6px 0;font-size:1rem">' +
-              basename(it.name) +
+              it.name +
               '</strong><div class="muted" style="font-size:0.9rem;min-height:36px">' +
               (it.desc || "") +
               "</div>";
@@ -474,9 +484,19 @@
             metaRow.appendChild(left);
             metaRow.appendChild(right);
 
+            const openLink = document.createElement("a");
+            openLink.href = it.html_url || it.download_url || "#";
+            openLink.target = "_blank";
+            openLink.rel = "noopener noreferrer";
+            openLink.className = "open-file";
+            openLink.textContent = "Open file";
+            openLink.style.cssText =
+              "font-size:0.85rem;color:var(--accent);text-decoration:none;margin-top:8px;display:inline-block";
+
             card.appendChild(thumb);
             card.appendChild(title);
             card.appendChild(metaRow);
+            card.appendChild(openLink);
             gridArea.appendChild(card);
 
             const li = document.createElement("div");
@@ -485,7 +505,7 @@
               '<div><a href="' +
               (it.html_url || "#") +
               '" target="_blank" rel="noopener noreferrer">' +
-              basename(it.name) +
+              it.name +
               '</a><div class="muted" style="font-size:0.85rem">' +
               (it.desc || "") +
               '</div></div><div style="text-align:right"><div class="muted">' +
@@ -501,6 +521,7 @@
             state.page >= totalPages || state.items.length === 0;
         }
 
+        // fetch from GitHub API (non-recursive)
         async function fetchFromGitHub(owner, repo, path) {
           const apiBase = "https://api.github.com";
           try {
@@ -571,7 +592,9 @@
                         : "";
                   }
                 }
-              } catch (e) {}
+              } catch (e) {
+                // ignore commit fetch errors
+              }
               items.push(it);
             }
             items.sort(
@@ -601,7 +624,7 @@
               desc: `デモ記事 ${i}`,
               author: "demo",
               updated_at: new Date(Date.now() - i * 86400000).toISOString(),
-              image: `https://picsum.photos/seed/demo${i}/256/256`,
+              image: `https://picsum.photos/seed/demo${i}/256/256`, //ここで読み込む画像サイズを調整
             });
           }
           state.items = DEMO;
@@ -609,6 +632,7 @@
           render();
         }
 
+        // events
         fetchBtn.addEventListener("click", () => {
           const owner = (ownerEl.value || "").trim() || DEFAULT_OWNER;
           const repo = (repoEl.value || "").trim() || DEFAULT_REPO;
@@ -635,6 +659,7 @@
           modalImg.src = "";
         });
 
+        // logo easter
         (function () {
           const logo = document.getElementById("logo");
           let clicks = 0,
@@ -650,17 +675,18 @@
           });
         })();
 
+        // INITIAL: auto-fetch the requested nemonowa path
         (function init() {
           ownerEl.value = DEFAULT_OWNER;
           repoEl.value = DEFAULT_REPO;
           pathEl.value = DEFAULT_PATH;
+          // attempt to fetch GitHub API contents for the path
           fetchFromGitHub(DEFAULT_OWNER, DEFAULT_REPO, DEFAULT_PATH);
         })();
+
+        // expose for debug
         window.NEXUS_INDEX = { state, render, fetchFromGitHub };
       })();
     </script>
   </body>
 </html>
-
-<!-- 招待：https://discord.gg/nqx8esTwzS  NeoCode:071 -->
-<!-- 記憶：Howdy? ようこそ、私の創った余剰階層へ。 -->
