@@ -25,30 +25,11 @@ body {
   color: inherit;
 }
 
-header {
-  background-color: #000000;
-  text-align: center;
-  height: 15vh;
-  font-size: 100%;
-  opacity: 0.5;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
-    0 0 10px rgba(255, 255, 255, 0.8);
-}
-
 main {
   margin: 0 auto;
   font-size: 150%;
   width: 90vw;
   padding: 5vh 0;
-}
-
-footer {
-  text-align: center;
-  background-color: #000000;
-  height: 15vh;
-  font-size: 100%;
-  opacity: 0.5;
-  bottom: 0;
 }
 
 .button {
