@@ -101,7 +101,6 @@ h1 {
 }
 
 button {
-  font-size: 2rem;
   padding: 15px 30px;
   background-color: #ff7f50;
   color: white;
@@ -128,7 +127,6 @@ button:hover {
 }
 
 #site-title {
-  font-size: 4rem;
   margin-bottom: 2vh;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
@@ -136,7 +134,6 @@ button:hover {
 #search-input {
   width: 70vw;
   max-width: 600px;
-  font-size: 1.5rem;
   padding: 10px;
   border-radius: 5px;
   border: none;
