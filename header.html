@@ -16,7 +16,9 @@
   .site-title {
     font-size: clamp(2rem, 3vw, 2.5rem);
     color: #f0f8ff;
-    text-shadow: none; /* ← 文字には影をつけない */
+    /* 白発光のみ */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
+      0 0 10px rgba(255, 255, 255, 0.8);
   }
 </style>
 
