@@ -170,45 +170,6 @@
       .muted {
         color: var(--muted);
       }
-
-      /* タグ表示用 */
-      .tags {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-      .tag {
-        background: rgba(255, 255, 255, 0.03);
-        color: var(--muted);
-        padding: 4px 8px;
-        border-radius: 999px;
-        font-size: 0.75rem;
-        line-height: 1;
-        cursor: pointer; /* 追加：クリックできることを示す */
-        user-select: none;
-      }
-      .tag.active {
-        background: var(--accent);
-        color: #001;
-        font-weight: 700;
-      }
-
-      /* アクティブフィルタ表示 */
-      #activeFilter {
-        min-height: 28px;
-      }
-      #activeFilter .clear-btn {
-        margin-left: 8px;
-        padding: 6px 8px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        background: transparent;
-        color: inherit;
-        cursor: pointer;
-        font-size: 0.75rem;
-      }
-
       .pagination {
         display: flex;
         gap: 8px;
@@ -263,7 +224,6 @@
           <button id="loadDemo">デモ</button>
         </div>
       </header>
-
       <section class="hero">
         <div class="left">
           <strong>説明</strong>
@@ -280,10 +240,6 @@
           </div>
         </div>
       </section>
-
-      <!-- 追加：現在のフィルタ表示 -->
-      <div id="activeFilter"></div>
-
       <main>
         <div id="gridArea" class="content-grid"></div>
         <div class="pagination">
@@ -311,7 +267,6 @@
           items: [],
           page: 1,
           perPage: 24,
-          activeTag: null, // 追加：現在のタグフィルタ
         };
         const ownerEl = document.getElementById("owner"),
           repoEl = document.getElementById("repo"),
@@ -327,57 +282,24 @@
           pageTotalEl = document.getElementById("pageTotal");
         const imgModal = document.getElementById("imgModal"),
           modalImg = document.getElementById("modalImg");
-        const activeFilterEl = document.getElementById("activeFilter"); // 追加：表示領域
         document.getElementById("year").textContent = new Date().getFullYear();
-
         function extOf(name) {
           return (name.split(".").pop() || "").toLowerCase();
         }
         function basename(name) {
           return name.replace(/\.[^/.]+$/, "");
         }
-
-        /* ファイル名から【...】を抽出して配列で返す関数 */
-        function extractTagsFromName(name) {
-          const base = basename(name);
-          const tags = [];
-          const re = /【([^】]+)】/g;
-          let m;
-          while ((m = re.exec(base)) !== null) {
-            tags.push(m[1]);
-          }
-          return tags;
-        }
-
-        /* タイトル表示用に【...】部分を取り除いた文字列を返す関数 */
-        function stripTagsFromBasename(name) {
-          return basename(name)
-            .replace(/【[^】]+】/g, "")
-            .trim();
-        }
-
         function render() {
           const items = state.items;
-
-          // --- フィルタ適用 ---
-          const filtered = state.activeTag
-            ? items.filter((it) => {
-                const tags = extractTagsFromName(it.name);
-                return tags.includes(state.activeTag);
-              })
-            : items;
-
-          countEl.textContent = filtered.length;
-
+          countEl.textContent = items.length;
           const totalPages = Math.max(
             1,
-            Math.ceil(filtered.length / state.perPage)
+            Math.ceil(items.length / state.perPage)
           );
           pageTotalEl.textContent = totalPages;
           pageNumEl.textContent = state.page;
-
-          if (filtered.length > 0) {
-            const latest = filtered
+          if (items.length > 0) {
+            const latest = items
               .slice()
               .sort(
                 (a, b) =>
@@ -387,31 +309,11 @@
               ? new Date(latest.updated_at).toLocaleString()
               : "--";
           } else lastUpdatedEl.textContent = "--";
-
           const start = (state.page - 1) * state.perPage;
-          const pageItems = filtered.slice(start, start + state.perPage);
-
-          // アクティブフィルタの表示更新
-          if (state.activeTag) {
-            activeFilterEl.innerHTML =
-              'フィルタ: <span class="tag active">' +
-              state.activeTag +
-              '</span><button class="clear-btn" id="clearFilter">クリア</button>';
-            const clearBtn = document.getElementById("clearFilter");
-            if (clearBtn) {
-              clearBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                state.activeTag = null;
-                state.page = 1;
-                render();
-              });
-            }
-          } else {
-            activeFilterEl.innerHTML = ""; // フィルタ無ければ非表示
-          }
-
+          const pageItems = items.slice(start, start + state.perPage);
           gridArea.innerHTML = "";
           pageItems.forEach((it) => {
+            // 変更点：カードを <a> でラップして、カード全体がリンクになるようにしました。
             const a = document.createElement("a");
             a.href = `https://${state.repo.replace(/\/$/, "")}/${encodeURI(
               it.path
@@ -421,6 +323,7 @@
 
             const card = document.createElement("article");
             card.className = "card";
+            // card.addEventListener("click", ...) は削除（リンクで遷移させるため）
 
             const thumb = document.createElement("div");
             thumb.className = "thumb";
@@ -428,6 +331,8 @@
               const img = document.createElement("img");
               img.src = it.image;
               img.alt = basename(it.name);
+              // 変更点：モーダル表示用のクリックリスナーを削除しました。
+              // 以前は画像クリックで modal を開いていましたが、今回はカード全体がリンクのため削除。
               thumb.appendChild(img);
             } else
               thumb.innerHTML =
@@ -436,44 +341,15 @@
             const title = document.createElement("div");
             title.innerHTML =
               '<strong style="display:block;margin:6px 0;font-size:1rem">' +
-              stripTagsFromBasename(it.name) +
+              basename(it.name) +
               '</strong><div class="muted" style="font-size:0.9rem;min-height:36px">' +
               (it.desc || "") +
               "</div>";
 
             const metaRow = document.createElement("div");
             metaRow.className = "meta";
-
-            // 左側：タグ表示（クリックでフィルタ）
             const left = document.createElement("div");
-            const tags = extractTagsFromName(it.name);
-            if (tags.length > 0) {
-              const tagsWrap = document.createElement("div");
-              tagsWrap.className = "tags";
-              tags.forEach((t) => {
-                const span = document.createElement("span");
-                span.className =
-                  "tag" + (state.activeTag === t ? " active" : "");
-                span.textContent = t;
-                // タグクリックでフィルタ（アンカー遷移を防ぐ）
-                span.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (state.activeTag === t) {
-                    state.activeTag = null; // 再クリックで解除
-                  } else {
-                    state.activeTag = t;
-                  }
-                  state.page = 1;
-                  render();
-                });
-                tagsWrap.appendChild(span);
-              });
-              left.appendChild(tagsWrap);
-            } else {
-              left.textContent = "";
-            }
-
+            left.textContent = it.author || "";
             const right = document.createElement("div");
             right.textContent = it.updated_at
               ? new Date(it.updated_at).toLocaleDateString()
@@ -492,7 +368,6 @@
           nextBtn.disabled =
             state.page >= totalPages || state.items.length === 0;
         }
-
         async function fetchFromGitHub(owner, repo, path) {
           const apiBase = "https://api.github.com";
           try {
@@ -568,7 +443,6 @@
             return [];
           }
         }
-
         fetchBtn.addEventListener("click", async () => {
           state.owner = ownerEl.value;
           state.repo = repoEl.value;
