@@ -37,13 +37,16 @@ fetch("https://nemonowa.github.io/ui.html")
   })
   .catch((error) => console.error("Error loading UI:", error));
 
-// HTMLのタイトルをファイル名に同期させる：<span id="file-name"></span>で利用可能。
+// HTMLのタイトルをファイル名に同期させる
 let currentFileName = decodeURIComponent(
   location.pathname.split("/").pop() || "empty.html"
 );
 currentFileName = currentFileName.replace(/\.[^/.]+$/, "");
-document.title = currentFileName;
-document.getElementById("file-name").textContent = currentFileName;
+
+// 既存の<title>を優先、なければファイル名を設定
+if (!document.title || document.title.trim() === "") {
+  document.title = currentFileName;
+}
 
 // og:image をファイル名に応じて動的に設定する処理（修正版）
 const customImage = location.pathname.replace(/\.html$/, ".png"); // ★ 相対パスを明示
