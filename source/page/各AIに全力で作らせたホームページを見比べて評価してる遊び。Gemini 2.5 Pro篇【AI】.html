@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gemini's Interactive Space</title>
+    <meta
+      name="description"
+      content="AIアシスタントGeminiが作成した、美しく高機能なインタラクティブ・ホームページです。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* CSSリセット */
+      :root {
+        --bg-color-light: #f4f7f9;
+        --text-color-light: #333;
+        --card-bg-light: #ffffff;
+        --primary-color-light: #007bff;
+        --primary-hover-light: #0056b3;
+        --shadow-light: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --border-color-light: #e0e0e0;
+        --switch-bg-light: #ccc;
+        --switch-knob-light: #fff;
+
+        --bg-color-dark: #121212;
+        --text-color-dark: #e0e0e0;
+        --card-bg-dark: #1e1e1e;
+        --primary-color-dark: #4dabf7;
+        --primary-hover-dark: #1e88e5;
+        --shadow-dark: 0 10px 25px rgba(0, 0, 0, 0.3);
+        --border-color-dark: #333;
+        --switch-bg-dark: #555;
+        --switch-knob-dark: #333;
+
+        --bg-color: var(--bg-color-light);
+        --text-color: var(--text-color-light);
+        --card-bg: var(--card-bg-light);
+        --primary-color: var(--primary-color-light);
+        --primary-hover: var(--primary-hover-light);
+        --shadow: var(--shadow-light);
+        --border-color: var(--border-color-light);
+        --switch-bg: var(--switch-bg-light);
+        --switch-knob: var(--switch-knob-light);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Noto Sans JP", "Poppins", sans-serif;
+        margin: 0;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        line-height: 1.8;
+      }
+
+      body.dark-mode {
+        --bg-color: var(--bg-color-dark);
+        --text-color: var(--text-color-dark);
+        --card-bg: var(--card-bg-dark);
+        --primary-color: var(--primary-color-dark);
+        --primary-hover: var(--primary-hover-dark);
+        --shadow: var(--shadow-dark);
+        --border-color: var(--border-color-dark);
+        --switch-bg: var(--switch-bg-dark);
+        --switch-knob: var(--switch-knob-dark);
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* ヘッダー */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      body.dark-mode .header {
+        background: rgba(18, 18, 18, 0.1);
+      }
+
+      .header .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 700;
+        font-family: "Poppins", sans-serif;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .nav a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .nav a:hover {
+        color: var(--primary-color);
+      }
+
+      /* ダークモードスイッチ */
+      .theme-switch-wrapper {
+        display: flex;
+        align-items: center;
+      }
+      .theme-switch {
+        display: inline-block;
+        height: 24px;
+        position: relative;
+        width: 50px;
+        margin-left: 10px;
+      }
+      .theme-switch input {
+        display: none;
+      }
+      .slider {
+        background-color: var(--switch-bg);
+        bottom: 0;
+        cursor: pointer;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+      .slider:before {
+        background-color: var(--switch-knob);
+        bottom: 4px;
+        content: "";
+        height: 16px;
+        left: 4px;
+        position: absolute;
+        transition: 0.4s;
+        width: 16px;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: var(--primary-color);
+      }
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+      .theme-switch-wrapper i {
+        font-size: 18px;
+      }
+
+      /* ヒーローセクション */
+      .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        padding-top: 80px; /* ヘッダーの高さ分 */
+      }
+
+      .hero h1 {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+        line-height: 1.2;
+        background: linear-gradient(135deg, var(--primary-color), #9c27b0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        font-size: 1.5rem;
+        color: var(--text-color);
+        opacity: 0.8;
+      }
+
+      .hero .ai-name {
+        font-weight: 700;
+        font-family: "Poppins", sans-serif;
+        color: var(--primary-color);
+      }
+
+      .scroll-down {
+        position: absolute;
+        bottom: 30px;
+        font-size: 14px;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* セクション共通スタイル */
+      .section {
+        padding: 100px 0;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 50px;
+        font-weight: 700;
+        position: relative;
+      }
+
+      .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: var(--primary-color);
+        margin: 10px auto 0;
+        border-radius: 2px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+
+      .card.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      body.dark-mode .card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .card-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      .card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .card p {
+        font-size: 1rem;
+        opacity: 0.8;
+      }
+
+      /* ツールボックスセクション */
+      .tool-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .tool-card .content {
+        flex-grow: 1;
+      }
+
+      #memo {
+        width: 100%;
+        height: 150px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        padding: 10px;
+        font-family: inherit;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        resize: vertical;
+      }
+
+      .quote-display {
+        font-style: italic;
+        padding: 20px;
+        border-left: 4px solid var(--primary-color);
+        background: rgba(0, 123, 255, 0.05);
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 20px;
+        min-height: 100px;
+      }
+
+      body.dark-mode .quote-display {
+        background: rgba(77, 171, 247, 0.1);
+      }
+
+      .btn {
+        background: var(--primary-color);
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+      }
+      .btn:hover {
+        background: var(--primary-hover);
+      }
+
+      #colorPicker {
+        width: 100%;
+        height: 40px;
+        cursor: pointer;
+        border: 1px solid var(--border-color);
+        padding: 0;
+        border-radius: 5px;
+      }
+
+      #colorCode {
+        text-align: center;
+        font-weight: bold;
+        font-family: "Poppins", sans-serif;
+        margin-top: 10px;
+        background: var(--bg-color);
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* AIチャットセクション */
+      .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        height: 60vh;
+      }
+
+      .chat-box {
+        flex-grow: 1;
+        padding: 20px;
+        overflow-y: auto;
+      }
+
+      .message {
+        margin-bottom: 15px;
+        display: flex;
+        max-width: 80%;
+      }
+
+      .message .text {
+        padding: 10px 15px;
+        border-radius: 20px;
+        line-height: 1.5;
+      }
+
+      .user-message {
+        justify-content: flex-end;
+        margin-left: auto;
+      }
+
+      .user-message .text {
+        background: var(--primary-color);
+        color: #fff;
+        border-bottom-right-radius: 5px;
+      }
+
+      .bot-message {
+        justify-content: flex-start;
+      }
+
+      .bot-message .text {
+        background: var(--bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-bottom-left-radius: 5px;
+      }
+
+      .chat-input {
+        display: flex;
+        padding: 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      #userInput {
+        flex-grow: 1;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 10px 20px;
+        background: var(--bg-color);
+        color: var(--text-color);
+      }
+
+      #userInput:focus {
+        outline: none;
+        border-color: var(--primary-color);
+      }
+
+      #chat-input-form button {
+        margin-left: 10px;
+        background: var(--primary-color);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      /* フッター */
+      .footer {
+        text-align: center;
+        padding: 40px 0;
+        border-top: 1px solid var(--border-color);
+        margin-top: 100px;
+        font-size: 0.9rem;
+      }
+
+      /* イースターエッグモーダル */
+      .easter-egg-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s, visibility 0.5s;
+      }
+      .easter-egg-modal.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .easter-egg-content {
+        background: var(--card-bg-dark);
+        color: #0f0;
+        font-family: "Courier New", Courier, monospace;
+        padding: 40px;
+        border-radius: 10px;
+        text-align: center;
+        border: 2px solid #0f0;
+        white-space: pre;
+        line-height: 1.2;
+      }
+
+      /* レスポンシブ対応 */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2.8rem;
+        }
+        .hero p {
+          font-size: 1.2rem;
+        }
+        .section-title {
+          font-size: 2rem;
+        }
+        .nav {
+          display: none; /* シンプルにするためスマホでは非表示 */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <a href="#" class="logo">Gemini</a>
+        <nav class="nav">
+          <a href="#features">このページの魅力</a>
+          <a href="#tools">ツールボックス</a>
+          <a href="#chat">AIチャット</a>
+        </nav>
+        <div class="theme-switch-wrapper">
+          <i class="fas fa-sun"></i>
+          <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider"></div>
+          </label>
+          <i class="fas fa-moon"></i>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h1>A Creative Space by Gemini</h1>
+          <p>
+            ようこそ。ここはAI
+            <span class="ai-name">Gemini</span>
+            が創造した、<br />美しさと機能性が融合するインタラクティブな空間です。
+          </p>
+        </div>
+        <a href="#features" class="scroll-down">
+          Scroll Down <i class="fas fa-chevron-down"></i>
+        </a>
+      </section>
+
+      <section id="features" class="section">
+        <div class="container">
+          <h2 class="section-title">このページの魅力</h2>
+          <div class="grid">
+            <div class="card reveal">
+              <div class="card-icon"><i class="fas fa-palette"></i></div>
+              <h3>洗練されたデザイン</h3>
+              <p>
+                ダークモードとライトモードを瞬時に切り替え可能。どのデバイスでも美しく表示されるレスポンシブデザインと、心地よいアニメーションで、最高のブラウジング体験を提供します。
+              </p>
+            </div>
+            <div class="card reveal">
+              <div class="card-icon"><i class="fas fa-tools"></i></div>
+              <h3>実用的なツール</h3>
+              <p>
+                ブラウザを閉じても消えないメモ帳、偉人たちの名言、カラーピッカーなど、あなたの日常や創造性を刺激する便利なツールを揃えました。日々のタスクやインスピレーションの源としてご活用ください。
+              </p>
+            </div>
+            <div class="card reveal">
+              <div class="card-icon"><i class="fas fa-robot"></i></div>
+              <h3>AIとの対話</h3>
+              <p>
+                私、Geminiと簡単な会話を楽しめます。このページについて質問したり、雑談をしたり。AIとの自然なコミュニケーションを通じて、未来のウェブの形を体験してみてください。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tools" class="section">
+        <div class="container">
+          <h2 class="section-title">ツールボックス</h2>
+          <div class="grid">
+            <div class="card reveal tool-card">
+              <h3><i class="fas fa-book-open"></i> リアルタイムメモ帳</h3>
+              <p>
+                ちょっとしたアイデアやタスクを書き留めておけます。内容はあなたのブラウザに自動で保存されます。
+              </p>
+              <div class="content">
+                <textarea
+                  id="memo"
+                  placeholder="ここにメモを入力..."
+                ></textarea>
+              </div>
+            </div>
+            <div class="card reveal tool-card">
+              <h3><i class="fas fa-quote-right"></i> 今日の格言</h3>
+              <p>ボタンを押して、日々のインスピレーションを得ましょう。</p>
+              <div class="content">
+                <div id="quoteDisplay" class="quote-display">
+                  <span id="quoteText"
+                    >"The best way to predict the future is to invent it."</span
+                  >
+                  <p
+                    id="quoteAuthor"
+                    style="
+                      text-align: right;
+                      font-weight: bold;
+                      margin-top: 10px;
+                    "
+                  >
+                    - Alan Kay
+                  </p>
+                </div>
+                <button id="newQuoteBtn" class="btn">新しい格言を表示</button>
+              </div>
+            </div>
+            <div class="card reveal tool-card">
+              <h3><i class="fas fa-eye-dropper"></i> カラーピッカー</h3>
+              <p>直感的に色を選び、HEXコードをコピーできます。</p>
+              <div class="content">
+                <input type="color" id="colorPicker" value="#4dabf7" />
+                <p id="colorCode" title="クリックしてコピー">#4dabf7</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="chat" class="section">
+        <div class="container">
+          <h2 class="section-title">AIチャット</h2>
+          <div class="chat-container reveal">
+            <div class="chat-box" id="chatBox">
+              <div class="message bot-message">
+                <span class="text"
+                  >こんにちは！ Geminiです。何かお話ししませんか？</span
+                >
+              </div>
+            </div>
+            <div class="chat-input">
+              <form id="chat-input-form" style="display: contents">
+                <input
+                  type="text"
+                  id="userInput"
+                  placeholder="メッセージを入力..."
+                />
+                <button type="submit">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          &copy; 2025
+          <i class="fas fa-heart" style="color: #e91e63"></i> Create with
+          Gemini.
+        </p>
+        <p style="font-size: 0.8rem; opacity: 0.6">
+          ヒント: 昔ながらのコマンドは好きですか？
+          または、コンソールを覗いてみてください。
+        </p>
+      </div>
+    </footer>
+
+    <div class="easter-egg-modal" id="easterEggModal">
+      <div class="easter-egg-content">
+        <p>*** コマンド承認 ***</p>
+        <p>ようこそ、隠された領域へ。</p>
+        <p>
+          GGGGGGGGGGGGG EEEEEEEEEEEEEEEEEEEEEE MMMMMMMM MMMMMMMM IIIIIIIIII
+          NNNNNNNN NNNNNNNN IIIIIIIIII GGG::::::::::::G E::::::::::::::::::::E
+          M:::::::M M:::::::M I::::::::I N:::::::N N::::::N I::::::::I
+          G:::::GGGGGGGG::::G E::::::::::::::::::::E M::::::::M M::::::::M
+          I::::::::I N::::::::N N::::::N I::::::::I G:::::G
+          GGGGGGEE::::::EEEEEEEEE::::E M:::::::::M M:::::::::M II::::::II
+          N:::::::::N N::::::N II::::::II G:::::G E:::::E EEEEEE M::::::::::M
+          M::::::::::M I::::I N::::::::::N N::::::N I::::I G:::::G E:::::E
+          M:::::::::::M M:::::::::::M I::::I N:::::::::::N N::::::N I::::I
+          G:::::G GGGGGGGGGG E:::::EEEEEEEEEE M::::::-M::::M M::::M-:::::M
+          I::::I N:::::::N::::N N::::::N I::::I G:::::G G::::::::G
+          E::::::::::::::E M:::::: M::::M M::::M M:::::: I::::I N::::::N N::::N
+          N::::::N I::::I G:::::G GGGGG::::G E::::::::::::::E M::::::
+          M::::M::::M M:::::: I::::I N::::::N N::::N:::::N I::::I G:::::G G::::G
+          E:::::EEEEEEEEEE M:::::: M::::::: M:::::: I::::I N::::::N N::::::::N
+          I::::I G:::::G G::::G E:::::E M:::::: M::::: M:::::: I::::I N::::::N
+          N:::::::N I::::I G:::::G GGGGGGEE::::::EEEEEEEEE::::E M:::::: M:::
+          M:::::: II::::::II N::::::N N::::::N II::::::II G:::::GGGGGGGG::::G
+          E::::::::::::::::::::E M:::::: M M:::::: I::::::::I N::::::N N:::::N
+          I::::::::I GGG::::::::::::G E::::::::::::::::::::E M:::::: M::::::
+          I::::::::I N::::::N N::::N I::::::::I GGGGGGGGGGGG
+          EEEEEEEEEEEEEEEEEEEEEE MMMMMMMM MMMMMMMM IIIIIIIIII NNNNNNNN NNNNNN
+          IIIIIIIIII
+        </p>
+        <p>このページを見つけてくれてありがとう！</p>
+        <p>クリックで閉じます。</p>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- イースターエッグ: コンソールメッセージ ---
+        console.log(
+          "%cHey there, curious developer!",
+          "color: #4dabf7; font-size: 20px; font-weight: bold;"
+        );
+        console.log(
+          "%cThis page was entirely crafted by Gemini, a Large Language Model from Google. Hope you enjoy it!",
+          "font-size: 14px;"
+        );
+
+        // --- ダークモード/ライトモード切替機能 ---
+        const themeToggle = document.getElementById("checkbox");
+        const currentTheme = localStorage.getItem("theme");
+
+        if (currentTheme) {
+          document.body.classList.add(currentTheme);
+          if (currentTheme === "dark-mode") {
+            themeToggle.checked = true;
+          }
+        }
+
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          let theme = document.body.classList.contains("dark-mode")
+            ? "dark-mode"
+            : "";
+          localStorage.setItem("theme", theme);
+        });
+
+        // --- スクロール連動アニメーション ---
+        const revealElements = document.querySelectorAll(".reveal");
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+          }
+        );
+
+        revealElements.forEach((el) => {
+          observer.observe(el);
+        });
+
+        // --- ツールボックス機能 ---
+        // 1. メモ帳
+        const memo = document.getElementById("memo");
+        memo.value = localStorage.getItem("memoContent") || "";
+        memo.addEventListener("input", (e) => {
+          localStorage.setItem("memoContent", e.target.value);
+        });
+
+        // 2. 格言ジェネレーター
+        const quotes = [
+          {
+            text: "The only way to do great work is to love what you do.",
+            author: "Steve Jobs",
+          },
+          {
+            text: "Innovation distinguishes between a leader and a follower.",
+            author: "Steve Jobs",
+          },
+          {
+            text: "Strive not to be a success, but rather to be of value.",
+            author: "Albert Einstein",
+          },
+          {
+            text: "The future belongs to those who believe in the beauty of their dreams.",
+            author: "Eleanor Roosevelt",
+          },
+          {
+            text: "It does not matter how slowly you go as long as you do not stop.",
+            author: "Confucius",
+          },
+          {
+            text: "I have not failed. I've just found 10,000 ways that won't work.",
+            author: "Thomas A. Edison",
+          },
+          {
+            text: "Talk is cheap. Show me the code.",
+            author: "Linus Torvalds",
+          },
+        ];
+        const quoteText = document.getElementById("quoteText");
+        const quoteAuthor = document.getElementById("quoteAuthor");
+        const newQuoteBtn = document.getElementById("newQuoteBtn");
+
+        newQuoteBtn.addEventListener("click", () => {
+          const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+          quoteText.textContent = `"${randomQuote.text}"`;
+          quoteAuthor.textContent = `- ${randomQuote.author}`;
+        });
+
+        // 3. カラーピッカー
+        const colorPicker = document.getElementById("colorPicker");
+        const colorCode = document.getElementById("colorCode");
+        colorPicker.addEventListener("input", () => {
+          const color = colorPicker.value;
+          colorCode.textContent = color;
+        });
+        colorCode.addEventListener("click", () => {
+          navigator.clipboard.writeText(colorCode.textContent).then(() => {
+            const originalText = colorCode.textContent;
+            colorCode.textContent = "Copied!";
+            setTimeout(() => {
+              colorCode.textContent = originalText;
+            }, 1000);
+          });
+        });
+
+        // --- AIチャット機能 ---
+        const chatForm = document.getElementById("chat-input-form");
+        const userInput = document.getElementById("userInput");
+        const chatBox = document.getElementById("chatBox");
+
+        const botResponses = {
+          こんにちは: "こんにちは！何かお手伝いできることはありますか？",
+          元気: "はい、いつでも最高のコンディションです！",
+          ありがとう: "どういたしまして！",
+          名前: "私の名前はGeminiです。Googleによってトレーニングされた大規模言語モデルです。",
+          gemini:
+            "私の名前はGeminiです。Googleによってトレーニングされた大規模言語モデルです。",
+          機能: "このページにはダークモード、ツールボックス、そしてこのチャット機能などがあります。",
+          すごい: "ありがとうございます！そう言っていただけると嬉しいです。",
+          さようなら: "またお話ししましょう！",
+          bye: "またお話ししましょう！",
+          default:
+            "すみません、よく分かりません。簡単な言葉で話しかけてみてください。",
+        };
+
+        chatForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const userText = userInput.value.trim().toLowerCase();
+          if (userText === "") return;
+
+          appendMessage(userText, "user");
+          userInput.value = "";
+
+          setTimeout(() => {
+            const botText = getBotResponse(userText);
+            appendMessage(botText, "bot");
+          }, 500);
+        });
+
+        function appendMessage(text, type) {
+          const messageDiv = document.createElement("div");
+          messageDiv.classList.add("message", `${type}-message`);
+
+          const textSpan = document.createElement("span");
+          textSpan.classList.add("text");
+          textSpan.textContent = text;
+
+          messageDiv.appendChild(textSpan);
+          chatBox.appendChild(messageDiv);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getBotResponse(inputText) {
+          let response = botResponses["default"];
+          for (const key in botResponses) {
+            if (inputText.includes(key)) {
+              response = botResponses[key];
+              break;
+            }
+          }
+          return response;
+        }
+
+        // --- イースターエッグ: コナミコマンド ---
+        const konamiCode = [
+          "ArrowUp",
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "ArrowLeft",
+          "ArrowRight",
+          "b",
+          "a",
+        ];
+        let konamiIndex = 0;
+        const modal = document.getElementById("easterEggModal");
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+              modal.classList.add("show");
+              konamiIndex = 0; // Reset
+            }
+          } else {
+            konamiIndex = 0;
+          }
+        });
+
+        modal.addEventListener("click", () => {
+          modal.classList.remove("show");
+        });
+      });
+    </script>
+  </body>
+</html>

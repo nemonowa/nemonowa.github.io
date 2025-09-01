@@ -1,7 +1,7 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
-<head>
-  <!--
+  <head>
+    <!--
   // 命名：NEXUS-ONEPAGE
   // 説明：モダンな1ページWebテンプレート。レスポンシブ、アクセシブル、インタラクティブ（Konamiコードや隠し詩などのイースターエッグ搭載）。
   // =./index.html
@@ -9,468 +9,947 @@
   // 使用例：
   // open index.html in browser
   -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>NEXUS — Modern One-Page</title>
-  <meta name="description" content="洗練された1ページサイト — レスポンシブ、ダーク/ライト切替、イースターエッグ搭載。" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0f1724; --card:#0b1220; --muted:#9aa4b2; --accent:#6ee7b7; --glass: rgba(255,255,255,0.04);
-      --radius:14px; --gap:20px; --maxw:1100px;
-    }
-    [data-theme="light"]{
-      --bg:#f5f8fb; --card:#ffffff; --muted:#556070; --accent:#0066ff; --glass: rgba(0,0,0,0.04);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background: radial-gradient(1200px 400px at 10% 10%, rgba(102,84,255,0.10), transparent),
-                  radial-gradient(900px 300px at 90% 80%, rgba(0,200,255,0.05), transparent),
-                  var(--bg);
-      color: #e6eef6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      display:flex; align-items:flex-start; justify-content:center; padding:48px 20px;
-    }
-    .wrap{width:100%; max-width:var(--maxw); display:grid; gap:var(--gap)}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .logo{
-      display:flex;align-items:center;gap:12px;cursor:pointer; user-select:none;
-      padding:8px 12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-      transition:transform .18s ease, box-shadow .18s ease;
-    }
-    .logo:active{transform:scale(.98)}
-    .logo .mark{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;background:
-      conic-gradient(from 180deg at 50% 50%, rgba(102,84,255,0.25), rgba(0,200,255,0.12));
-      box-shadow: 0 6px 18px rgba(2,6,23,0.6) inset, 0 8px 30px rgba(2,6,23,0.6);}
-    .logo .mark svg{filter:drop-shadow(0 6px 18px rgba(0,0,0,0.4))}
-    .brand{line-height:1}
-    .brand .title{font-weight:700;letter-spacing:-0.5px}
-    .brand .subtitle{font-size:12px;color:var(--muted)}
-    nav{display:flex;gap:10px;align-items:center}
-    .btn{
-      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;
-      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.04); cursor:pointer; color:inherit; font-weight:600;
-    }
-    .hero{
-      padding:36px;border-radius:var(--radius);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:center;
-      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-    }
-    .hero h1{margin:0;font-size:34px;line-height:1.03}
-    .lead{color:var(--muted);margin-top:10px;font-size:15px}
-    .cta-row{display:flex;gap:10px;margin-top:20px}
-    .glass-card{padding:18px;border-radius:12px;background:var(--glass);border:1px solid rgba(255,255,255,0.03)}
-    .stat{display:flex;flex-direction:column;gap:6px}
-    .stat .num{font-weight:800;font-size:20px}
-    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
-    .feature{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-    .grid-visual{height:260px;border-radius:12px;overflow:hidden;display:grid;place-items:center;position:relative}
-    .grid-visual canvas{width:100%;height:100%;display:block}
-    .splash-emoji{font-size:46px}
-    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
-    .thumb{height:110px;border-radius:12px;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;font-weight:700}
-    footer{display:flex;justify-content:space-between;align-items:center;padding-top:18px;color:var(--muted);font-size:14px;margin-top:28px}
-    .secret-panel{
-      position:fixed;right:20px;bottom:20px;padding:14px;border-radius:12px;background:linear-gradient(90deg,rgba(0,0,0,0.6), rgba(255,255,255,0.02));
-      color:var(--muted);backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.03)
-    }
-    .kbd{font-family:"JetBrains Mono", monospace; background:rgba(0,0,0,0.2); padding:6px 8px;border-radius:8px}
-    /* responsiveness */
-    @media (max-width:960px){
-      .hero{grid-template-columns:1fr; padding:22px}
-      .features{grid-template-columns:repeat(2,1fr)}
-      .gallery{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width:520px){
-      body{padding:20px}
-      .features{grid-template-columns:1fr}
-      .gallery{grid-template-columns:1fr}
-      .logo .brand .title{font-size:14px}
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NEXUS — Modern One-Page</title>
+    <meta
+      name="description"
+      content="洗練された1ページサイト — レスポンシブ、ダーク/ライト切替、イースターエッグ搭載。"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0f1724;
+        --card: #0b1220;
+        --muted: #9aa4b2;
+        --accent: #6ee7b7;
+        --glass: rgba(255, 255, 255, 0.04);
+        --radius: 14px;
+        --gap: 20px;
+        --maxw: 1100px;
+      }
+      [data-theme="light"] {
+        --bg: #f5f8fb;
+        --card: #ffffff;
+        --muted: #556070;
+        --accent: #0066ff;
+        --glass: rgba(0, 0, 0, 0.04);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial;
+        background: radial-gradient(
+            1200px 400px at 10% 10%,
+            rgba(102, 84, 255, 0.1),
+            transparent
+          ),
+          radial-gradient(
+            900px 300px at 90% 80%,
+            rgba(0, 200, 255, 0.05),
+            transparent
+          ),
+          var(--bg);
+        color: #e6eef6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 48px 20px;
+      }
+      .wrap {
+        width: 100%;
+        max-width: var(--maxw);
+        display: grid;
+        gap: var(--gap);
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        user-select: none;
+        padding: 8px 12px;
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          transparent
+        );
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+      .logo:active {
+        transform: scale(0.98);
+      }
+      .logo .mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: conic-gradient(
+          from 180deg at 50% 50%,
+          rgba(102, 84, 255, 0.25),
+          rgba(0, 200, 255, 0.12)
+        );
+        box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6) inset,
+          0 8px 30px rgba(2, 6, 23, 0.6);
+      }
+      .logo .mark svg {
+        filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.4));
+      }
+      .brand {
+        line-height: 1;
+      }
+      .brand .title {
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .brand .subtitle {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      nav {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        cursor: pointer;
+        color: inherit;
+        font-weight: 600;
+      }
+      .hero {
+        padding: 36px;
+        border-radius: var(--radius);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 28px;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+      }
+      .hero h1 {
+        margin: 0;
+        font-size: 34px;
+        line-height: 1.03;
+      }
+      .lead {
+        color: var(--muted);
+        margin-top: 10px;
+        font-size: 15px;
+      }
+      .cta-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .glass-card {
+        padding: 18px;
+        border-radius: 12px;
+        background: var(--glass);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .stat {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .stat .num {
+        font-weight: 800;
+        font-size: 20px;
+      }
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .feature {
+        padding: 14px;
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.01),
+          transparent
+        );
+      }
+      .grid-visual {
+        height: 260px;
+        border-radius: 12px;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .grid-visual canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .splash-emoji {
+        font-size: 46px;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 22px;
+      }
+      .thumb {
+        height: 110px;
+        border-radius: 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(255, 255, 255, 0.01)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 18px;
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 28px;
+      }
+      .secret-panel {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        padding: 14px;
+        border-radius: 12px;
+        background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.6),
+          rgba(255, 255, 255, 0.02)
+        );
+        color: var(--muted);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .kbd {
+        font-family: "JetBrains Mono", monospace;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 6px 8px;
+        border-radius: 8px;
+      }
+      /* responsiveness */
+      @media (max-width: 960px) {
+        .hero {
+          grid-template-columns: 1fr;
+          padding: 22px;
+        }
+        .features {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .gallery {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 520px) {
+        body {
+          padding: 20px;
+        }
+        .features {
+          grid-template-columns: 1fr;
+        }
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+        .logo .brand .title {
+          font-size: 14px;
+        }
+      }
 
-    /* subtle animation */
-    .float{animation:float 6s ease-in-out infinite}
-    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+      /* subtle animation */
+      .float {
+        animation: float 6s ease-in-out infinite;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
 
-    /* Easter debugging overlays (toggle with 'g') */
-    .grid-overlay{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .18s}
-    .grid-overlay.visible{opacity:1}
-    .grid-overlay::before{
-      content:"";position:absolute;inset:0;background-image:
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size:40px 40px;
-      mix-blend-mode:overlay;
-    }
+      /* Easter debugging overlays (toggle with 'g') */
+      .grid-overlay {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.18s;
+      }
+      .grid-overlay.visible {
+        opacity: 1;
+      }
+      .grid-overlay::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            rgba(255, 255, 255, 0.02) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 40px 40px;
+        mix-blend-mode: overlay;
+      }
 
-    /* secret poem modal */
-    .modal{
-      position:fixed;inset:0;display:grid;place-items:center;z-index:60;padding:20px;opacity:0;pointer-events:none;transition:opacity .18s;
-    }
-    .modal.show{opacity:1;pointer-events:auto}
-    .modal .sheet{width:100%;max-width:700px;padding:24px;border-radius:16px;background:linear-gradient(180deg,var(--card),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04)}
-    .easter-list{list-style:none;padding:0;margin:8px 0 0 0}
-    .easter-list li{padding:10px 12px;border-radius:10px;margin-top:8px;background:rgba(255,255,255,0.01)}
-  </style>
-</head>
-<body>
-  <div class="wrap" role="main" aria-labelledby="page-title">
-    <header>
-      <div class="logo" id="logo" title="クリックで秘密のリレーを試みる">
-        <div class="mark" aria-hidden="true">
-          <!-- simple compass-like svg -->
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 2v4" stroke="white" stroke-opacity="0.9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/>
-            <path d="M12 22v-4" stroke="white" stroke-opacity="0.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/>
-            <path d="M4 12h4" stroke="white" stroke-opacity="0.6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/>
-            <path d="M20 12h-4" stroke="white" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/>
-            <circle cx="12" cy="12" r="6" stroke="white" stroke-opacity="0.08" stroke-width="1.6"/>
-          </svg>
-        </div>
-        <div class="brand">
-          <div class="title">NEXUS</div>
-          <div class="subtitle">探索を促すワンページ</div>
-        </div>
-      </div>
-      <nav aria-label="主要ナビゲーション">
-        <button class="btn" id="themeToggle" aria-pressed="false" title="ダーク/ライト切替">🌗 テーマ</button>
-        <button class="btn" id="shortcutsBtn" title="キーボードショートカットを表示">⌨ ショートカット</button>
-      </nav>
-    </header>
-
-    <section class="hero glass-card" aria-labelledby="page-title">
-      <div>
-        <h1 id="page-title">未知を導く、洗練された一枚モダンページ</h1>
-        <p class="lead">シンプルさと遊び心の両立。アクセス性、レスポンシブ、そしていくつもの隠し要素（イースターエッグ）を内蔵しています。</p>
-        <div class="cta-row">
-          <a class="btn" href="#features">機能を見る</a>
-          <button class="btn" id="demoBtn">ライブデモ</button>
-        </div>
-
-        <div class="features" id="features" aria-hidden="false">
-          <div class="feature">
-            <strong>レスポンシブ</strong>
-            <div class="muted" style="color:var(--muted);margin-top:8px">どの画面でも美しく表示されます</div>
+      /* secret poem modal */
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 60;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s;
+      }
+      .modal.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal .sheet {
+        width: 100%;
+        max-width: 700px;
+        padding: 24px;
+        border-radius: 16px;
+        background: linear-gradient(
+          180deg,
+          var(--card),
+          rgba(255, 255, 255, 0.01)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .easter-list {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+      }
+      .easter-list li {
+        padding: 10px 12px;
+        border-radius: 10px;
+        margin-top: 8px;
+        background: rgba(255, 255, 255, 0.01);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap" role="main" aria-labelledby="page-title">
+      <header>
+        <div class="logo" id="logo" title="クリックで秘密のリレーを試みる">
+          <div class="mark" aria-hidden="true">
+            <!-- simple compass-like svg -->
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 2v4"
+                stroke="white"
+                stroke-opacity="0.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <path
+                d="M12 22v-4"
+                stroke="white"
+                stroke-opacity="0.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <path
+                d="M4 12h4"
+                stroke="white"
+                stroke-opacity="0.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <path
+                d="M20 12h-4"
+                stroke="white"
+                stroke-opacity="0.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <circle
+                cx="12"
+                cy="12"
+                r="6"
+                stroke="white"
+                stroke-opacity="0.08"
+                stroke-width="1.6"
+              />
+            </svg>
           </div>
-          <div class="feature">
-            <strong>アクセシビリティ</strong>
-            <div class="muted" style="color:var(--muted);margin-top:8px">キーボード操作・aria対応</div>
+          <div class="brand">
+            <div class="title">NEXUS</div>
+            <div class="subtitle">探索を促すワンページ</div>
           </div>
-          <div class="feature">
-            <strong>イースターエッグ</strong>
-            <div class="muted" style="color:var(--muted);margin-top:8px">Konamiコード、ロゴ連続クリック、'g'でデバッググリッド等</div>
+        </div>
+        <nav aria-label="主要ナビゲーション">
+          <button
+            class="btn"
+            id="themeToggle"
+            aria-pressed="false"
+            title="ダーク/ライト切替"
+          >
+            🌗 テーマ
+          </button>
+          <button
+            class="btn"
+            id="shortcutsBtn"
+            title="キーボードショートカットを表示"
+          >
+            ⌨ ショートカット
+          </button>
+        </nav>
+      </header>
+
+      <section class="hero glass-card" aria-labelledby="page-title">
+        <div>
+          <h1 id="page-title">未知を導く、洗練された一枚モダンページ</h1>
+          <p class="lead">
+            名称：Chat-GPT5<br />説明：各AIに全力で作らせたホームページを見比べて評価してる遊び。<br />プロンプト：今の貴方ができる限り、一番便利で、綺麗で、お洒落なホームページを最大限丁寧にHTMLワンスクリプトで実装して全文出力してください。ユニークで機知に富んだイースター要素が含まれていたらさらに追加で評価します。全部出力できたらそのページの魅力を完結に説明してください。<br />AIくんのアッピルポイント：シンプルさと遊び心の両立。アクセス性、レスポンシブ、そしていくつもの隠し要素（イースターエッグ）を内蔵しています。
+          </p>
+          <div class="cta-row">
+            <a class="btn" href="#features">機能を見る</a>
+            <button class="btn" id="demoBtn">ライブデモ</button>
+          </div>
+
+          <div class="features" id="features" aria-hidden="false">
+            <div class="feature">
+              <strong>レスポンシブ</strong>
+              <div class="muted" style="color: var(--muted); margin-top: 8px">
+                どの画面でも美しく表示されます
+              </div>
+            </div>
+            <div class="feature">
+              <strong>アクセシビリティ</strong>
+              <div class="muted" style="color: var(--muted); margin-top: 8px">
+                キーボード操作・aria対応
+              </div>
+            </div>
+            <div class="feature">
+              <strong>イースターエッグ</strong>
+              <div class="muted" style="color: var(--muted); margin-top: 8px">
+                Konamiコード、ロゴ連続クリック、'g'でデバッググリッド等
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 12px;
+              margin-top: 18px;
+              align-items: center;
+            "
+          >
+            <div class="glass-card stat">
+              <div class="num" id="visitorCount">—</div>
+              <div class="muted">今日の訪問予測</div>
+            </div>
+            <div class="glass-card stat">
+              <div class="num" id="nowTime">—</div>
+              <div class="muted">現在時刻（ローカル）</div>
+            </div>
           </div>
         </div>
 
-        <div style="display:flex;gap:12px;margin-top:18px;align-items:center">
-          <div class="glass-card stat">
-            <div class="num" id="visitorCount">—</div>
-            <div class="muted">今日の訪問予測</div>
+        <aside>
+          <div class="grid-visual glass-card float" aria-hidden="true">
+            <div
+              style="
+                position: absolute;
+                top: 14px;
+                left: 14px;
+                color: var(--muted);
+                font-size: 12px;
+              "
+            >
+              イメージ
+            </div>
+            <canvas id="starfield" width="500" height="340"></canvas>
+            <div
+              style="
+                position: absolute;
+                left: 16px;
+                bottom: 14px;
+                color: var(--muted);
+                font-size: 13px;
+              "
+            >
+              探索: <span id="greeting">—</span>
+            </div>
           </div>
-          <div class="glass-card stat">
-            <div class="num" id="nowTime">—</div>
-            <div class="muted">現在時刻（ローカル）</div>
+
+          <div style="margin-top: 12px; display: flex; gap: 10px">
+            <div class="thumb">A</div>
+            <div class="thumb">B</div>
+            <div class="thumb">C</div>
           </div>
+        </aside>
+      </section>
+
+      <section class="glass-card" aria-label="ギャラリー">
+        <h2 style="margin: 0 0 10px 0">ギャラリー</h2>
+        <div class="gallery" id="gallery">
+          <div class="thumb">プロジェクト 01</div>
+          <div class="thumb">プロジェクト 02</div>
+          <div class="thumb">プロジェクト 03</div>
+          <div class="thumb">プロジェクト 04</div>
+          <div class="thumb">プロジェクト 05</div>
+          <div class="thumb">プロジェクト 06</div>
         </div>
-      </div>
+      </section>
 
-      <aside>
-        <div class="grid-visual glass-card float" aria-hidden="true">
-          <div style="position:absolute;top:14px;left:14px;color:var(--muted);font-size:12px">イメージ</div>
-          <canvas id="starfield" width="500" height="340"></canvas>
-          <div style="position:absolute;left:16px;bottom:14px;color:var(--muted);font-size:13px">探索: <span id="greeting">—</span></div>
+      <footer>
+        <div>© <span id="year"></span> NEXUS — Crafted with ✨</div>
+        <div style="display: flex; gap: 12px; align-items: center">
+          <div class="kbd">⌘/Ctrl + K</div>
+          <div style="color: var(--muted)">検索ショートカット</div>
         </div>
+      </footer>
+    </div>
 
-        <div style="margin-top:12px;display:flex;gap:10px">
-          <div class="thumb">A</div>
-          <div class="thumb">B</div>
-          <div class="thumb">C</div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="glass-card" aria-label="ギャラリー">
-      <h2 style="margin:0 0 10px 0">ギャラリー</h2>
-      <div class="gallery" id="gallery">
-        <div class="thumb">プロジェクト 01</div>
-        <div class="thumb">プロジェクト 02</div>
-        <div class="thumb">プロジェクト 03</div>
-        <div class="thumb">プロジェクト 04</div>
-        <div class="thumb">プロジェクト 05</div>
-        <div class="thumb">プロジェクト 06</div>
-      </div>
-    </section>
-
-    <footer>
-      <div>© <span id="year"></span> NEXUS — Crafted with ✨</div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <div class="kbd">⌘/Ctrl + K</div>
-        <div style="color:var(--muted)">検索ショートカット</div>
-      </div>
-    </footer>
-  </div>
-
-  <!-- secret UI -->
-  <div class="secret-panel" id="secretPanel" role="status" aria-live="polite" hidden>
-    <div style="font-size:13px">隠しヒント：ロゴを5回連続クリック、またはKonamiコードを入力</div>
-  </div>
-
-  <div class="grid-overlay" id="gridOverlay" aria-hidden="true"></div>
-
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="sheet" id="modalSheet" tabindex="-1">
-      <h3 id="modalTitle">秘密の箱</h3>
-      <p class="muted" id="modalDesc">ここにはいくつかのイースターエッグが保管されています。</p>
-      <ul class="easter-list" id="easterList"></ul>
-      <div style="display:flex;justify-content:flex-end;margin-top:12px">
-        <button class="btn" id="closeModal">閉じる</button>
+    <!-- secret UI -->
+    <div
+      class="secret-panel"
+      id="secretPanel"
+      role="status"
+      aria-live="polite"
+      hidden
+    >
+      <div style="font-size: 13px">
+        隠しヒント：ロゴを5回連続クリック、またはKonamiコードを入力
       </div>
     </div>
-  </div>
 
-<script>
-  // ---------- ユーティリティ ----------
-  const $ = sel => document.querySelector(sel);
-  const $$ = sel => Array.from(document.querySelectorAll(sel));
+    <div class="grid-overlay" id="gridOverlay" aria-hidden="true"></div>
 
-  // 初期化
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const visitorCountEl = document.getElementById('visitorCount');
-  const nowTimeEl = document.getElementById('nowTime');
-  const greetingEl = document.getElementById('greeting');
+    <div
+      class="modal"
+      id="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+    >
+      <div class="sheet" id="modalSheet" tabindex="-1">
+        <h3 id="modalTitle">秘密の箱</h3>
+        <p class="muted" id="modalDesc">
+          ここにはいくつかのイースターエッグが保管されています。
+        </p>
+        <ul class="easter-list" id="easterList"></ul>
+        <div style="display: flex; justify-content: flex-end; margin-top: 12px">
+          <button class="btn" id="closeModal">閉じる</button>
+        </div>
+      </div>
+    </div>
 
-  // 現在時刻表示（秒ごとに更新）
-  function updateClock(){
-    const now = new Date();
-    nowTimeEl.textContent = now.toLocaleTimeString();
-    const hrs = now.getHours();
-    let g = "こんにちは";
-    if(hrs < 6) g = "深夜の探索者";
-    else if(hrs < 12) g = "おはよう";
-    else if(hrs < 18) g = "こんにちは";
-    else g = "こんばんは";
-    greetingEl.textContent = g;
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
+    <script>
+      // ---------- ユーティリティ ----------
+      const $ = (sel) => document.querySelector(sel);
+      const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-  // 予測訪問者（ダミー） — 実装は将来Analyticsに差し替え可能
-  function simulateVisitors(){
-    const base = 120 + Math.round(Math.random()*80);
-    visitorCountEl.textContent = base + " 人";
-  }
-  simulateVisitors();
+      // 初期化
+      document.getElementById("year").textContent = new Date().getFullYear();
+      const visitorCountEl = document.getElementById("visitorCount");
+      const nowTimeEl = document.getElementById("nowTime");
+      const greetingEl = document.getElementById("greeting");
 
-  // テーマ切替
-  const themeBtn = $('#themeToggle');
-  function toggleTheme(){
-    const current = document.documentElement.getAttribute('data-theme');
-    if(current === 'light'){ document.documentElement.removeAttribute('data-theme'); themeBtn.setAttribute('aria-pressed','false'); }
-    else{ document.documentElement.setAttribute('data-theme','light'); themeBtn.setAttribute('aria-pressed','true'); }
-  }
-  themeBtn.addEventListener('click', toggleTheme);
+      // 現在時刻表示（秒ごとに更新）
+      function updateClock() {
+        const now = new Date();
+        nowTimeEl.textContent = now.toLocaleTimeString();
+        const hrs = now.getHours();
+        let g = "こんにちは";
+        if (hrs < 6) g = "深夜の探索者";
+        else if (hrs < 12) g = "おはよう";
+        else if (hrs < 18) g = "こんにちは";
+        else g = "こんばんは";
+        greetingEl.textContent = g;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
 
-  // ショートカットパネル
-  const modal = $('#modal'), modalSheet = $('#modalSheet'), easterList = $('#easterList');
-  const shortcutsBtn = $('#shortcutsBtn');
-  shortcutsBtn.addEventListener('click', () => showModal([
-    {title: 'Konami', desc:'↑↑↓↓←→←→BA — 秘密のテーマを解除'},
-    {title: 'Logo×5', desc:'ロゴを5回連続でクリック — シークレット詩を表示'},
-    {title: "'g'", desc:"グリッド表示トグル（デバッグ用）"},
-    {title: '⌘/Ctrl + K', desc:'検索ボックス（ダミー）をフォーカス'}
-  ]));
+      // 予測訪問者（ダミー） — 実装は将来Analyticsに差し替え可能
+      function simulateVisitors() {
+        const base = 120 + Math.round(Math.random() * 80);
+        visitorCountEl.textContent = base + " 人";
+      }
+      simulateVisitors();
 
-  function showModal(items=[]){
-    easterList.innerHTML = "";
-    items.forEach(it => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${it.title}</strong><div style="color:var(--muted);margin-top:6px">${it.desc}</div>`;
-      easterList.appendChild(li);
-    });
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden','false');
-    setTimeout(()=>modalSheet.focus(),80);
-  }
-  $('#closeModal').addEventListener('click', ()=>{ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); });
+      // テーマ切替
+      const themeBtn = $("#themeToggle");
+      function toggleTheme() {
+        const current = document.documentElement.getAttribute("data-theme");
+        if (current === "light") {
+          document.documentElement.removeAttribute("data-theme");
+          themeBtn.setAttribute("aria-pressed", "false");
+        } else {
+          document.documentElement.setAttribute("data-theme", "light");
+          themeBtn.setAttribute("aria-pressed", "true");
+        }
+      }
+      themeBtn.addEventListener("click", toggleTheme);
 
-  // ロゴ連打で秘密表示
-  const logo = $('#logo'); let logoClicks = 0; let logoTimer = null;
-  logo.addEventListener('click', () => {
-    logoClicks++;
-    if(logoTimer) clearTimeout(logoTimer);
-    logoTimer = setTimeout(()=>{ logoClicks = 0; }, 1200);
-    if(logoClicks >= 5){
-      logoClicks = 0;
-      revealPoem();
-    }
-  });
+      // ショートカットパネル
+      const modal = $("#modal"),
+        modalSheet = $("#modalSheet"),
+        easterList = $("#easterList");
+      const shortcutsBtn = $("#shortcutsBtn");
+      shortcutsBtn.addEventListener("click", () =>
+        showModal([
+          { title: "Konami", desc: "↑↑↓↓←→←→BA — 秘密のテーマを解除" },
+          {
+            title: "Logo×5",
+            desc: "ロゴを5回連続でクリック — シークレット詩を表示",
+          },
+          { title: "'g'", desc: "グリッド表示トグル（デバッグ用）" },
+          { title: "⌘/Ctrl + K", desc: "検索ボックス（ダミー）をフォーカス" },
+        ])
+      );
 
-  function revealPoem(){
-    showModal([
-      {title:'古い詩（発見）', desc:'<em>星は鍵、沈黙は扉。歩め、光の欠片を数えよ。</em>'},
-      {title:'小さな贈り物', desc:'ページの右下にもう一つのヒントが現れた…'}
-    ]);
-    $('#secretPanel').hidden = false;
-    setTimeout(()=>$('#secretPanel').hidden = true, 4200);
-  }
-
-  // キーボードショートカット：Ctrl/Cmd+K => dummy search focus
-  document.addEventListener('keydown', (e)=>{
-    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); showModal([{title:'検索', desc:'このデモでは検索はダミーです。'}]); }
-  });
-
-  // 'g' でグリッド表示トグル
-  const gridOverlay = $('#gridOverlay');
-  document.addEventListener('keydown', (e) => {
-    if(e.key.toLowerCase() === 'g'){
-      gridOverlay.classList.toggle('visible');
-    }
-  });
-
-  // Konami code detection
-  (function konami(){
-    const seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-    let pos = 0;
-    window.addEventListener('keydown', (e)=>{
-      if(e.key === seq[pos]){ pos++; if(pos === seq.length){ pos=0; activateKonami(); } }
-      else pos = (e.key === seq[0]) ? 1 : 0;
-    });
-    function activateKonami(){
-      // 軽いパーティ（エフェクト）とテーマ切替
-      triggerFireworks();
-      document.documentElement.setAttribute('data-theme','light');
-      showModal([{title:'Konami 解放', desc:'ライトテーマ + 花火を解放しました。おめでとう！'}]);
-    }
-  })();
-
-  // 花火（簡易）キャンバス
-  function triggerFireworks(){
-    const canvas = document.createElement('canvas');
-    canvas.style.position='fixed'; canvas.style.left=0; canvas.style.top=0; canvas.style.zIndex=50; canvas.style.pointerEvents='none';
-    canvas.width = innerWidth; canvas.height = innerHeight;
-    document.body.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    function spawn(){
-      const cx = Math.random()*canvas.width, cy = Math.random()*canvas.height*0.6;
-      const cols = ['#ff6b6b','#ffd66b','#6be7ff','#b76bff','#6bffb2'];
-      const color = cols[Math.floor(Math.random()*cols.length)];
-      for(let i=0;i<60;i++){
-        particles.push({
-          x:cx,y:cy,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.9)*6,life:60, color
+      function showModal(items = []) {
+        easterList.innerHTML = "";
+        items.forEach((it) => {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${it.title}</strong><div style="color:var(--muted);margin-top:6px">${it.desc}</div>`;
+          easterList.appendChild(li);
         });
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden", "false");
+        setTimeout(() => modalSheet.focus(), 80);
       }
-    }
-    let ticks=0;
-    function frame(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p => {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.life--;
-        ctx.globalAlpha = Math.max(p.life/60,0);
-        ctx.fillStyle = p.color; ctx.beginPath();
-        ctx.arc(p.x,p.y, Math.max(1, p.life/10),0,Math.PI*2); ctx.fill();
+      $("#closeModal").addEventListener("click", () => {
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden", "true");
       });
-      particles = particles.filter(p => p.life>0);
-      if(ticks % 8 === 0) spawn();
-      ticks++;
-      if(ticks < 180) requestAnimationFrame(frame);
-      else { document.body.removeChild(canvas); }
-    }
-    frame();
-  }
 
-  // starfield canvas（軽量）
-  (function starfield(){
-    const c = document.getElementById('starfield');
-    const ctx = c.getContext('2d');
-    const w = c.width = c.clientWidth;
-    const h = c.height = c.clientHeight;
-    const stars = Array.from({length:120}, () => ({
-      x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.3+0.3, vx:(Math.random()-0.5)*0.1
-    }));
-    function draw(){
-      ctx.clearRect(0,0,w,h);
-      // soft gradient
-      const g = ctx.createLinearGradient(0,0,0,h);
-      g.addColorStop(0,'rgba(255,255,255,0.02)');
-      g.addColorStop(1,'rgba(0,0,0,0.02)');
-      ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
-      stars.forEach(s=>{
-        s.x += s.vx; if(s.x<0) s.x = w; if(s.x>w) s.x = 0;
-        ctx.beginPath(); ctx.fillStyle = 'rgba(255,255,255,' + (0.6 + Math.sin(Date.now()/1000 + s.x)*0.4) + ')';
-        ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+      // ロゴ連打で秘密表示
+      const logo = $("#logo");
+      let logoClicks = 0;
+      let logoTimer = null;
+      logo.addEventListener("click", () => {
+        logoClicks++;
+        if (logoTimer) clearTimeout(logoTimer);
+        logoTimer = setTimeout(() => {
+          logoClicks = 0;
+        }, 1200);
+        if (logoClicks >= 5) {
+          logoClicks = 0;
+          revealPoem();
+        }
       });
-      requestAnimationFrame(draw);
-    }
-    draw();
-  })();
 
-  // デモボタン（小さなインタラクション）
-  $('#demoBtn').addEventListener('click', ()=> {
-    showModal([
-      {title:'ライブデモ', desc:'このページのアニメーション、テーマ、イースターエッグはすべてクライアントで完結します。'},
-      {title:'ヒント', desc:'Konamiコードやロゴを試してみてください。'}
-    ]);
-  });
-
-  // クリック数カウント（右下のヒント表示）
-  (function bottomHint(){
-    const panel = $('#secretPanel');
-    let count = 0; let timer = null;
-    window.addEventListener('click',()=>{
-      count++;
-      panel.hidden = false;
-      if(timer) clearTimeout(timer);
-      timer = setTimeout(()=>{ panel.hidden = true; }, 2200);
-    });
-  })();
-
-  // キーボードで 'h' を押すとページ魅力説明（音声読み上げを試みる）
-  document.addEventListener('keydown', (e)=>{
-    if(e.key.toLowerCase() === 'h'){
-      const text = "このページは、レスポンシブでアクセシブル。隠し要素で遊べるモダンなワンページテンプレートです。";
-      if(window.speechSynthesis){
-        const ut = new SpeechSynthesisUtterance(text); window.speechSynthesis.cancel(); window.speechSynthesis.speak(ut);
-      } else {
-        showModal([{title:'説明', desc:text}]);
+      function revealPoem() {
+        showModal([
+          {
+            title: "古い詩（発見）",
+            desc: "<em>星は鍵、沈黙は扉。歩め、光の欠片を数えよ。</em>",
+          },
+          {
+            title: "小さな贈り物",
+            desc: "ページの右下にもう一つのヒントが現れた…",
+          },
+        ]);
+        $("#secretPanel").hidden = false;
+        setTimeout(() => ($("#secretPanel").hidden = true), 4200);
       }
-    }
-  });
 
-  // UX: ページ読み込み時に小さな演出
-  window.addEventListener('load', ()=> {
-    document.body.animate([{filter:'blur(6px) brightness(.8)'},{filter:'blur(0px) brightness(1)'}],{duration:700,easing:'ease-out'});
-  });
+      // キーボードショートカット：Ctrl/Cmd+K => dummy search focus
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          showModal([
+            { title: "検索", desc: "このデモでは検索はダミーです。" },
+          ]);
+        }
+      });
 
-  // アクセシビリティ：フォーカスの明示（簡易）
-  (function focusStyle(){
-    const style = document.createElement('style');
-    style.innerHTML = ':focus{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}';
-    document.head.appendChild(style);
-  })();
+      // 'g' でグリッド表示トグル
+      const gridOverlay = $("#gridOverlay");
+      document.addEventListener("keydown", (e) => {
+        if (e.key.toLowerCase() === "g") {
+          gridOverlay.classList.toggle("visible");
+        }
+      });
 
-  // 追加イースター：マウスでホバーしながら Ctrl を押すと要素が詩的に変化（遊び）
-  (function hoverPoem(){
-    let active = false;
-    document.addEventListener('keydown', e => { if(e.ctrlKey) active = true; });
-    document.addEventListener('keyup', e => { if(!e.ctrlKey) active = false; });
-    $$('.thumb').forEach(t => {
-      t.addEventListener('mouseenter', ()=>{ if(active) t.innerHTML = '風が囁く'; });
-      t.addEventListener('mouseleave', ()=>{ t.innerHTML = t.getAttribute('data-label') || t.textContent; });
-    });
-  })();
+      // Konami code detection
+      (function konami() {
+        const seq = [
+          "ArrowUp",
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "ArrowLeft",
+          "ArrowRight",
+          "b",
+          "a",
+        ];
+        let pos = 0;
+        window.addEventListener("keydown", (e) => {
+          if (e.key === seq[pos]) {
+            pos++;
+            if (pos === seq.length) {
+              pos = 0;
+              activateKonami();
+            }
+          } else pos = e.key === seq[0] ? 1 : 0;
+        });
+        function activateKonami() {
+          // 軽いパーティ（エフェクト）とテーマ切替
+          triggerFireworks();
+          document.documentElement.setAttribute("data-theme", "light");
+          showModal([
+            {
+              title: "Konami 解放",
+              desc: "ライトテーマ + 花火を解放しました。おめでとう！",
+            },
+          ]);
+        }
+      })();
 
-  // 最後のイースター：ページ右下をクリック（deep link）
-  document.body.addEventListener('contextmenu', (e)=>{
-    // 右クリックで簡単なメッセージを表示（非侵襲）
-    e.preventDefault();
-    showModal([{title:'秘密の右クリック', desc:'古い地図に小さな丸が付けられています…（これはただのデモ）'}]);
-  });
+      // 花火（簡易）キャンバス
+      function triggerFireworks() {
+        const canvas = document.createElement("canvas");
+        canvas.style.position = "fixed";
+        canvas.style.left = 0;
+        canvas.style.top = 0;
+        canvas.style.zIndex = 50;
+        canvas.style.pointerEvents = "none";
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+        function spawn() {
+          const cx = Math.random() * canvas.width,
+            cy = Math.random() * canvas.height * 0.6;
+          const cols = ["#ff6b6b", "#ffd66b", "#6be7ff", "#b76bff", "#6bffb2"];
+          const color = cols[Math.floor(Math.random() * cols.length)];
+          for (let i = 0; i < 60; i++) {
+            particles.push({
+              x: cx,
+              y: cy,
+              vx: (Math.random() - 0.5) * 6,
+              vy: (Math.random() - 0.9) * 6,
+              life: 60,
+              color,
+            });
+          }
+        }
+        let ticks = 0;
+        function frame() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.12;
+            p.life--;
+            ctx.globalAlpha = Math.max(p.life / 60, 0);
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.max(1, p.life / 10), 0, Math.PI * 2);
+            ctx.fill();
+          });
+          particles = particles.filter((p) => p.life > 0);
+          if (ticks % 8 === 0) spawn();
+          ticks++;
+          if (ticks < 180) requestAnimationFrame(frame);
+          else {
+            document.body.removeChild(canvas);
+          }
+        }
+        frame();
+      }
 
-  // 終わり
-</script>
-</body>
+      // starfield canvas（軽量）
+      (function starfield() {
+        const c = document.getElementById("starfield");
+        const ctx = c.getContext("2d");
+        const w = (c.width = c.clientWidth);
+        const h = (c.height = c.clientHeight);
+        const stars = Array.from({ length: 120 }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 1.3 + 0.3,
+          vx: (Math.random() - 0.5) * 0.1,
+        }));
+        function draw() {
+          ctx.clearRect(0, 0, w, h);
+          // soft gradient
+          const g = ctx.createLinearGradient(0, 0, 0, h);
+          g.addColorStop(0, "rgba(255,255,255,0.02)");
+          g.addColorStop(1, "rgba(0,0,0,0.02)");
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, w, h);
+          stars.forEach((s) => {
+            s.x += s.vx;
+            if (s.x < 0) s.x = w;
+            if (s.x > w) s.x = 0;
+            ctx.beginPath();
+            ctx.fillStyle =
+              "rgba(255,255,255," +
+              (0.6 + Math.sin(Date.now() / 1000 + s.x) * 0.4) +
+              ")";
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          requestAnimationFrame(draw);
+        }
+        draw();
+      })();
+
+      // デモボタン（小さなインタラクション）
+      $("#demoBtn").addEventListener("click", () => {
+        showModal([
+          {
+            title: "ライブデモ",
+            desc: "このページのアニメーション、テーマ、イースターエッグはすべてクライアントで完結します。",
+          },
+          { title: "ヒント", desc: "Konamiコードやロゴを試してみてください。" },
+        ]);
+      });
+
+      // クリック数カウント（右下のヒント表示）
+      (function bottomHint() {
+        const panel = $("#secretPanel");
+        let count = 0;
+        let timer = null;
+        window.addEventListener("click", () => {
+          count++;
+          panel.hidden = false;
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(() => {
+            panel.hidden = true;
+          }, 2200);
+        });
+      })();
+
+      // キーボードで 'h' を押すとページ魅力説明（音声読み上げを試みる）
+      document.addEventListener("keydown", (e) => {
+        if (e.key.toLowerCase() === "h") {
+          const text =
+            "このページは、レスポンシブでアクセシブル。隠し要素で遊べるモダンなワンページテンプレートです。";
+          if (window.speechSynthesis) {
+            const ut = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(ut);
+          } else {
+            showModal([{ title: "説明", desc: text }]);
+          }
+        }
+      });
+
+      // UX: ページ読み込み時に小さな演出
+      window.addEventListener("load", () => {
+        document.body.animate(
+          [
+            { filter: "blur(6px) brightness(.8)" },
+            { filter: "blur(0px) brightness(1)" },
+          ],
+          { duration: 700, easing: "ease-out" }
+        );
+      });
+
+      // アクセシビリティ：フォーカスの明示（簡易）
+      (function focusStyle() {
+        const style = document.createElement("style");
+        style.innerHTML =
+          ":focus{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}";
+        document.head.appendChild(style);
+      })();
+
+      // 追加イースター：マウスでホバーしながら Ctrl を押すと要素が詩的に変化（遊び）
+      (function hoverPoem() {
+        let active = false;
+        document.addEventListener("keydown", (e) => {
+          if (e.ctrlKey) active = true;
+        });
+        document.addEventListener("keyup", (e) => {
+          if (!e.ctrlKey) active = false;
+        });
+        $$(".thumb").forEach((t) => {
+          t.addEventListener("mouseenter", () => {
+            if (active) t.innerHTML = "風が囁く";
+          });
+          t.addEventListener("mouseleave", () => {
+            t.innerHTML = t.getAttribute("data-label") || t.textContent;
+          });
+        });
+      })();
+
+      // 最後のイースター：ページ右下をクリック（deep link）
+      document.body.addEventListener("contextmenu", (e) => {
+        // 右クリックで簡単なメッセージを表示（非侵襲）
+        e.preventDefault();
+        showModal([
+          {
+            title: "秘密の右クリック",
+            desc: "古い地図に小さな丸が付けられています…（これはただのデモ）",
+          },
+        ]);
+      });
+
+      // 終わり
+    </script>
+  </body>
 </html>

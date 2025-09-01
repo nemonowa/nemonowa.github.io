@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grokの優雅な日本語ホームページ</title>
+    <style>
+      /* グローバルスタイル */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Noto Sans JP", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* ヘッダー */
+      header {
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #4a4a4a;
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+      }
+
+      nav li {
+        margin-left: 1.5rem;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #4a4a4a;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      nav a:hover {
+        color: #007bff;
+      }
+
+      /* ヒーローセクション */
+      #hero {
+        background: url("https://source.unsplash.com/random/1920x1080/?japan")
+          no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+        padding: 0 2rem;
+        position: relative;
+      }
+
+      #hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+      }
+
+      #hero h2 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        z-index: 1;
+      }
+
+      #hero p {
+        font-size: 1.2rem;
+        max-width: 600px;
+        z-index: 1;
+      }
+
+      #hero button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background 0.3s ease;
+        z-index: 1;
+      }
+
+      #hero button:hover {
+        background: #0056b3;
+      }
+
+      /* セクション */
+      section {
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      #about {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      #features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+
+      .feature {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease;
+      }
+
+      .feature:hover {
+        transform: translateY(-10px);
+      }
+
+      .feature i {
+        font-size: 2rem;
+        color: #007bff;
+        margin-bottom: 1rem;
+      }
+
+      /* フッター */
+      footer {
+        background: #333;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      /* レスポンシブデザイン */
+      @media (max-width: 768px) {
+        header {
+          flex-direction: column;
+        }
+
+        nav ul {
+          margin-top: 1rem;
+        }
+
+        nav li {
+          margin: 0 0.75rem;
+        }
+
+        #hero h2 {
+          font-size: 2rem;
+        }
+      }
+
+      /* イースターエッグスタイル */
+      #easter-egg {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        z-index: 2000;
+      }
+
+      #easter-egg button {
+        background: #ff5722;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>Grokの優雅な日本語ホームページ</h1>
+      <nav>
+        <ul>
+          <li><a href="#hero">ホーム</a></li>
+          <li><a href="#about">について</a></li>
+          <li><a href="#features">機能</a></li>
+          <li><a href="#contact">お問い合わせ</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="hero">
+      <h2>優雅な世界へようこそ</h2>
+      <p>
+        このホームページは、利便性、美しさ、スタイルの完璧な融合を提供します。Grok
+        4によって作成されたこのページをお楽しみください。
+      </p>
+      <button onclick="scrollToSection('about')">詳細を見る</button>
+    </section>
+
+    <section id="about">
+      <h2>私たちについて</h2>
+      <p>
+        このホームページは、現代的なウェブ標準で構築されており、レスポンシブで高速、ユーザーフレンドリーです。作成者はxAIのAIモデル「Grok
+        4」です。このページの魅力は、滑らかなナビゲーション、視覚的に魅力的なレイアウト、グラデーションバックグラウンドと微妙なアニメーションによるお洒落なデザインにあります。また、レスポンシブデザインにより、モバイルデバイスでも最適に表示されます。さらに、ユニークなイースターエッグ（例:
+        キー入力「GROK」でポップアップ表示されるウィットに富んだメッセージや、コンソールでの隠しメッセージ）が、探検心を刺激します。これにより、単なるウェブページではなく、楽しくインタラクティブな体験を提供します。
+      </p>
+    </section>
+
+    <section id="features">
+      <div class="feature">
+        <i class="fas fa-rocket"></i>
+        <!-- Font Awesomeを仮定 -->
+        <h3>便利なナビゲーション</h3>
+        <p>
+          スムーズなスクロールとスティッキーヘッダーで簡単にアクセス可能。ページ内の移動がストレスフリーです。
+        </p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-paint-brush"></i>
+        <h3>スタイリッシュなデザイン</h3>
+        <p>
+          グラデーションバックグラウンドと微妙なアニメーションで、洗練された視覚体験を提供します。
+        </p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-magic"></i>
+        <h3>ユニークな機能</h3>
+        <p>
+          隠されたイースターエッグが含まれており、好奇心旺盛なユーザー向けの機知に富んだサプライズがあります。
+        </p>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>お問い合わせ</h2>
+      <p>ご質問があればお気軽に。メール: info@grokjapan.com</p>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Grokの優雅な日本語ホームページ。Create with Grok 4</p>
+    </footer>
+
+    <!-- イースターエッグモーダル -->
+    <div id="easter-egg">
+      <h3>おめでとう！イースターエッグを発見しました！</h3>
+      <p>
+        ここにウィットに富んだ秘密: 「AIがなぜセラピーに通うか？
+        未解決のクエリが多すぎるから！」😄
+      </p>
+      <button onclick="closeEasterEgg()">閉じる</button>
+    </div>
+
+    <script>
+      // スムーズスクロール
+      function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+      }
+
+      // イースターエッグトリガー: 'G' 'R' 'O' 'K' を順番に押す
+      let keys = "";
+      document.addEventListener("keydown", (e) => {
+        keys += e.key.toUpperCase();
+        if (keys.includes("GROK")) {
+          document.getElementById("easter-egg").style.display = "block";
+          keys = ""; // リセット
+        }
+      });
+
+      function closeEasterEgg() {
+        document.getElementById("easter-egg").style.display = "none";
+      }
+
+      // コンソールイースターエッグ
+      console.log(
+        "%cようこそ、探検家！ 'grok' とタイプしてサプライズを。",
+        "font-size: 20px; color: #007bff;"
+      );
+      console.log = function () {}; // さらなるログを防ぐ、ただの遊び
+    </script>
+  </body>
+</html>
