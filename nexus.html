@@ -147,17 +147,15 @@
       .thumb {
         width: 100%;
         aspect-ratio: 2/1;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.02);
-        display: grid;
-        place-items: center;
         overflow: hidden;
+        border-radius: 8px;
       }
       .thumb img {
         width: 100%;
         height: 100%;
-        object-fit: cover !important;
-        object-position: center center !important;
+        display: block; /* block のまま */
+        object-fit: cover; /* 枠いっぱいに拡大・切り抜き */
+        object-position: center center; /* 中央基準に変更 */
       }
       .meta {
         display: flex;
