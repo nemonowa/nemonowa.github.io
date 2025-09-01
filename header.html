@@ -8,15 +8,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background: rgba(0, 0, 0, 0.6); /* ← 背景帯だけ黒っぽくする */
     text-align: center;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
-      0 0 10px rgba(255, 255, 255, 0.8);
-    cursor: pointer; /* クリック可能とわかるようにカーソル変更 */
+    cursor: pointer;
   }
 
   .site-title {
     font-size: clamp(2rem, 3vw, 2.5rem);
     color: #f0f8ff;
+    text-shadow: none; /* ← 文字には影をつけない */
   }
 </style>
 
