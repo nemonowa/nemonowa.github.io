@@ -32,69 +32,6 @@ main {
   padding: 5vh 0;
 }
 
-.button {
-  position: fixed;
-  width: 15vh;
-  height: 15vh;
-  background-color: #000000;
-  opacity: 0.25;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.button:hover {
-  opacity: 0.5;
-}
-
-/* 個別のスタイル */
-.top_right {
-  top: 0;
-  right: 0;
-  clip-path: polygon(100% 0, 100% 100%, 0 0);
-}
-
-.top_left {
-  top: 0;
-  left: 0;
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-}
-
-.bottom_left {
-  bottom: 0;
-  left: 0;
-  clip-path: polygon(0 100%, 100% 100%, 0 0);
-}
-
-.bottom_right {
-  bottom: 0;
-  right: 0;
-  clip-path: polygon(100% 100%, 0 100%, 100% 0);
-}
-
-.menu {
-  display: none;
-  position: fixed;
-  top: 20%;
-  left: 10%;
-  right: 10%;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-  z-index: 5;
-  font-size: 4vw;
-}
-
-.menu p {
-  margin-bottom: 10px;
-}
-
 /* 個別のスタイル */
 
 h1 {
