@@ -1,4 +1,4 @@
-<header>
+<header id="site-header">
   <h1 class="site-title">✯ Welcome to the NEXUS ✯</h1>
 </header>
 
@@ -11,6 +11,7 @@
     text-align: center;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8),
       0 0 10px rgba(255, 255, 255, 0.8);
+    cursor: pointer; /* クリック可能とわかるようにカーソル変更 */
   }
 
   .site-title {
@@ -18,3 +19,10 @@
     color: #f0f8ff;
   }
 </style>
+
+<script>
+  // ヘッダークリックでリダイレクト
+  document.getElementById("site-header").addEventListener("click", function () {
+    window.location.href = "https://nemonowa.github.io/nexus";
+  });
+</script>
