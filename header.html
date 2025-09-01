@@ -1,14 +1,17 @@
-<header id="site-header">
+<header
+  id="site-header"
+  onclick="location.href='https://nemonowa.github.io/nexus'"
+>
   <h1 class="site-title">✯ Welcome to the NEXUS ✯</h1>
 </header>
 
 <style>
-  header {
-    height: 15vh; /* 枠の高さを固定 */
+  #site-header {
+    height: 15vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.6); /* ← 背景帯だけ黒っぽくする */
+    background: rgba(0, 0, 0, 0.6); /* 背景だけ黒っぽく */
     text-align: center;
     cursor: pointer;
   }
@@ -16,15 +19,6 @@
   .site-title {
     font-size: clamp(2rem, 3vw, 2.5rem);
     color: #f0f8ff;
-    /* 白光だけを追加 */
-    text-shadow: 0 0 6px rgba(255, 255, 255, 0.8),
-      0 0 12px rgba(255, 255, 255, 0.6);
+    text-shadow: none; /* 文字には影をつけない */
   }
 </style>
-
-<script>
-  // ヘッダークリックでリダイレクト
-  document.getElementById("site-header").addEventListener("click", function () {
-    window.location.href = "https://nemonowa.github.io/nexus";
-  });
-</script>
