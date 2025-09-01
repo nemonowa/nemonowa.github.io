@@ -1,30 +1,111 @@
 <!-- 保守性のために独立させている共有要素 -->
-    <div class="button top_left" onclick="toggleMenu('menu1')">⚓</div>
-    <div class="button bottom_left" onclick="toggleMenu('menu2')">🔗</div>
-    <div class="button top_right" onclick="toggleMenu('menu3')">🔍</div>
-    <div class="button bottom_right" onclick="toggleMenu('menu4')">🎖️</div>
+<!-- ui.html -->
+<style>
+  /* UI専用CSS */
+  .button {
+    position: fixed;
+    width: 15vh;
+    height: 15vh;
+    background-color: #000000;
+    opacity: 0.25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+  }
 
-    <div class="menu" id="menu1">
-        <p>1st-Tab FastTravel</p>
-        <a href="https://nemonowa.github.io/">⌖ Link to NEXUS</a><br>
-        <a href="https://nemonowa.github.io/nexus">⌖ Link to HOMEBASE</a><br>
-        <a href="https://nemonowa.github.io/404">⌖ Link to 404</a><br>
-    </div>
-    <div class="menu" id="menu2">
-        <p>2nd-Tab CreateLink＆Tools</p>
-        <a href="https://nemonowa.github.io/login.html">⌖ Login</a><br>
-        <a href="https://nemonowa.github.io/nexus.html">⌖ About</a><br>
-        <a href="https://nemonowa.github.io/login.html">⌖ Contact</a><br>
-    </div>
-    <div class="menu" id="menu3">
-        <p>3rd-Tab AccountSettings</p><br>
-        <a href="https://nemonowa.github.io/login.html">⌖ Login</a><br>
-        <a href="https://nemonowa.github.io/source/teleport.html">⌖ search</a><br>
-        <a href="https://nemonowa.github.io/source/teleport.html">⌖ teleport</a><br>
-    </div>
-    <div class="menu" id="menu4">
-        <p>4th-Tab Scoreboard</p>
-        <a href="https://nemonowa.github.io/">⌖ Home</a><br>
-        <a href="https://nemonowa.github.io/nexus.html">⌖ About</a><br>
-        <a href="https://nemonowa.github.io/login.html">⌖ Contact</a><br>
-    </div>
+  .button:hover {
+    opacity: 0.5;
+  }
+
+  .top_right {
+    top: 0;
+    right: 0;
+    clip-path: polygon(100% 0, 100% 100%, 0 0);
+  }
+
+  .top_left {
+    top: 0;
+    left: 0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+  }
+
+  .bottom_left {
+    bottom: 0;
+    left: 0;
+    clip-path: polygon(0 100%, 100% 100%, 0 0);
+  }
+
+  .bottom_right {
+    bottom: 0;
+    right: 0;
+    clip-path: polygon(100% 100%, 0 100%, 100% 0);
+  }
+
+  .menu {
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 10%;
+    right: 10%;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    font-size: 4vw;
+  }
+
+  .menu p {
+    margin-bottom: 10px;
+  }
+</style>
+
+<div class="button top_left" onclick="toggleMenu('menu1')">⚓</div>
+<div class="button bottom_left" onclick="toggleMenu('menu2')">🔗</div>
+<div class="button top_right" onclick="toggleMenu('menu3')">🔍</div>
+<div class="button bottom_right" onclick="toggleMenu('menu4')">🎖️</div>
+
+<div class="menu" id="menu1">
+  <p>1st-Tab FastTravel</p>
+  <a href="https://nemonowa.github.io/">⌖ Link to NEXUS</a><br />
+  <a href="https://nemonowa.github.io/nexus">⌖ Link to HOMEBASE</a><br />
+  <a href="https://nemonowa.github.io/404">⌖ Link to 404</a><br />
+</div>
+<div class="menu" id="menu2">
+  <p>2nd-Tab CreateLink＆Tools</p>
+  <a href="https://nemonowa.github.io/login.html">⌖ Login</a><br />
+  <a href="https://nemonowa.github.io/nexus.html">⌖ About</a><br />
+  <a href="https://nemonowa.github.io/login.html">⌖ Contact</a><br />
+</div>
+<div class="menu" id="menu3">
+  <p>3rd-Tab AccountSettings</p>
+  <br />
+  <a href="https://nemonowa.github.io/login.html">⌖ Login</a><br />
+  <a href="https://nemonowa.github.io/source/teleport.html">⌖ search</a><br />
+  <a href="https://nemonowa.github.io/source/teleport.html">⌖ teleport</a><br />
+</div>
+<div class="menu" id="menu4">
+  <p>4th-Tab Scoreboard</p>
+  <a href="https://nemonowa.github.io/">⌖ Home</a><br />
+  <a href="https://nemonowa.github.io/nexus.html">⌖ About</a><br />
+  <a href="https://nemonowa.github.io/login.html">⌖ Contact</a><br />
+</div>
+
+<script>
+  // UI 内で toggleMenu を定義
+  function toggleMenu(menuId) {
+    const menus = document.querySelectorAll(".menu");
+    menus.forEach((menu) => {
+      if (menu.id === menuId) {
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+      } else {
+        menu.style.display = "none";
+      }
+    });
+  }
+</script>
