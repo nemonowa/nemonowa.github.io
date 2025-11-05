@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
+    <link rel="stylesheet" href="https://nemonowa.github.io/styles.css" />
     <meta charset="UTF-8" />
     <title>図形ジェネレーター（NeoShapeGenerator）</title>
     <style>
@@ -118,8 +119,11 @@
         <button onclick="toggleTheme()">テーマ切替</button>
         <button onclick="resetDefaults()">リセット</button>
       </div>
-    </div>
+      <div id="ui"></div>
 
+      <!-- 保守性のために外部から読み込み -->
+      <script src="https://nemonowa.github.io/scripts.js"></script>
+    </div>
     <canvas id="canvas"></canvas>
 
     <script>
