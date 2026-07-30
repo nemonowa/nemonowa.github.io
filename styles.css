@@ -8,7 +8,7 @@
 }
 
 html {
-  background: linear-gradient(to bottom, #005f80, #001d2e) !important;
+  background: linear-gradient(to bottom, #005f80, #001d2e);
   font-family: "DM Mono", monospace; /* DM Mono フォントの適用 */
   /*font-size: 3vw; 画面の幅の3%に設定 */
   word-break: break-all;
