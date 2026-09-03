@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Nex-Ship ロゴコンセプト — 隠されたNEXUS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(ellipse at center, #12141c 0%, #05060a 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color: #e8e6f0;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  .stage {
+    text-align: center;
+  }
+
+  .wordmark {
+    font-size: clamp(48px, 10vw, 120px);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: baseline;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .seg {
+    transition: color 0.6s ease, text-shadow 0.6s ease, opacity 0.6s ease;
+    color: #f4f3f8;
+  }
+
+  .glyph {
+    position: relative;
+    display: inline-block;
+    width: 0.55em;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(.2,.8,.2,1), color 0.6s ease;
+  }
+
+  .hyphen {
+    color: #6a6f85;
+  }
+
+  .u-form {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+
+  .hyphen-form {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .stage.revealed .u-form {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .stage.revealed .hyphen-form {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.9);
+  }
+
+  .stage.revealed .nexus-part {
+    color: #ffcf6b;
+    text-shadow: 0 0 18px rgba(255, 207, 107, 0.55), 0 0 40px rgba(255, 207, 107, 0.25);
+  }
+
+  .stage.revealed .hip-part {
+    color: #8a8fa8;
+    opacity: 0.55;
+  }
+
+  .subtitle {
+    margin-top: 22px;
+    font-size: clamp(13px, 2.4vw, 18px);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #9a9db3;
+    font-weight: 400;
+  }
+
+  .hint {
+    margin-top: 60px;
+    font-size: 13px;
+    color: #5c5f72;
+    letter-spacing: 0.05em;
+  }
+
+  .caption {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #6f7288;
+    min-height: 18px;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+  <div class="stage" id="stage">
+    <div class="wordmark" id="wordmark">
+      <span class="seg nex-letter">N</span><span class="seg nex-letter">E</span><span class="seg nex-letter">X</span><span
+        class="glyph"><span class="hyphen-form hyphen">–</span><span class="u-form nexus-part">U</span></span
+      ><span class="seg nex-letter" id="s-letter">S</span><span class="seg hip-part">H</span><span class="seg hip-part">I</span><span class="seg hip-part">P</span>
+    </div>
+    <div class="subtitle">The Interdimensional Journey</div>
+    <div class="caption" id="caption">クリックして切り替え — 通常表示</div>
+  </div>
+
+  <div class="hint">NEX–SHIP ⇄ NEXUSHIP（隠されたNEXUS）</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const caption = document.getElementById('caption');
+  const sLetter = document.getElementById('s-letter');
+
+  const nexLetters = document.querySelectorAll('.nex-letter');
+
+  stage.addEventListener('click', () => {
+    const revealed = stage.classList.toggle('revealed');
+    nexLetters.forEach(el => el.classList.toggle('nexus-part', revealed));
+    caption.textContent = revealed
+      ? '正体が見えた状態 — NEXUS + HIP'
+      : 'クリックして切り替え — 通常表示';
+  });
+</script>
+
+</body>
+</html>

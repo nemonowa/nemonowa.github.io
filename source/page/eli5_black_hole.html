@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ブラックホールってなに?</title>
+<style>
+  :root {
+    --bg: #0b0b1a;
+    --bg2: #14142b;
+    --star: #ffe9a8;
+    --hole: #000000;
+    --ring: #ff9a5c;
+    --text: #f4f1ea;
+    --sub: #b8b3d9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at 50% 20%, var(--bg2), var(--bg));
+    color: var(--text);
+    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+    padding: 32px 20px 60px;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  h1 {
+    font-size: clamp(28px, 6vw, 48px);
+    margin: 8px 0 4px;
+    letter-spacing: 0.02em;
+  }
+  .sub {
+    color: var(--sub);
+    font-size: clamp(14px, 3vw, 18px);
+    margin-bottom: 36px;
+  }
+  .scene {
+    max-width: 480px;
+    margin: 0 auto 48px;
+  }
+  .caption {
+    font-size: clamp(16px, 4vw, 20px);
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+  .caption b { color: var(--ring); }
+  .stars circle {
+    fill: var(--star);
+    opacity: 0.8;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+  .stars circle { animation: twinkle 3s infinite ease-in-out; }
+  .hole-ring {
+    animation: spin 8s linear infinite;
+    transform-origin: 200px 150px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  section {
+    max-width: 480px;
+    margin: 0 auto 56px;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    max-width: 200px;
+    margin: 0 auto 56px;
+  }
+</style>
+</head>
+<body>
+
+<h1>ブラックホールってなに?</h1>
+<div class="sub">とっても つよい すいこみ ばしょ の おはなし</div>
+
+<section class="scene">
+  <svg viewBox="0 0 400 300" width="100%">
+    <g class="stars">
+      <circle cx="30" cy="40" r="2"/>
+      <circle cx="90" cy="20" r="1.5"/>
+      <circle cx="350" cy="60" r="2"/>
+      <circle cx="370" cy="200" r="1.5"/>
+      <circle cx="20" cy="220" r="2"/>
+      <circle cx="120" cy="260" r="1.5"/>
+      <circle cx="280" cy="30" r="1.5"/>
+    </g>
+    <g class="hole-ring">
+      <ellipse cx="200" cy="150" rx="120" ry="40" fill="none" stroke="url(#grad)" stroke-width="10"/>
+    </g>
+    <defs>
+      <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#ff9a5c"/>
+        <stop offset="50%" stop-color="#ffe9a8"/>
+        <stop offset="100%" stop-color="#ff5c8a"/>
+      </linearGradient>
+    </defs>
+    <circle cx="200" cy="150" r="45" fill="#000"/>
+  </svg>
+  <div class="caption">まっくらな <b>まる</b> が うちゅうに ある。<br>これが ブラックホール。</div>
+</section>
+
+<hr>
+
+<section>
+  <svg viewBox="0 0 400 200" width="100%">
+    <circle cx="80" cy="100" r="18" fill="#7ec8ff"/>
+    <text x="80" y="150" fill="#b8b3d9" font-size="14" text-anchor="middle">ほし</text>
+    <path d="M 110 100 Q 200 70 260 100" stroke="#ff9a5c" stroke-width="3" fill="none" stroke-dasharray="6 6"/>
+    <circle cx="280" cy="100" r="35" fill="#000" stroke="#ff9a5c" stroke-width="4"/>
+    <text x="280" y="150" fill="#b8b3d9" font-size="14" text-anchor="middle">ブラックホール</text>
+  </svg>
+  <div class="caption">ちかくに いくと <b>ぐいーん</b> と<br>すいこまれちゃう。</div>
+</section>
+
+<hr>
+
+<section>
+  <svg viewBox="0 0 400 200" width="100%">
+    <circle cx="200" cy="100" r="30" fill="#000" stroke="#ffe9a8" stroke-width="4"/>
+    <path d="M 200 20 L 200 5" stroke="#ffe9a8" stroke-width="3"/>
+    <path d="M 220 130 L 260 170" stroke="#ff5c8a" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="260" y="185" fill="#b8b3d9" font-size="13">ひかりも でられない</text>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#ff5c8a"/>
+      </marker>
+    </defs>
+  </svg>
+  <div class="caption"><b>ひかり</b> も にげられない くらい<br>ちからが つよい。<br>だから まっくろに みえるんだ。</div>
+</section>
+
+</body>
+</html>

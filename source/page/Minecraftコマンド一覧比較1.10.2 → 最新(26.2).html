@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraftコマンド一覧 | 1.10.2 vs 最新(26.2)</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e6e8ee; --text-dim:#9aa1b2; --accent:#7dd3fc; --accent2:#a78bfa;
+    --ok:#34d399; --new:#fbbf24; --gone:#f87171; --code-bg:#11141a; --radius:14px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f5f6fa; --panel:#ffffff; --panel2:#f0f1f6; --border:#e1e4ec;
+      --text:#1a1d29; --text-dim:#5b6070; --accent:#0369a1; --accent2:#6d28d9;
+      --code-bg:#eef0f5;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.75;padding:0 0 80px;
+  }
+  header{max-width:1000px;margin:0 auto;padding:48px 24px 20px;}
+  header h1{font-size:1.8rem;margin:0 0 8px;}
+  header p{color:var(--text-dim);margin:4px 0;font-size:.93rem;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .badge{font-size:.78rem;padding:4px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);color:var(--text-dim);}
+  main{max-width:1000px;margin:0 auto;padding:0 24px;}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0 28px;font-size:.82rem;color:var(--text-dim);}
+  .legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  table.cmdtable{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;font-size:.88rem;margin-bottom:14px;}
+  table.cmdtable th, table.cmdtable td{padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;}
+  table.cmdtable th{background:var(--panel2);color:var(--text-dim);font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;}
+  table.cmdtable tr:last-child td{border-bottom:none;}
+  table.cmdtable td.cmd{font-family:"SF Mono",Menlo,Consolas,monospace;color:var(--accent);white-space:nowrap;}
+  table.cmdtable td.ver{color:var(--text-dim);white-space:nowrap;font-size:.82rem;}
+  .st{display:inline-block;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap;}
+  .st.both{background:#1f3d33;color:var(--ok);}
+  .st.new{background:#3a3013;color:var(--new);}
+  .st.gone{background:#3a1f22;color:var(--gone);}
+  @media (prefers-color-scheme: light){
+    .st.both{background:#d1fae5;color:#047857;}
+    .st.new{background:#fef3c7;color:#92400e;}
+    .st.gone{background:#fde8e8;color:#b91c1c;}
+  }
+
+  h2.sec{font-size:1.15rem;margin:40px 0 6px;display:flex;align-items:center;gap:10px;}
+  h2.sec .n{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.85rem;color:var(--text-dim);font-weight:400;}
+  p.sec-desc{color:var(--text-dim);font-size:.9rem;margin:0 0 14px;}
+
+  .note{
+    background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 20px;margin:24px 0;font-size:.88rem;color:var(--text-dim);
+  }
+  .note b{color:var(--text);}
+
+  footer{max-width:1000px;margin:32px auto 0;padding:0 24px;color:var(--text-dim);font-size:.78rem;}
+  footer a{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Minecraftコマンド一覧比較:1.10.2 → 最新(26.2)</h1>
+  <p>1.10.2(2016年6月)時点で存在した全コマンドと、26.2(2026年6月)時点で存在する全コマンドを突き合わせました。</p>
+  <p>各コマンドの導入バージョンはMinecraft Wikiの各コマンドページ「History」節を個別に確認して記載しています。</p>
+  <div class="badge-row">
+    <span class="badge">1.10.2 時点:約45コマンド</span>
+    <span class="badge">26.2 時点:約70コマンド</span>
+    <span class="badge">出典: minecraft.wiki</span>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--ok)"></span>両方に存在(現役)</span>
+    <span><span class="dot" style="background:var(--new)"></span>1.10.2以降に新規追加</span>
+    <span><span class="dot" style="background:var(--gone)"></span>1.10.2にはあったが現在は削除/統合</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="note">
+    <b>この一覧の使い方:</b> 「両方に存在」のコマンドは基本構文が変わっていても名前は残っているため要注意で移行を。「削除/統合」のコマンドは1.10.2ベースのデータパックやコマンドブロックで確実に動かなくなるため、最優先で置き換えが必要です(例:<code>/blockdata</code> <code>/entitydata</code> → <code>/data</code>、<code>/replaceitem</code> → <code>/item replace</code>、<code>/achievement</code> → <code>/advancement</code>)。
+  </div>
+
+  <h2 class="sec">1.10.2 時点で存在したコマンド一覧 <span class="n">(1.10.2, 2016年6月)</span></h2>
+  <p class="sec-desc">導入バージョンが判明しているものは記載。「初期〜」は正確な導入版が特定できなかったベータ/アルファ期からの古参コマンドです。</p>
+  <table class="cmdtable">
+    <thead><tr><th>コマンド</th><th>導入バージョン</th><th>26.2での状態</th></tr></thead>
+    <tbody>
+      <tr><td class="cmd">/help</td><td class="ver">初期(Alpha)〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/kill</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/list</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/me</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/say</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/tell(/msg・/w)</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/kick</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/ban</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/ban-ip</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/banlist</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/pardon</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/pardon-ip</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/op</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/deop</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/whitelist</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/stop</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/save-all</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/save-off</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/save-on</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/seed</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/time</td><td class="ver">初期〜</td><td><span class="st both">現役(26.1でディメンション単位に仕様変更)</span></td></tr>
+      <tr><td class="cmd">/toggledownfall</td><td class="ver">初期〜</td><td><span class="st gone">削除(/weatherに統合)</span></td></tr>
+      <tr><td class="cmd">/weather</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/gamemode</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/defaultgamemode</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/difficulty</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/give</td><td class="ver">初期〜</td><td><span class="st both">現役(アイテムコンポーネント構文に変更)</span></td></tr>
+      <tr><td class="cmd">/xp(experience)</td><td class="ver">初期〜</td><td><span class="st both">現役(/experience統一)</span></td></tr>
+      <tr><td class="cmd">/tp</td><td class="ver">初期〜(1.10で座標範囲拡張)</td><td><span class="st both">現役(/teleportのエイリアス)</span></td></tr>
+      <tr><td class="cmd">/teleport</td><td class="ver">1.10</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/setworldspawn</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/spawnpoint</td><td class="ver">初期〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/debug</td><td class="ver">1.3.1(12w27a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/publish</td><td class="ver">1.3.1(12w24a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/gamerule</td><td class="ver">1.4.2(12w32a)</td><td><span class="st both">現役(1.21.11でレジストリ方式に全面刷新)</span></td></tr>
+      <tr><td class="cmd">/particle</td><td class="ver">1.4.2頃</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/testfor</td><td class="ver">1.4.2頃</td><td><span class="st gone">削除(セレクタ構文に統合)</span></td></tr>
+      <tr><td class="cmd">/scoreboard</td><td class="ver">1.5頃</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/team</td><td class="ver">1.5頃</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/achievement</td><td class="ver">1.7.2頃</td><td><span class="st gone">削除(1.12で/advancementに置換)</span></td></tr>
+      <tr><td class="cmd">/setidletimeout</td><td class="ver">1.7.2(13w38a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/tellraw</td><td class="ver">1.7.2頃</td><td><span class="st both">現役(1.21.5でSNBT表記に変更)</span></td></tr>
+      <tr><td class="cmd">/spreadplayers</td><td class="ver">1.6.1(13w23a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/playsound</td><td class="ver">1.6.1-pre</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/execute</td><td class="ver">1.8(14w07a)</td><td><span class="st both">現役(構文が大幅拡張)</span></td></tr>
+      <tr><td class="cmd">/clone</td><td class="ver">1.8(14w03a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/blockdata</td><td class="ver">1.8</td><td><span class="st gone">削除(1.13で/dataに統合)</span></td></tr>
+      <tr><td class="cmd">/entitydata</td><td class="ver">1.8</td><td><span class="st gone">削除(1.13で/dataに統合)</span></td></tr>
+      <tr><td class="cmd">/replaceitem</td><td class="ver">1.8(14w26a)</td><td><span class="st gone">削除(1.17で/item replaceに置換)</span></td></tr>
+      <tr><td class="cmd">/testforblock</td><td class="ver">1.8</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/title</td><td class="ver">1.8(14w20a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/trigger</td><td class="ver">1.8(14w06a)</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/worldborder</td><td class="ver">1.8</td><td><span class="st both">現役(1.21.11で単位がティックに変更)</span></td></tr>
+      <tr><td class="cmd">/stats</td><td class="ver">1.8頃</td><td><span class="st gone">削除(/execute storeに統合)</span></td></tr>
+      <tr><td class="cmd">/effect</td><td class="ver">1.8以前〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/enchant</td><td class="ver">1.8以前〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/fill</td><td class="ver">1.8</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/setblock</td><td class="ver">1.8</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/summon</td><td class="ver">1.8以前〜</td><td><span class="st both">現役</span></td></tr>
+      <tr><td class="cmd">/testforblocks</td><td class="ver">1.9(15w...)</td><td><span class="st gone">削除</span></td></tr>
+      <tr><td class="cmd">/stopsound</td><td class="ver">1.9.3-pre2</td><td><span class="st both">現役</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sec">最新(26.2)時点で存在するコマンド一覧</h2>
+  <p class="sec-desc">Minecraft Wiki「Category:Commands」に現在登録されている全コマンド。1.10.2以降に新規追加されたものに黄バッジを付けています。</p>
+  <table class="cmdtable">
+    <thead><tr><th>コマンド</th><th>導入バージョン</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td class="cmd">/advancement</td><td class="ver">1.12(17w13a)</td><td><span class="st new">新規</span> /achievementの後継</td></tr>
+      <tr><td class="cmd">/attribute</td><td class="ver">1.16頃</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/bossbar</td><td class="ver">1.13(18w05a)</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/clear</td><td class="ver">1.8以前〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/clone</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/damage</td><td class="ver">1.19.4</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/data</td><td class="ver">1.13</td><td><span class="st new">新規</span> blockdata/entitydataを統合</td></tr>
+      <tr><td class="cmd">/datapack</td><td class="ver">1.13</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/debug</td><td class="ver">1.3.1</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/defaultgamemode</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/deop</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/dialog</td><td class="ver">1.21.6頃</td><td><span class="st new">新規</span> UIダイアログ表示</td></tr>
+      <tr><td class="cmd">/difficulty</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/effect</td><td class="ver">1.8以前〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/enchant</td><td class="ver">1.8以前〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/execute</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続(構文は別物レベルに拡張)</span></td></tr>
+      <tr><td class="cmd">/experience</td><td class="ver">初期〜(/xp)</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/fetchprofile</td><td class="ver">1.16〜1.19頃</td><td><span class="st new">新規</span> デバッグ用</td></tr>
+      <tr><td class="cmd">/fill</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/fillbiome</td><td class="ver">1.19.4</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/forceload</td><td class="ver">1.13</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/function</td><td class="ver">1.12</td><td><span class="st new">新規</span> データパック関数実行</td></tr>
+      <tr><td class="cmd">/gamemode</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/gamerule</td><td class="ver">1.4.2</td><td><span class="st both">1.10.2から存続(1.21.11で構文刷新)</span></td></tr>
+      <tr><td class="cmd">/give</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/help</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/item</td><td class="ver">1.17(20w46a)</td><td><span class="st new">新規</span> /replaceitemの後継</td></tr>
+      <tr><td class="cmd">/jfr</td><td class="ver">1.16頃</td><td><span class="st new">新規</span> プロファイラ起動</td></tr>
+      <tr><td class="cmd">/kick</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/kill</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/list</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/locate</td><td class="ver">1.11(16w39a)</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/loot</td><td class="ver">1.14</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/me</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/msg(/tell・/w)</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/op</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/particle</td><td class="ver">1.4.2頃</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/perf</td><td class="ver">1.16頃</td><td><span class="st new">新規</span> デバッグ用</td></tr>
+      <tr><td class="cmd">/place</td><td class="ver">1.19</td><td><span class="st new">新規</span> structure/feature/jigsaw配置</td></tr>
+      <tr><td class="cmd">/playsound</td><td class="ver">1.6.1-pre</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/publish</td><td class="ver">1.3.1</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/random</td><td class="ver">1.19.4</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/recipe</td><td class="ver">1.12</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/reload</td><td class="ver">1.8頃</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/return</td><td class="ver">1.20.2</td><td><span class="st new">新規</span> function内の早期return</td></tr>
+      <tr><td class="cmd">/ride</td><td class="ver">1.20.2</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/rotate</td><td class="ver">1.19頃</td><td><span class="st new">新規</span> structure回転</td></tr>
+      <tr><td class="cmd">/save-all/-off/-on</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/say</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/schedule</td><td class="ver">1.14</td><td><span class="st new">新規</span> function遅延実行</td></tr>
+      <tr><td class="cmd">/scoreboard</td><td class="ver">1.5頃</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/seed</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/setblock</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/setidletimeout</td><td class="ver">1.7.2</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/setworldspawn</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/spawnpoint</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続(26.1でpitch必須化)</span></td></tr>
+      <tr><td class="cmd">/spectate</td><td class="ver">1.14</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/spreadplayers</td><td class="ver">1.6.1</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/stop</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/stopsound</td><td class="ver">1.9.3-pre2</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/stopwatch</td><td class="ver">26.1</td><td><span class="st new">新規</span> リアル時間計測</td></tr>
+      <tr><td class="cmd">/summon</td><td class="ver">1.8以前〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/swing</td><td class="ver">1.20台</td><td><span class="st new">新規</span> 腕振りアニメーション</td></tr>
+      <tr><td class="cmd">/tag</td><td class="ver">1.13(17w45a)</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/team</td><td class="ver">1.5頃</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/teammsg(/tm)</td><td class="ver">1.5頃</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/teleport(/tp)</td><td class="ver">初期〜/1.10</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/tellraw</td><td class="ver">1.7.2頃</td><td><span class="st both">1.10.2から存続(1.21.5でSNBT化)</span></td></tr>
+      <tr><td class="cmd">/test</td><td class="ver">1.17頃</td><td><span class="st new">新規</span> ゲームテストフレームワーク</td></tr>
+      <tr><td class="cmd">/tick</td><td class="ver">1.20.2</td><td><span class="st new">新規</span> ティック速度・フリーズ制御</td></tr>
+      <tr><td class="cmd">/time</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続(26.1でディメンション単位化)</span></td></tr>
+      <tr><td class="cmd">/title</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/transfer</td><td class="ver">1.20.5</td><td><span class="st new">新規</span> 別サーバーへ移動</td></tr>
+      <tr><td class="cmd">/trigger</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/unpublish</td><td class="ver">1.20台</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/version</td><td class="ver">1.19頃</td><td><span class="st new">新規</span></td></tr>
+      <tr><td class="cmd">/waypoint</td><td class="ver">1.21.6</td><td><span class="st new">新規</span> Chase the Skiesで追加</td></tr>
+      <tr><td class="cmd">/weather</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/whitelist</td><td class="ver">初期〜</td><td><span class="st both">1.10.2から存続</span></td></tr>
+      <tr><td class="cmd">/worldborder</td><td class="ver">1.8</td><td><span class="st both">1.10.2から存続(26.1でticks単位化)</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>注記:</b> 「初期〜」「〜頃」と記載したコマンドは、Minecraft Wikiの個別ページで正確なスナップショット番号までは特定できなかったものの、1.10.2以前から存在が確認できているものです。プロジェクトで実際に使用しているコマンドがあれば、該当コマンドのMinecraft Wikiページ(<code>https://minecraft.wiki/w/Commands/&lt;コマンド名&gt;</code>)の「History」節で正確な変更点を確認することを推奨します。<br><br>
+    特に1.10.2ベースのデータパック/コマンドブロックで<b>確実に修正が必要</b>なのは、削除された <code>/achievement</code> <code>/blockdata</code> <code>/entitydata</code> <code>/replaceitem</code> <code>/testfor</code> <code>/testforblocks</code> <code>/stats</code> <code>/toggledownfall</code> の使用箇所です。
+  </div>
+
+</main>
+
+<footer>
+  出典:
+  <a href="https://minecraft.wiki/w/Category:Commands" target="_blank">Category:Commands – Minecraft Wiki</a> /
+  各コマンドの個別ページ(例: <a href="https://minecraft.wiki/w/Commands/execute" target="_blank">/execute</a>, <a href="https://minecraft.wiki/w/Commands/data" target="_blank">/data</a> など)の History 節
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>データパック仕様変更まとめ | 1.20.4 → 26.2</title>
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel2:#1e222b;
+    --border:#2a2f3a;
+    --text:#e6e8ee;
+    --text-dim:#9aa1b2;
+    --accent:#7dd3fc;
+    --accent2:#a78bfa;
+    --danger:#f87171;
+    --danger-bg:#3a1f22;
+    --warn:#fbbf24;
+    --warn-bg:#332711;
+    --ok:#34d399;
+    --code-bg:#11141a;
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --bg:#f5f6fa;
+      --panel:#ffffff;
+      --panel2:#f0f1f6;
+      --border:#e1e4ec;
+      --text:#1a1d29;
+      --text-dim:#5b6070;
+      --accent:#0369a1;
+      --accent2:#6d28d9;
+      --danger:#b91c1c;
+      --danger-bg:#fde8e8;
+      --warn:#92400e;
+      --warn-bg:#fef3c7;
+      --ok:#047857;
+      --code-bg:#eef0f5;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.75;
+    padding:0 0 80px;
+  }
+  header{
+    max-width:920px;
+    margin:0 auto;
+    padding:48px 24px 24px;
+  }
+  header h1{
+    font-size:1.85rem;
+    margin:0 0 8px;
+    letter-spacing:.01em;
+  }
+  header p{
+    color:var(--text-dim);
+    margin:4px 0;
+    font-size:.95rem;
+  }
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .badge{
+    font-size:.78rem;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--panel2);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+  }
+  main{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  .toc{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px 24px;
+    margin-bottom:32px;
+  }
+  .toc h2{margin:0 0 12px;font-size:1rem;color:var(--text-dim);font-weight:600;letter-spacing:.05em;text-transform:uppercase;}
+  .toc ol{margin:0;padding-left:1.2em;columns:2;gap:24px;font-size:.92rem;}
+  .toc a{color:var(--accent);text-decoration:none;}
+  .toc a:hover{text-decoration:underline;}
+
+  .format-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:0 0 32px;
+    font-size:.88rem;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .format-table th,.format-table td{
+    padding:10px 14px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+  }
+  .format-table th{
+    background:var(--panel2);
+    color:var(--text-dim);
+    font-weight:600;
+    font-size:.8rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .format-table tr:last-child td{border-bottom:none;}
+  .format-table td.mono{font-family:"SF Mono",Menlo,Consolas,monospace;color:var(--accent);}
+
+  section.version{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    margin-bottom:22px;
+    overflow:hidden;
+    scroll-margin-top:20px;
+  }
+  .version-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 24px;
+    cursor:pointer;
+    user-select:none;
+    background:var(--panel2);
+  }
+  .version-head .tag{
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+    font-size:.95rem;
+    font-weight:700;
+    color:var(--accent2);
+    min-width:150px;
+  }
+  .version-head .title{
+    flex:1;
+    font-size:1rem;
+    font-weight:600;
+  }
+  .version-head .severity{
+    font-size:.72rem;
+    padding:3px 10px;
+    border-radius:999px;
+    white-space:nowrap;
+    font-weight:700;
+    letter-spacing:.03em;
+  }
+  .severity.critical{background:var(--danger-bg);color:var(--danger);}
+  .severity.high{background:var(--warn-bg);color:var(--warn);}
+  .severity.medium{background:var(--panel);color:var(--text-dim);border:1px solid var(--border);}
+
+  .chevron{
+    transition:transform .2s ease;
+    color:var(--text-dim);
+    flex-shrink:0;
+  }
+  section.version.open .chevron{transform:rotate(90deg);}
+
+  .version-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+  }
+  section.version.open .version-body{max-height:4000px;}
+  .version-body-inner{padding:6px 24px 24px;}
+
+  .change{
+    margin:16px 0;
+    padding-left:16px;
+    border-left:3px solid var(--border);
+  }
+  .change.crit{border-left-color:var(--danger);}
+  .change.warn{border-left-color:var(--warn);}
+  .change h4{
+    margin:0 0 6px;
+    font-size:.95rem;
+  }
+  .change p{
+    margin:4px 0;
+    color:var(--text-dim);
+    font-size:.9rem;
+  }
+  code{
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+    background:var(--code-bg);
+    padding:1px 6px;
+    border-radius:5px;
+    font-size:.86em;
+    color:var(--accent);
+  }
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:12px 16px;
+    overflow-x:auto;
+    font-size:.82rem;
+    margin:10px 0;
+    line-height:1.6;
+  }
+  pre code{background:none;padding:0;color:var(--text);}
+  pre .old{color:var(--danger);}
+  pre .new{color:var(--ok);}
+  .diff-line{display:block;}
+
+  ul.compact{margin:6px 0;padding-left:1.3em;font-size:.9rem;color:var(--text-dim);}
+  ul.compact li{margin:4px 0;}
+  ul.compact code{color:var(--text);}
+
+  .mini-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0;}
+  .mini-table th,.mini-table td{padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;}
+  .mini-table th{color:var(--text-dim);font-weight:600;font-size:.78rem;}
+
+  .callout{
+    margin-top:36px;
+    background:linear-gradient(135deg, var(--danger-bg), var(--panel));
+    border:1px solid var(--danger);
+    border-radius:var(--radius);
+    padding:22px 26px;
+  }
+  .callout h2{margin:0 0 12px;font-size:1.1rem;color:var(--danger);}
+  .callout ol{margin:0;padding-left:1.3em;font-size:.92rem;}
+  .callout li{margin:10px 0;}
+  .callout li b{color:var(--text);}
+
+  footer{
+    max-width:920px;margin:32px auto 0;padding:0 24px;
+    color:var(--text-dim);font-size:.78rem;
+  }
+  footer a{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>データパック仕様変更まとめ</h1>
+  <p>Minecraft Java Edition &nbsp;1.20.4 → 26.2(2026年7月時点の最新安定版)</p>
+  <p>各メジャーアップデートで発生した「致命的(パックが動かなくなる/壊れる)」変更を中心に整理。クリックで詳細を開閉できます。</p>
+  <div class="badge-row">
+    <span class="badge">pack_format 26 → 107.1</span>
+    <span class="badge">全8メジャー区分</span>
+    <span class="badge">出典: minecraft.wiki / datapack.wiki</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="toc">
+    <h2>目次</h2>
+    <ol>
+      <li><a href="#v1214">1.21 — フォルダ・コマンド構文の一斉変更</a></li>
+      <li><a href="#v1212">1.21.2 — アイテムコンポーネント深化</a></li>
+      <li><a href="#v1215">1.21.4〜1.21.5 — NBT大規模再編</a></li>
+      <li><a href="#v1218">1.21.6〜1.21.8 — JSON厳格化</a></li>
+      <li><a href="#v12111">1.21.9〜1.21.11 — ゲームルール総入替</a></li>
+      <li><a href="#v261">26.1 — 時間システム根本変更</a></li>
+      <li><a href="#v262">26.2 — pack_format更新</a></li>
+      <li><a href="#summary">見落としやすい沼ポイント</a></li>
+    </ol>
+  </div>
+
+  <table class="format-table">
+    <thead><tr><th>バージョン</th><th>pack_format</th></tr></thead>
+    <tbody>
+      <tr><td>1.20.4(基準)</td><td class="mono">26</td></tr>
+      <tr><td>1.20.5–1.20.6</td><td class="mono">41</td></tr>
+      <tr><td>1.21–1.21.1</td><td class="mono">48</td></tr>
+      <tr><td>1.21.2–1.21.3</td><td class="mono">57</td></tr>
+      <tr><td>1.21.4</td><td class="mono">61</td></tr>
+      <tr><td>1.21.5</td><td class="mono">71</td></tr>
+      <tr><td>1.21.6</td><td class="mono">80</td></tr>
+      <tr><td>1.21.7–1.21.8</td><td class="mono">81</td></tr>
+      <tr><td>1.21.9–1.21.10</td><td class="mono">88.0</td></tr>
+      <tr><td>1.21.11</td><td class="mono">94.1</td></tr>
+      <tr><td>26.1–26.1.2</td><td class="mono">101.1</td></tr>
+      <tr><td>26.2(最新)</td><td class="mono">107.1</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 1.21 -->
+  <section class="version open" id="v1214">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">1.21</span>
+      <span class="title">フォルダ・コマンド構文の一斉変更</span>
+      <span class="severity critical">最重要</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+
+        <div class="change crit">
+          <h4>データ格納フォルダが複数形 → 単数形に変更</h4>
+          <p>これに対応しないとパックが読み込まれません。<code>tags</code>のみ複数形のまま。</p>
+          <table class="mini-table">
+            <tr><th>旧</th><th>新</th></tr>
+            <tr><td><code>functions</code></td><td><code>function</code></td></tr>
+            <tr><td><code>advancements</code></td><td><code>advancement</code></td></tr>
+            <tr><td><code>recipes</code></td><td><code>recipe</code></td></tr>
+            <tr><td><code>loot_tables</code></td><td><code>loot_table</code></td></tr>
+            <tr><td><code>predicates</code></td><td><code>predicate</code></td></tr>
+            <tr><td><code>item_modifiers</code></td><td><code>item_modifier</code></td></tr>
+            <tr><td><code>structures</code></td><td><code>structure</code></td></tr>
+            <tr><td><code>tags/functions</code></td><td><code>tags/function</code></td></tr>
+            <tr><td><code>tags/items</code></td><td><code>tags/item</code></td></tr>
+            <tr><td><code>tags/blocks</code></td><td><code>tags/block</code></td></tr>
+          </table>
+        </div>
+
+        <div class="change crit">
+          <h4><code>/attribute</code> modifier 構文の変更</h4>
+          <p>UUID+名前の組から、名前空間付きIDひとつに統一されました。</p>
+          <pre><span class="diff-line old">旧: attribute @s minecraft:generic.max_health modifier add &lt;uuid&gt; &lt;name&gt; 2 add_value</span><span class="diff-line new">新: attribute @s minecraft:generic.max_health modifier add mypack:bonus 2 add_value</span></pre>
+        </div>
+
+        <div class="change crit">
+          <h4>エンティティ Attributes NBTの丸ごと再設計</h4>
+          <p>camelCase→snake_case、operationが数値→文字列。<code>generic.</code> <code>player.</code> <code>zombie.</code> プレフィックスも廃止。</p>
+          <pre><span class="diff-line old">旧: {Attributes:[{Name:"generic.scale",Base:2,Modifiers:[{UUID:[I;1,0,0,0],Name:"example",Amount:1,Operation:0}]}]}</span><span class="diff-line new">新: {attributes:[{id:"scale",base:2,modifiers:[{id:"tutorial:example",amount:1,operation:"add_value"}]}]}</span></pre>
+        </div>
+
+        <div class="change warn">
+          <h4>その他の主な変更</h4>
+          <ul class="compact">
+            <li>矢NBT:<code>power</code>→<code>acceleration_power</code>、<code>ShotFromCrossbow</code>廃止(<code>weapon</code>フィールドで判定)</li>
+            <li>ボートが木材ごとのエンティティタイプに分割(<code>Type=oak</code> → <code>minecraft:oak_boat</code>)</li>
+            <li>ロストテーブル述語:<code>killer</code>→<code>attacker</code>、<code>killer_player</code>→<code>attacking_player</code></li>
+            <li><code>random_chance_with_looting</code> → <code>random_chance_with_enchanted_bonus</code>(フィールド構成も変更)</li>
+            <li><code>enchantment</code>述語 → <code>enchantments</code>(単体/リスト/タグ対応)</li>
+            <li>コンテナロック:<code>lock="MyKey"</code> → <code>lock={components:{"minecraft:custom_name":"'MyKey'"}}</code></li>
+            <li>実績 <code>killed_by_crossbow</code> → <code>killed_by_arrow</code></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 1.21.2 -->
+  <section class="version" id="v1212">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">1.21.2</span>
+      <span class="title">アイテムコンポーネント深化</span>
+      <span class="severity critical">最重要</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+
+        <div class="change crit">
+          <h4><code>food</code>コンポーネント単体では食べられなくなった</h4>
+          <p><code>food</code>は栄養値データの保持のみになり、「食べる」機能自体は新設の<code>consumable={}</code>を別途付けないと動作しません。既存パックで最も見落としやすい変更です。</p>
+          <pre><span class="diff-line old">旧: minecraft:food={nutrition:4,saturation:1.2} だけで食べられた</span><span class="diff-line new">新: minecraft:food={...} に加えて minecraft:consumable={} が必須</span></pre>
+        </div>
+
+        <div class="change warn">
+          <h4>その他の変更</h4>
+          <ul class="compact">
+            <li><code>fire_resistant</code> → <code>damage_resistant</code>(対象タイプを<code>types</code>フィールドで指定)</li>
+            <li><code>/loot</code>コマンドが、ロストテーブルを持たないブロックからのドロップでエラーを出すように</li>
+            <li>羊(sheep)のロストテーブルが色別から単一テーブル+サブテーブルへ統合</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 1.21.4-5 -->
+  <section class="version" id="v1215">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">1.21.4〜1.21.5</span>
+      <span class="title">アイテム・エンティティNBTの大規模再編</span>
+      <span class="severity critical">最重要</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+
+        <div class="change crit">
+          <h4>テキストコンポーネントがJSON文字列 → SNBT表記に変更</h4>
+          <p><code>tellraw</code>やカスタム名などで、ダブルクォートJSON文字列表記のままだとエラーになります。</p>
+          <pre><span class="diff-line old">旧: tellraw @s {"text":"Hello world"}</span><span class="diff-line new">新: tellraw @s {text:'Hello world'}</span></pre>
+        </div>
+
+        <div class="change crit">
+          <h4>モブ・防具立ての装備データが <code>equipment</code> に統合</h4>
+          <p><code>ArmorItems</code> <code>HandItems</code> <code>body_armor_item</code> 等がすべて統合。ドロップ確率も<code>drop_chances</code>に統合。将来的にプレイヤーにも適用予定。</p>
+          <pre><span class="diff-line new">equipment:{chest:{id:'minecraft:diamond_chestplate'}}
+drop_chances:{chest:0.1,feet:1.0}</span></pre>
+        </div>
+
+        <div class="change warn">
+          <h4>コンポーネント記法の簡略化</h4>
+          <ul class="compact">
+            <li>エンチャント:<code>enchantments={levels:{sharpness:2}}</code> → <code>enchantments={sharpness:2}</code></li>
+            <li><code>can_place_on</code> / <code>can_break</code> がトップレベルへインライン化</li>
+            <li><code>dyed_color={rgb:12345}</code> → <code>dyed_color=12345</code></li>
+            <li>サドル:<code>horse.saddle</code> → <code>saddle</code>(<code>equipment.saddle</code>に統一)</li>
+            <li>リスポーン座標系フィールドがすべて<code>respawn</code>にネスト</li>
+            <li><code>equippable</code>コンポーネント:<code>model</code> → <code>asset_id</code></li>
+            <li>かまど系ブロックエンティティがsnake_caseへ(<code>CookTime</code>→<code>cooking_time_spent</code>等)</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 1.21.6-8 -->
+  <section class="version" id="v1218">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">1.21.6〜1.21.8</span>
+      <span class="title">JSON解析の厳格化</span>
+      <span class="severity high">重要</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+
+        <div class="change crit">
+          <h4>すべてのJSONファイルが strict mode で解析されるように</h4>
+          <p>末尾カンマや軽微な構文の乱れがあると、これまで許容されていても急にエラーになります。エディタの自動整形などで紛れ込んだミスに要注意。</p>
+        </div>
+
+        <div class="change warn">
+          <h4>その他</h4>
+          <ul class="compact">
+            <li>サウンドイベント <code>block.sand.wind</code> → <code>block.dry_grass.ambient</code></li>
+            <li>アイテムがGUI規定サイズより大きく描画される場合エラーに(<code>oversized_in_gui</code>で対応)</li>
+            <li><code>area_effect_cloud</code>の<code>Particle</code> → <code>custom_particle</code></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 1.21.9-11 -->
+  <section class="version" id="v12111">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">1.21.9〜1.21.11</span>
+      <span class="title">ゲームルールが総入れ替え</span>
+      <span class="severity critical">最重要</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+
+        <div class="change crit">
+          <h4>すべてのガムルールが <code>minecraft:</code> 名前空間のレジストリ方式に</h4>
+          <p><code>/gamerule</code>を使うfunctionは旧キー名が使えなくなります。一部は<b>値が反転</b>している点に要注意。</p>
+          <table class="mini-table">
+            <tr><th>旧</th><th>新</th><th>備考</th></tr>
+            <tr><td><code>doDaylightCycle</code></td><td><code>minecraft:advance_time</code></td><td></td></tr>
+            <tr><td><code>doMobLoot</code></td><td><code>minecraft:mob_drops</code></td><td></td></tr>
+            <tr><td><code>doMobSpawning</code></td><td><code>minecraft:spawn_mobs</code></td><td></td></tr>
+            <tr><td><code>doWeatherCycle</code></td><td><code>minecraft:advance_weather</code></td><td></td></tr>
+            <tr><td><code>disableRaids</code></td><td><code>minecraft:raids</code></td><td>真偽値が反転</td></tr>
+            <tr><td><code>disableElytraMovementCheck</code></td><td><code>minecraft:elytra_movement_check</code></td><td>真偽値が反転</td></tr>
+            <tr><td><code>naturalRegeneration</code></td><td><code>minecraft:natural_health_regeneration</code></td><td></td></tr>
+            <tr><td><code>spawnRadius</code></td><td><code>minecraft:respawn_radius</code></td><td></td></tr>
+            <tr><td><code>doFireTick</code> 等</td><td><code>minecraft:fire_spread_radius_around_player</code></td><td>数値化(-1=無制限, 0=無効)</td></tr>
+          </table>
+        </div>
+
+        <div class="change warn">
+          <h4>その他の重要変更</h4>
+          <ul class="compact">
+            <li><code>/worldborder</code>の数値が既定でティック単位に(秒指定は末尾に<code>s</code>が必要)</li>
+            <li><code>/spawnpoint</code> <code>/setworldspawn</code> はyaw指定時にpitchも必須</li>
+            <li>pack_formatが <code>min_format</code> / <code>max_format</code>(major.minor)方式に</li>
+            <li>アイテム/ブロック <code>minecraft:chain</code> → <code>minecraft:iron_chain</code></li>
+          </ul>
+          <pre><span class="diff-line old">旧: /worldborder set 620 20   （20秒かけて）</span><span class="diff-line new">新: /worldborder set 620 20s  （sを付けないとティック扱い）</span></pre>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 26.1 -->
+  <section class="version" id="v261">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">26.1</span>
+      <span class="title">時間システムの根本変更</span>
+      <span class="severity critical">最重要</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+
+        <div class="change crit">
+          <h4><code>/time</code>コマンドがディメンション単位に</h4>
+          <p>グローバル時間が廃止され、ディメンションごとに独立した時間になりました。昼夜制御functionは要修正。</p>
+          <pre><span class="diff-line old">旧: /time set 1500</span><span class="diff-line new">新: /time set 1500 of minecraft:overworld （オーバーワールド以外にいる場合は明示必須)</span></pre>
+          <ul class="compact">
+            <li><code>/time set day/night/noon/midnight</code> は「次にその時刻が来るまで進める」動作に変更(固定値セットではなくなった)</li>
+            <li><code>/time query daytime</code> → <code>/time query minecraft:day</code></li>
+            <li>ディメンションタイプに<code>default_clock</code>新設。未指定だとそのディメンションに時間が存在しなくなる</li>
+          </ul>
+        </div>
+
+        <div class="change warn">
+          <h4>その他</h4>
+          <ul class="compact">
+            <li>看板・バナーの<code>rotation</code>デフォルトが<code>0</code>→<code>8</code>(従来通りにするには<code>[rotation=0]</code>を明示)</li>
+            <li>村人在庫:<code>villager.*</code>スロット → <code>mob.inventory.*</code></li>
+            <li>ワールド生成フィーチャーの多数リネーム(<code>forest_rock</code>→<code>block_blob</code>等)、必須フィールド追加</li>
+            <li>ディメンションタイプに<code>has_ender_dragon_fight</code>が必須化</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 26.2 -->
+  <section class="version" id="v262">
+    <div class="version-head" onclick="toggle(this)">
+      <span class="chevron">▶</span>
+      <span class="tag">26.2</span>
+      <span class="title">pack_format更新(現行最新・小規模)</span>
+      <span class="severity medium">軽微</span>
+    </div>
+    <div class="version-body">
+      <div class="version-body-inner">
+        <div class="change">
+          <h4>pack_format 107.1</h4>
+          <p>26.1系からの継続的な微調整が中心で、1.21.9以降の <code>min_format</code>/<code>max_format</code> 方式を踏襲。1.20.4パックを最終的に持っていく着地点です。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="callout" id="summary">
+    <h2>⚠ 特に見落としやすい"沼"ポイント</h2>
+    <ol>
+      <li><b>フォルダの複数形→単数形(1.21)</b>:これを直さないとパック自体が読み込まれない</li>
+      <li><b>food単体では食べられない(1.21.2)</b>:<code>consumable={}</code>忘れで食べる機能が突然消える</li>
+      <li><b>テキストコンポーネントがJSON→SNBT(1.21.5)</b>:<code>tellraw</code>等のダブルクォートJSON文字列がそのままだとエラー</li>
+      <li><b>ガムルール名の総入れ替え+一部真偽反転(1.21.11)</b>:functionが黙って意味を変える</li>
+      <li><b>/timeがディメンション単位に(26.1)</b>:昼夜制御用functionが動かなくなる</li>
+      <li><b>JSON厳格パース化(1.21.6-8)</b>:軽微な構文ミスが急にエラーになる</li>
+    </ol>
+  </div>
+
+</main>
+
+<footer>
+  出典: <a href="https://minecraft.wiki/w/Data_pack" target="_blank">Data pack – Minecraft Wiki</a> /
+  <a href="https://minecraft.wiki/w/Pack_format" target="_blank">Pack format – Minecraft Wiki</a> /
+  <a href="https://datapack.wiki/wiki/info/breaking-changes" target="_blank">Breaking Changes – Datapack Wiki</a> /
+  <a href="https://www.minecraft.net/en-us/article/minecraft-new-version-numbering-system" target="_blank">Minecraft new version numbering system</a>
+</footer>
+
+<script>
+function toggle(head){
+  var section = head.parentElement;
+  section.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
