@@ -138,7 +138,7 @@ sc.render.engine="BLENDER_EEVEE"
 import os
 os.makedirs(S+"/tex_out",exist_ok=True)
 for im in bpy.data.images:
-    if im.users==0 or im.name.startswith("_dummy") or im.source!="FILE" and im.name!="prosthetic": continue
+    if im.users==0 or im.name.startswith("_dummy") or im.source!="FILE" and im.name not in("prosthetic","vest"): continue
     fn=S+"/tex_out/"+im.name.replace(" ","_")+".png"
     im.filepath_raw=fn; im.file_format="PNG"; im.save(); im.filepath=fn
 bpy.ops.wm.save_as_mainfile(filepath=S+"/nemo_s3.blend")

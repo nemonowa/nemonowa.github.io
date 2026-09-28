@@ -2,7 +2,7 @@
 
 - `nemo.blend` … mmd_tools形式のMMDモデル(テクスチャ埋め込み・gzip圧縮保存)
 - `pmx/nemo.pmx` + `pmx/textures/` … MikuMikuDance用PMX
-- `build/` … 素体から再生成するスクリプト(build1: 素体整理・等身・配色・義手 / build2: 刺繍・ブーツ・肩章・襟・傷 / build_face: クール表情の焼き込み・つり目・輪郭・瞳・アホ毛/跳ね毛 / build3: 義手模様ベイク・MMDボーン化・表情・mmd_tools変換)
+- `build/` … 素体から再生成するスクリプト(build1: 素体整理・等身・配色・義手 / build2: 刺繍・ブーツ・肩章・襟・傷 / build_outfit: 黒シャツ・刺繍ベスト・軍服(長袖/前開き/裾)・長ズボン・ニーパッド・ベルト・飾緒 / build_face: クール表情の焼き込み・つり目・輪郭・瞳・アホ毛/跳ね毛 / build3: 義手模様ベイク・MMDボーン化・表情・mmd_tools変換)
 
 ## 素体とクレジット(必須表記)
 
