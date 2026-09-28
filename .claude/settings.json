@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /opt/claude-blender/scripts/start_blender_headless.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
