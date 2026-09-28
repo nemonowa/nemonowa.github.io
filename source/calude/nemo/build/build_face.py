@@ -9,14 +9,20 @@ def arr(kb): a=np.empty(n*3,np.float32); kb.data.foreach_get("co",a); return a.r
 base=arr(B); keys={k.name:arr(k) for k in kbs[1:]}
 
 # ---- 1. 基本表情の焼き込み(各キーが動かす頂点はキー本来の形を優先) ----
-MIX={"face_angry":0.35,"eye_zitome":0.35,"eye_black_small":0.4,"lip_down":0.3}
+MIX={"lip_up":0.8,"eye_zitome":0.3,"face_happy":0.15,"eye_black_small":0.4}
+SERIOUS={"face_angry":0.35,"eye_zitome":0.35,"eye_black_small":0.4,"lip_down":0.3,"eye_brow_down":0.2}
 delta=sum((keys[k]-base)*w for k,w in MIX.items())
 newbase=base+delta
 newkeys={}
 for k,a in keys.items():
     moved=np.linalg.norm(a-base,axis=1)>1e-5
     newkeys[k]=np.where(moved[:,None],a,a+delta)
+orig=base
 base=newbase
+# 追加モーフ(絶対形状): 真顔=2枚目の参考、ニヤリウィンク=1枚目の参考(右目を閉じる)
+serious=orig+sum((keys[k]-orig)*w for k,w in SERIOUS.items())
+wmove=np.linalg.norm(keys["blink_R"]-orig,axis=1)>1e-5
+wink=np.where(wmove[:,None],keys["blink_R"],newbase)+(keys["lip_up"]-orig)*0.25
 
 # ---- 2. 形状調整(全キーに同じ関数を適用) ----
 EC=np.array([0.0523,-0.0904,1.5867]); MZ=1.5212; CZ=1.4720
@@ -35,6 +41,8 @@ def F(p):
     p[:,0]*=1-0.035*tc
     return p
 base=F(base); newkeys={k:F(a) for k,a in newkeys.items()}
+for nm,a in (("serious",serious),("smirk_wink",wink)):
+    h.shape_key_add(name=nm,from_mix=False); newkeys[nm]=F(a)
 B.data.foreach_set("co",base.ravel())
 for k,a in newkeys.items(): kbs[k].data.foreach_set("co",a.ravel())
 me.vertices.foreach_set("co",base.ravel()); me.update()
@@ -75,12 +83,15 @@ def lock(dirs,width,lift=(0.0,0.006),ext=None,seg=16,flat=0.14):
         pts.append(loc); nrms.append(nr)
     if len(pts)<2: return
     if ext:
-        for e in (ext if isinstance(ext[0],tuple) else [ext]): pts.append(pts[-1]+Vector(e)); nrms.append(nrms[-1])
+        b0=pts[-1].copy()   # 延長点は表面上の最終点からの相対位置
+        for e in (ext if isinstance(ext[0],tuple) else [ext]): pts.append(b0+Vector(e)); nrms.append(nrms[-1])
     # 点列をCatmull-Rom的に補間
     P=[];Nn=[]
     for i in range(seg+1):
         t=i/seg*(len(pts)-1); k=min(int(t),len(pts)-2); f=t-k
-        P.append(pts[k].lerp(pts[k+1],f)); Nn.append(nrms[k].lerp(nrms[k+1],f).normalized())
+        p0=pts[max(k-1,0)]; p1=pts[k]; p2=pts[k+1]; p3=pts[min(k+2,len(pts)-1)]
+        P.append(0.5*((2*p1)+(-p0+p2)*f+(2*p0-5*p1+4*p2-p3)*f*f+(-p0+3*p1-3*p2+p3)*f**3))
+        Nn.append(nrms[k].lerp(nrms[k+1],f).normalized())
     rings=[]
     for i,(p,nr) in enumerate(zip(P,Nn)):
         t=i/seg
@@ -94,7 +105,9 @@ def lock(dirs,width,lift=(0.0,0.006),ext=None,seg=16,flat=0.14):
     tip=bm.verts.new(P[-1]+(P[-1]-P[-2])*0.5)
     for j in range(6): bm.faces.new((rings[-1][j],rings[-1][(j+1)%6],tip))
 # アホ毛: 頭頂から1本、前へ弧を描いて跳ねる+短い1本
-lock([(0,-0.12,1),(0,-0.04,1)],0.006,lift=(0,0),ext=((0.002,-0.004,0.02),(0.004,-0.016,0.022),(0.006,-0.03,0.01),(0.008,-0.038,-0.006)),flat=0.3)
+# アホ毛: 頭頂から後ろへ立ち上がり、大きな輪を描いて前へ垂れる一房
+lock([(0.02,0.25,1),(0.02,0.12,1)],0.009,lift=(0,0),seg=28,flat=0.3,
+     ext=((0.002,0.014,0.028),(0.004,0.006,0.056),(0.007,-0.02,0.072),(0.010,-0.048,0.066),(0.013,-0.068,0.042),(0.015,-0.074,0.014),(0.016,-0.066,-0.004)))
 pass #lock([(0.03,0.06,1),(0.035,0.11,1)
 # 跳ね毛は控えめに: サイド各1本・襟足各1本、角度は緩く
 for sx in (1,-1):

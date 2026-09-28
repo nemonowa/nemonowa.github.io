@@ -88,7 +88,7 @@ MOR={"eye_close":("まばたき","blink","EYE"),"blink_L":("ウィンク","wink"
      "lip_a":("あ","a","MOUTH"),"lip_i":("い","i","MOUTH"),"lip_u":("う","u","MOUTH"),"lip_e":("え","e","MOUTH"),"lip_o":("お","o","MOUTH"),
      "lip_w":("ω","omega","MOUTH"),"mouse_open":("口開け","mouth_open","MOUTH"),"lip_up":("にやり","grin","MOUTH"),
      "face_happy":("にこり","happy","OTHER"),"face_angry":("怒り","anger","OTHER"),"face_sad":("困る","sad","OTHER"),"face_surprise":("驚き","surprise","OTHER"),
-     "cheek":("照れ","blush","OTHER")}
+     "cheek":("照れ","blush","OTHER"),"serious":("真顔","serious","OTHER"),"smirk_wink":("ニヤリウィンク","smirk_wink","OTHER")}
 head=bpy.data.objects["head"]; kbs=head.data.shape_keys.key_blocks
 for o,(j,e,c) in MOR.items():
     if o in kbs: kbs[o].name=j
