@@ -150,6 +150,60 @@ blender --background input.blend --python .claude/skills/blender-cloud-render/sc
   自動選択はしない)。指定したアクションを対象アーマチュアに割り当ててから書き出す。
   書き出しフレーム範囲はアクションの`frame_range`(実際にキーフレームが打たれている範囲)
   をシーンに反映してから`use_frame_range=True`で書き出す。
+- `vmd_to_action.py`はVMDを**新規アクション**(`<VMD名>_bone`)として取り込み、
+  `action_name`指定時はそれをリネームする。既存アクションはそのまま残る。
+- **`import_vmd`は`filepath`だけ渡すと何もせずFINISHEDを返す**: オペレータ内部は
+  `self.files`+`self.directory`でファイルを列挙するため、スクリプトから呼ぶ場合は
+  `directory=`と`files=[{"name": ...}]`を必ず渡すこと(エラーも警告も出ないので気付きにくい)。
+- **`bone_mapper="PMX"`を使う**: `"BLENDER"`はBlender上のボーン名とVMDのボーン名
+  (日本語)を直接照合するため、nowaのように英語名にリネームしたリグでは1本も一致せず、
+  Fカーブ0本の空アクションになる。`"PMX"`は`mmd_bone.name_j`で照合する。
+- **`margin=0`にする**: 既定値5だと先頭に物理安定用の5フレームが挿入され、キーが後ろにずれる。
+- `root_object_name`は.blend内にmmd_root(ROOT)オブジェクトが複数ある場合のみ必須。
+  通常(1体のみ)は省略可で自動検出される。
+- `mmd_to_blend.py`のデフォルトscale(0.08)はmmd_toolsのPMXインポート標準値。
+  `blend_to_mmd.py`側はその逆数(12.5)でMMD標準スケールに戻す固定値になっているため、
+  異なるscaleでインポートした.blendを書き出す場合は両スクリプトのscale指定を揃えること。
+
+**Blender 4.0系固有のworkaroundが2つ入っている(4.2+では不要だが害もない)**:
+
+1. `mmd_to_blend.py`: `import_model`の`dictionary`引数は空文字`""`ではなく
+   `"DISABLED"`を渡す(空文字だとenumエラーで失敗する)。
+2. `blend_to_mmd.py`: Blender 4.0系は`mesh.corner_normals`が遅延計算のままで、
+   mmd_tools v4.0.0のexporter(Blender 4.1+で自動計算される前提のコード)が
+   `assert len(loop_normals) == len(mesh.loops)`で失敗する。これを避けるため、
+   エクスポート実行前にexporter内部の`__get_normals`をモンキーパッチし、
+   呼び出し直前に評価済みメッシュへ`calc_normals_split()`を挟んでいる
+   (アドオン本体は書き換えず、自分のスクリプト内でパッチを当てているだけなので
+   mmd_toolsの再インストールでも消えない)。
+
+**動作確認済みのラウンドトリップ**(PMX→blend→PMX→blend):
+テクスチャ14件・マテリアル12件・ボーン253件・モーフ49件・剛体181件・ジョイント357件
+を含む実モデルで、変換前後の件数一致とBlenderへの再インポート成功を確認済み。
+アーマチュアのIK/物理演算(剛体・ジョイント)・シェイプキー(頂点モーフ)・UVモーフ・
+グループモーフはすべて往復可能。
+
+### アニメーション(.vmd) ⇔ Blenderアクション 相互変換スクリプト
+
+`scripts/vmd_to_action.py`と`scripts/action_to_vmd.py`でVMDモーションとBlenderの
+アクション(Fカーブ)を相互変換できる。対象はボーンアニメーションのみ
+(`mmd_tools.import_vmd`/`export_vmd`はモーフ(表情)のキーフレームも扱えるが、
+本スキルのスクリプトでは検証済みの範囲としてボーンアニメーションを主眼にしている)。
+
+```bash
+# VMD -> Blenderアクション(既存の.blendに追加し、そのまま上書き保存する)
+blender --background input.blend --python .claude/skills/blender-cloud-render/scripts/vmd_to_action.py \
+  -- input.vmd [root_object_name] [action_name]
+
+# Blenderアクション -> VMD
+blender --background input.blend --python .claude/skills/blender-cloud-render/scripts/action_to_vmd.py \
+  -- output.vmd action_name [root_object_name]
+```
+
+- `action_to_vmd.py`はアクション名必須(.blend内には通常複数アクションが存在するため
+  自動選択はしない)。指定したアクションを対象アーマチュアに割り当ててから書き出す。
+  書き出しフレーム範囲はアクションの`frame_range`(実際にキーフレームが打たれている範囲)
+  をシーンに反映してから`use_frame_range=True`で書き出す。
 - `vmd_to_action.py`はVMDインポート後にアーマチュアへ割り当てられたアクションを
   (`action_name`指定時のみ)リネームする。**mmd_toolsの`import_vmd`はアーマチュアに
   現在割り当てられているアクションのFカーブを直接上書きする**(新規アクション
@@ -164,9 +218,12 @@ blender --background input.blend --python .claude/skills/blender-cloud-render/sc
   `RuntimeError: ...poll() failed, context is incorrect`になる。
 
 **動作確認済みのラウンドトリップ**(既存アクション→VMD→アクション):
-`Nowa_IdleWave`アクション(33チャンネル、270フレーム)をVMDへ書き出し、
-再インポートしたアクションと全チャンネル・全キーフレームの座標値を突き合わせ、
-差分0(完全一致)を確認済み。
+`Nowa_IdleWave`アクション(33チャンネル、270フレーム)をVMDへ書き出し、元アクションを
+アーマチュアから外した状態で再インポートし、新規アクションの全チャンネル・全キーフレームを
+元と突き合わせて差分0を確認済み(VMDは位置キーも持つため、値0の`location`チャンネルが
+33本追加される)。※当初の検証はimport_vmdが空振りしていたのに元アクションと比較して
+「一致」と誤判定していた。検証時は必ず元アクションを外し、新規アクションが作られたことを確認すること。
+同じVMDを別モデル(nemo)へ流し込み、nowaと同じ動きになることもレンダーで確認済み。
 
 ## レンダリング設定の勘所
 

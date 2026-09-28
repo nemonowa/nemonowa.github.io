@@ -83,11 +83,15 @@ def main():
     bpy.context.view_layer.objects.active = arm_obj
 
     print(f"[vmd_to_action] importing: {vmd_path} -> armature: {arm_obj.name}")
+    # import_vmdはfiles+directoryで対象ファイルを受け取る(filepathだけだと
+    # 何もインポートせずFINISHEDを返すので注意)
     bpy.ops.mmd_tools.import_vmd(
         filepath=vmd_path,
+        directory=os.path.dirname(vmd_path),
+        files=[{"name": os.path.basename(vmd_path)}],
         scale=1.0,
-        margin=5,
-        bone_mapper="BLENDER",
+        margin=0,  # 既定の5だと先頭に5フレームの物理安定用余白が入り、キーが後ろにずれる
+        bone_mapper="PMX",  # mmd_bone.name_j(日本語名)で照合。"BLENDER"はBlender上のボーン名で照合するため英語名リグでは全滅する
         rename_bones=False,
         use_underscore=False,
         dictionary="DISABLED",
