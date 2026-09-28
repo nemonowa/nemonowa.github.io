@@ -2,66 +2,47 @@
 set -e
 
 # ベースイメージに含まれる、ネットワークポリシーで許可されていないPPA
-# (deadsnakes, ondrej/php)を検出して削除。.list形式・.sources(deb822)形式どちらでも対応。
+# (deadsnakes, ondrej/php等)を検出して削除。.list形式・.sources(deb822)形式どちらでも対応。
+# これを怠ると apt-get update が403で失敗し、Setup script全体がexit code 100で落ちる。
 for f in /etc/apt/sources.list.d/*; do
   if grep -q "ppa.launchpadcontent.net" "$f" 2>/dev/null; then
     rm -f "$f"
   fi
 done
 
-# --- 1. Blender本体(ヘッドレスレンダリングに使用。GUIは不要) ---
 apt-get update
+
+# --- 1. Blender本体(ヘッドレスレンダリングに使用。GUIは不要) ---
 apt-get install -y blender
 
-# --- 2. uv (Pythonパッケージマネージャ) ---
-pip install uv --break-system-packages || true
+# --- 2. ヘッドレスレンダリングに必要なGLライブラリ ---
+# これが無いと EEVEE/Cycles のレンダリングが
+# "Couldn't open libEGL.so.1" で失敗する。
+apt-get install -y libegl1 libgl1 libglx0
 
-# --- 3. minihellboy/claude-blender を取得してMCPサーバーの依存関係を用意 ---
-if [ ! -d /opt/claude-blender ]; then
-  git clone https://github.com/minihellboy/claude-blender /opt/claude-blender
+# --- 3. numpy(mmd_toolsアドオンが依存。MMDモデルを扱わないなら省略可) ---
+# BlenderのUbuntu標準パッケージは内蔵Pythonではなくシステムpython3を使うため、
+# pip install numpy ではなく apt でインストールする(pipは
+# externally-managed-environment エラーで弾かれる)。
+apt-get install -y python3-numpy
+
+# --- 4. mmd_toolsアドオン(MMD/PMXモデルを扱う場合) ---
+# 使用中のBlenderバージョンに対応するタグを選ぶこと。バージョン不一致だと
+# import エラーで有効化に失敗する。Ubuntu標準リポジトリのBlender(4.0系)には
+# v2.10.3系が対応。Blender 4.2+ を別途導入する場合は main ブランチでよい。
+MMD_TOOLS_TAG="v2.10.3"
+if [ ! -d /tmp/mmd_tools_src ]; then
+  git clone --depth 1 https://github.com/MMD-Blender/blender_mmd_tools.git /tmp/mmd_tools_src
 fi
-cd /opt/claude-blender
-uv sync
+cd /tmp/mmd_tools_src
+git fetch --tags --depth 1
+git checkout "$MMD_TOOLS_TAG"
 
-# --- 4. セッション開始時に使うヘッドレス起動スクリプトを配置 ---
-# (start_blender_headless.sh の内容。SessionStart フックから呼び出す)
-cat > /opt/claude-blender/scripts/start_blender_headless.sh << 'HEADLESS_EOF'
-#!/bin/bash
-# クラウドセッションでのみ動作。ローカル実行時は何もしない。
-if [ "$CLAUDE_CODE_REMOTE" != "true" ]; then
-  exit 0
-fi
-
-PORT=9876
-
-# 既存プロセスがポートを掴んでいれば健全性を確認し、応答がなければ掃除してから再起動
-if lsof -i :"$PORT" -sTCP:LISTEN -t >/dev/null 2>&1; then
-  if timeout 2 bash -c "echo > /dev/tcp/127.0.0.1/$PORT" 2>/dev/null; then
-    echo "Blender headless server already running on port $PORT."
-    exit 0
-  fi
-  fuser -k "$PORT"/tcp 2>/dev/null || true
-  sleep 1
-fi
-
-cd /opt/claude-blender
-nohup blender --background --python scripts/headless_blender.py -- --port "$PORT" \
-  > /tmp/claude_blender_headless.log 2>&1 &
-disown
-
-# ポートが開くまで最大15秒待つ
-for i in $(seq 1 15); do
-  if timeout 1 bash -c "echo > /dev/tcp/127.0.0.1/$PORT" 2>/dev/null; then
-    echo "Blender headless server is up on port $PORT."
-    exit 0
-  fi
-  sleep 1
-done
-
-echo "WARNING: Blender headless server did not come up within 15s. Check /tmp/claude_blender_headless.log"
-exit 0
-HEADLESS_EOF
-
-chmod +x /opt/claude-blender/scripts/start_blender_headless.sh
+ADDON_DIR=$(blender --background --python-expr "import bpy; print(bpy.utils.user_resource('SCRIPTS', path='addons'))" 2>&1 | grep '^/')
+mkdir -p "$ADDON_DIR"
+rm -rf "$ADDON_DIR/mmd_tools"
+cp -r mmd_tools "$ADDON_DIR/"
 
 echo "Blender headless setup complete."
+echo "使い方: スクリプト冒頭で bpy.ops.preferences.addon_enable(module='mmd_tools') を呼ぶこと"
+echo "(セッションを跨ぐと有効化状態は保持されないため、毎回のスクリプトで再度有効化する)"
