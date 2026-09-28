@@ -65,7 +65,13 @@ def shirt_ok(f):
             and c.z>HZ-0.02 and c.z<NZ-0.005)
 iSh=midx(mat("shirt_outer",(0.022,0.022,0.027),0,0.8))
 sh_src=[f for f in skin if shirt_ok(f)]
+def in_v(c,m=0.0):   # 首元のY字開き(上ほど広い)
+    return c.y<-0.02 and c.z>NZ-0.13 and abs(c.x)<(0.004+0.30*(c.z-(NZ-0.13)))+m
 shirt=shell(sh_src,0.006,iSh,2)
+z0=NZ-0.13
+for sx in (1,-1): cut(by_mat(iSh),Vector((sx*0.004,0,z0)),Vector((sx,0,-0.30)).normalized())
+cut(by_mat(iSh),Vector((0,0,z0)),Vector((0,0,1)))
+bmesh.ops.delete(bm,geom=[f for f in by_mat(iSh) if in_v(C(f))],context="FACES")
 # 前立て(中心の帯)
 for x in (-0.013,0.013): cut(by_mat(iSh),Vector((x,0,0)),Vector((1,0,0)))
 iPk=midx(PLACKET)
@@ -84,7 +90,9 @@ iPo=midx(mat("pants_outer",(0.035,0.038,0.05),0,0.75))
 pants_src=list(set(pants_src))
 pants=shell(pants_src,0.012,iPo,6)
 # 服の下になった肌は削除(透け防止)
-bmesh.ops.delete(bm,geom=[f for f in set(sh_src)|set(pants_src) if f.is_valid],context="FACES")
+bmesh.ops.delete(bm,geom=[f for f in set(sh_src)|set(pants_src) if f.is_valid and not in_v(C(f),0.02)],context="FACES")
+for f in bm.faces:
+    if f.is_valid and MN(f)=="shirt_black" and in_v(C(f),0.02): f.material_index=list(me.materials).index(bpy.data.materials["body_bake"])
 cut(by_mat(iPo),Vector((0,0,HZ+0.035)),Vector((0,0,1)))
 cut(by_mat(iPo),Vector((0,0,HZ+0.062)),Vector((0,0,1)))
 bmesh.ops.delete(bm,geom=[f for f in by_mat(iPo) if C(f).z>HZ+0.062],context="FACES")
@@ -120,7 +128,7 @@ def piece(fn,m,bone,name):
 nk=B("neck"); ring=[v.co for v in me.vertices if abs(v.co.z-(nk.z-0.005))<0.008 and abs(v.co.x)<0.07]
 R=max(math.hypot(p.x,p.y-nk.y) for p in ring)+0.004
 def collar(b2):
-    seg=40; gap=math.radians(16); rows=[]
+    seg=40; gap=math.radians(58); rows=[]
     prof=[(nk.z-0.030,R),(nk.z+0.010,R+0.001),(nk.z+0.016,R+0.007),(nk.z-0.006,R+0.026),(nk.z-0.028,R+0.040)]
     for k in range(seg+1):
         t=-math.pi/2+gap/2+(2*math.pi-gap)*k/seg
@@ -138,6 +146,38 @@ piece(collar,PLACKET,"neck","shirt_collar")
 for i,z in enumerate(np.linspace(NZ-0.05,HZ+0.07,6)):
     loc,n=front_hit(0,z)
     if loc: piece(lambda b2,loc=loc: bmesh.ops.create_uvsphere(b2,u_segments=10,v_segments=6,radius=0.0045,matrix=Matrix.Translation(loc-Vector((0,0.0015,0)))@Matrix.Diagonal((1,0.45,1,1))),BTN,"chest" if z>1.2 else "spine",f"sbtn{i}")
+# ネクタイ(結び目+首元を覆う大剣)
+def tie(b2):
+    loc,n=front_hit(0,NZ-0.02); top=loc+Vector((0,-0.006,0))
+    bmesh.ops.create_cone(b2,cap_ends=True,segments=8,radius1=0.007,radius2=0.012,depth=0.022,matrix=Matrix.Translation(top)@Matrix.Diagonal((1,0.7,1,1)))
+    L=0.20; rows=[]
+    for i in range(11):
+        t=i/10; z=top.z-0.01-L*t
+        h,_=front_hit(0,z); y=(h.y if h else top.y)-0.013
+        w=0.012+0.016*t
+        rows.append([b2.verts.new((-w,y,z)),b2.verts.new((w,y,z))])
+    tip=b2.verts.new((0,rows[-1][0].co.y,top.z-0.01-L-0.018))
+    for a,b in zip(rows,rows[1:]): b2.faces.new((a[0],a[1],b[1],b[0]))
+    b2.faces.new((rows[-1][0],rows[-1][1],tip))
+    bmesh.ops.solidify(b2,geom=[f for f in b2.faces if len(f.verts)!=8 or True],thickness=0.002)
+piece(tie,mat("tie",(0.03,0.028,0.034),0.1,0.22),"chest","necktie")
+# ズボンのベルト+バックル
+P=[v.co for v in me.vertices if abs(v.co.z-(HZ+0.048))<0.01 and me.materials[0] is not None]
+def belt(b2):
+    seg=48; rows=[]
+    for zz in (HZ+0.034,HZ+0.062):
+        r=[]
+        for k in range(seg):
+            t=2*math.pi*k/seg; d=Vector((math.sin(t),-math.cos(t),0))
+            h,_,_,_=bvh.ray_cast(Vector((0,0.01,zz))+d*0.5,-d)
+            p=(h if h else Vector((0,0.01,zz))+d*0.12)+d*0.004
+            r.append(b2.verts.new(p))
+        rows.append(r)
+    for k in range(seg): b2.faces.new((rows[0][k],rows[0][(k+1)%seg],rows[1][(k+1)%seg],rows[1][k]))
+    bmesh.ops.solidify(b2,geom=b2.faces[:],thickness=0.003)
+piece(belt,STRAP,"hips","belt")
+loc,n=front_hit(0,HZ+0.048)
+if loc: piece(lambda b2: bmesh.ops.create_cube(b2,size=1,matrix=Matrix.Translation(loc-Vector((0,0.009,0)))@Matrix.Diagonal((0.045,0.006,0.034,1))),mat("buckle",(0.6,0.6,0.62),1.0,0.25),"hips","buckle")
 # ベルト通し
 for ang in (-70,-30,30,70,150,210):
     t=math.radians(ang); d=Vector((math.sin(t),-math.cos(t),0))
@@ -171,15 +211,28 @@ bm=bmesh.new(); bm.from_mesh(me)
 names=[m.name for m in me.materials]
 BOOTS={names.index(n) for n in("boot_red","boot_dark","gold") if n in names}
 bf=lambda: [f for f in bm.faces if f.material_index in BOOTS and f.calc_center_median().z<KZ and all(abs(v.co.x)<0.2 for v in f.verts)]
-for z in (0.34,0.20,0.175):
+for z in (0.155,0.135):
     g=bf(); bmesh.ops.bisect_plane(bm,geom=list({v for f in g for v in f.verts})+list({e for f in g for e in f.edges})+g,plane_co=(0,0,z),plane_no=(0,0,1))
 iR=names.index("boot_red"); iB=names.index("boot_dark"); iG=names.index("gold")
 for f in bf():
     z=f.calc_center_median().z
-    if z>0.34: f.material_index=iPo
-    elif z>0.20: f.material_index=iR
-    elif z>0.175: f.material_index=iG
+    if z>0.155: f.material_index=iPo
+    elif z>0.135: f.material_index=iG
     elif z>0.06 and f.material_index!=iR: f.material_index=iB
 bm.to_mesh(me); bm.free()
+# 裾のたるみ(ブーツに被さるリング)
+hems=[]
+for s_,sd in (("L",1),("R",-1)):
+    P=[v.co for v in me.vertices if abs(v.co.z-0.17)<0.01 and (v.co.x>0)==(sd>0) and abs(v.co.x)<0.2]
+    if not P: continue
+    cx=sum(p.x for p in P)/len(P); cy=sum(p.y for p in P)/len(P)
+    rx=max(abs(p.x-cx) for p in P); ry=max(abs(p.y-cy) for p in P)
+    o=bpy.data.objects.new("hem"+s_,bpy.data.meshes.new("hem"+s_)); bpy.context.scene.collection.objects.link(o)
+    b2=bmesh.new(); bmesh.ops.create_cone(b2,cap_ends=False,segments=28,radius1=1.25,radius2=1.0,depth=0.05,matrix=Matrix.Translation((cx,cy,0.165))@Matrix.Diagonal((rx+0.004,ry+0.004,1,1)))
+    bmesh.ops.solidify(b2,geom=b2.faces[:],thickness=0.003); b2.to_mesh(o.data); b2.free()
+    o.data.materials.append(PANTS); o.vertex_groups.new(name=f"shin.{s_}").add(range(len(o.data.vertices)),1.0,"REPLACE"); hems.append(o)
+bpy.ops.object.select_all(action="DESELECT")
+for o in hems: o.select_set(True)
+wear.select_set(True); bpy.context.view_layer.objects.active=wear; bpy.ops.object.join()
 bpy.ops.wm.save_as_mainfile(filepath=S+"/nemo_s2o.blend")
 print("DONEB")
