@@ -121,8 +121,8 @@ for p in col.data.polygons:
     if p.center.z>nk.z+0.022: p.material_index=1
 vg=col.vertex_groups.new(name="chest"); vg.add(range(len(col.data.vertices)),1.0,"REPLACE")
 bpy.ops.object.select_all(action="DESELECT")
-for o in (ep,col,wear): o.select_set(True)
-bpy.context.view_layer.objects.active=wear; bpy.ops.object.join()
+# 肩章・立ち襟は上着の段(build_coat)で作り直すため、ここでは結合せず破棄する
+for o in (ep,col): bpy.data.objects.remove(o)
 
 # ---------- 左目の縦一文字の傷(レイキャストで顔表面のUVを求めて描く) ----------
 from mathutils.bvhtree import BVHTree
