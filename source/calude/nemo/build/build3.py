@@ -51,6 +51,9 @@ for b in arm.data.bones:
     if b.name.startswith("foot_rope"): J[b.name.replace(".","_")]=("左" if "_L" in b.name else "右")+"足紐"+("2" if ".001" in b.name else "1")
 for b in arm.data.bones:
     if b.name.startswith(("hair","foot_rope")): b.name=b.name.replace(".","_")
+for b in arm.data.bones:
+    if b.name.startswith("cape_"):
+        _,c_,s_=b.name.split("_"); J[b.name]=f"マント{int(c_)+1}_{int(s_)+1}"
 bpy.context.view_layer.objects.active=arm; bpy.ops.object.mode_set(mode="EDIT")
 E=arm.data.edit_bones
 for o,n in REN.items():
@@ -104,7 +107,10 @@ for o in (wear,head,bpy.data.objects["hair"]):
 from mmd_tools.operators.display_item import DisplayItemQuickSetup as DIQ
 DIQ.load_bone_groups=staticmethod(lambda mmd_root,armature:None)
 bpy.ops.mmd_tools.convert_to_mmd_model(scale=0.08,convert_material_nodes=True)
-root=arm.parent; root.name="nemo"; root.mmd_root.name="ネモ"; root.mmd_root.name_e="Nemo"
+import os
+WHITE=os.environ.get("NEMO_OUTFIT")=="white"
+root=arm.parent; root.name="nemo_formal" if WHITE else "nemo_military"
+root.mmd_root.name="ネモ(白礼装)" if WHITE else "ネモ(軍服)"; root.mmd_root.name_e="Nemo (formal)" if WHITE else "Nemo (military)"
 root.mmd_root.comment_text=None if False else root.mmd_root.comment_text
 for pb in arm.pose.bones:
     pb.mmd_bone.name_j=J.get(pb.name,pb.name); pb.mmd_bone.name_e=pb.name
@@ -138,7 +144,7 @@ sc.render.engine="BLENDER_EEVEE"
 import os
 os.makedirs(S+"/tex_out",exist_ok=True)
 for im in bpy.data.images:
-    if im.users==0 or im.name.startswith("_dummy") or im.source!="FILE" and im.name not in("prosthetic","vest"): continue
+    if im.users==0 or im.name.startswith("_dummy") or im.source!="FILE" and im.name not in("prosthetic","vest","cape_lining"): continue
     fn=S+"/tex_out/"+im.name.replace(" ","_")+".png"
     im.filepath_raw=fn; im.file_format="PNG"; im.save(); im.filepath=fn
 bpy.ops.wm.save_as_mainfile(filepath=S+"/nemo_s3.blend")
