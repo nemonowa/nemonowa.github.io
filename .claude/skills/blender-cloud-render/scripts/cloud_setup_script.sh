@@ -28,9 +28,19 @@ apt-get install -y python3-numpy
 
 # --- 4. mmd_toolsアドオン(MMD/PMXモデルを扱う場合) ---
 # 使用中のBlenderバージョンに対応するタグを選ぶこと。バージョン不一致だと
-# import エラーで有効化に失敗する。Ubuntu標準リポジトリのBlender(4.0系)には
-# v2.10.3系が対応。Blender 4.2+ を別途導入する場合は main ブランチでよい。
-MMD_TOOLS_TAG="v2.10.3"
+# import エラーで有効化に失敗する。
+#   - v2.10.3(旧系列最終版): ShaderNodeTree.inputs/outputsという
+#     Blender 4.0で削除されたAPIに依存しており、既存マテリアルが無い
+#     フルインポート(PMX新規変換)では"'ShaderNodeTree' object has no
+#     attribute 'outputs'"で失敗する。既存.blendの微修正のみなら動くことがある。
+#   - main / v4.5.x以降: Blender 4.2+の`poll_file_object_drop`APIに依存し、
+#     4.0系では ImportError で有効化に失敗する。
+#   - v4.0.0: 実運用でBlender 4.0.2上での新規PMXインポート・PMX書き出しの
+#     両方が動作することを確認済み。ただし「Blender 4.1.1向け」の
+#     バージョン警告が出る(動作に影響なし)。scripts/blend_to_mmd.py側で
+#     Blender 4.0系のcorner_normals遅延計算に対するworkaroundを入れている。
+# 上記の理由から、Blender 4.0系(Ubuntu標準リポジトリ版)では v4.0.0 を使うこと。
+MMD_TOOLS_TAG="v4.0.0"
 if [ ! -d /tmp/mmd_tools_src ]; then
   git clone --depth 1 https://github.com/MMD-Blender/blender_mmd_tools.git /tmp/mmd_tools_src
 fi

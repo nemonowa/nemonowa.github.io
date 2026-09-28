@@ -61,12 +61,24 @@ Setup script欄に貼り付けるようユーザーに案内する。内容の�
 
 Blenderにデフォルトでは入っていない。`MMD-Blender/blender_mmd_tools`リポジトリから、
 **使用中のBlenderバージョンに対応するタグ**を選んでクローンすること。バージョン不一致だと
-importエラーで有効化に失敗する(例: mainブランチはBlender 4.2+専用で、
-Ubuntu標準リポジトリのBlender 4.0.2では`poll_file_object_drop`のImportErrorになる)。
+importエラーで有効化に失敗する。Ubuntu標準リポジトリのBlender 4.0.2では以下の通り
+**タグ選択が思ったより狭く、`v4.0.0`一択**であることが検証済み:
+
+- `main`や`v4.5.x`系(最新): Blender 4.2+の`poll_file_object_drop`APIに依存し、
+  4.0系ではImportErrorで有効化自体に失敗する。
+- `v2.10.3`(旧系列最終版、以前このスキルが推奨していたタグ): 有効化自体は通るが、
+  `ShaderNodeTree.inputs`/`.outputs`というBlender 4.0で削除されたAPIに依存している。
+  既存の.blend(マテリアルのmmd_shaderノードグループが既に存在するもの)の微修正では
+  問題が出ないが、**PMXの新規インポートでは`'ShaderNodeTree' object has no attribute
+  'outputs'`で失敗する**(新規マテリアル作成時にこのAPIを叩くため)。
+- `v4.0.0`: Blender 4.0.2上での動作を実機検証済み。「このスクリプトはBlender 4.1.1向けに
+  書かれています」という警告が出るが動作に支障はない。PMXインポート・PMX書き出しの
+  両方向で正常動作を確認済み(`scripts/mmd_to_blend.py` / `scripts/blend_to_mmd.py`参照)。
+  ただし書き出し側にはBlender 4.0系特有のworkaroundが必要(後述)。
 
 ```bash
 git clone --depth 1 https://github.com/MMD-Blender/blender_mmd_tools.git /tmp/mmd_tools_src
-cd /tmp/mmd_tools_src && git checkout v2.10.3   # Blender 3.6〜4.0系向け。4.2+ならmainでよい
+cd /tmp/mmd_tools_src && git checkout v4.0.0   # Blender 4.0系向け。4.2+ならmain/最新タグでよい
 ADDON_DIR=$(blender --background --python-expr "import bpy; print(bpy.utils.user_resource('SCRIPTS', path='addons'))" 2>&1 | grep -v '^Blender\|^$')
 mkdir -p "$ADDON_DIR"
 cp -r mmd_tools "$ADDON_DIR/"
@@ -77,6 +89,47 @@ cp -r mmd_tools "$ADDON_DIR/"
 import bpy
 bpy.ops.preferences.addon_enable(module='mmd_tools')
 ```
+
+### MMD(.pmx) ⇔ Blender(.blend) 相互変換スクリプト
+
+`scripts/mmd_to_blend.py`と`scripts/blend_to_mmd.py`に汎用の変換スクリプトを用意している。
+どちらもmmd_tools(`v4.0.0`)経由でPMXのインポート/エクスポートを行うだけの薄いラッパー。
+
+```bash
+# PMX -> blend
+blender --background --python .claude/skills/blender-cloud-render/scripts/mmd_to_blend.py \
+  -- input.pmx output.blend [--scale 0.08]
+
+# blend -> PMX(既存の.blendを読み込んで開くので、--backgroundの直後にファイルを渡す)
+blender --background input.blend --python .claude/skills/blender-cloud-render/scripts/blend_to_mmd.py \
+  -- output.pmx [root_object_name]
+```
+
+- `root_object_name`は.blend内にmmd_root(ROOT)オブジェクトが複数ある場合のみ必須。
+  通常(1体のみ)は省略可で自動検出される。
+- `mmd_to_blend.py`のデフォルトscale(0.08)はmmd_toolsのPMXインポート標準値。
+  `blend_to_mmd.py`側はその逆数(12.5)でMMD標準スケールに戻す固定値になっているため、
+  異なるscaleでインポートした.blendを書き出す場合は両スクリプトのscale指定を揃えること。
+
+**Blender 4.0系固有のworkaroundが2つ入っている(4.2+では不要だが害もない)**:
+
+1. `mmd_to_blend.py`: `import_model`の`dictionary`引数は空文字`""`ではなく
+   `"DISABLED"`を渡す(空文字だとenumエラーで失敗する)。
+2. `blend_to_mmd.py`: Blender 4.0系は`mesh.corner_normals`が遅延計算のままで、
+   mmd_tools v4.0.0のexporter(Blender 4.1+で自動計算される前提のコード)が
+   `assert len(loop_normals) == len(mesh.loops)`で失敗する。これを避けるため、
+   エクスポート実行前にexporter内部の`__get_normals`をモンキーパッチし、
+   呼び出し直前に評価済みメッシュへ`calc_normals_split()`を挟んでいる
+   (アドオン本体は書き換えず、自分のスクリプト内でパッチを当てているだけなので
+   mmd_toolsの再インストールでも消えない)。
+
+**動作確認済みのラウンドトリップ**(PMX→blend→PMX→blend):
+テクスチャ14件・マテリアル12件・ボーン253件・モーフ49件・剛体181件・ジョイント357件
+を含む実モデルで、変換前後の件数一致とBlenderへの再インポート成功を確認済み。
+アーマチュアのIK/物理演算(剛体・ジョイント)・シェイプキー(頂点モーフ)・UVモーフ・
+グループモーフはすべて往復可能。**アニメーション(VMD)の相互変換はこのスクリプトの
+対象外**(mmd_toolsのVMDインポート/エクスポートは別オペレータ`mmd_tools.import_vmd`/
+`mmd_tools.export_vmd`を使う。必要になったら同様のラッパーを追加すること)。
 
 ## レンダリング設定の勘所
 
