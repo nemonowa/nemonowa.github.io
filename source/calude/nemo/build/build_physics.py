@@ -14,7 +14,10 @@ def bone_frame(b):
     h=M@b.head_local; t=M@b.tail_local; d=(t-h)
     rot=Vector((0,1,0)).rotation_difference(d.normalized()).to_euler("YXZ")   # カプセルはY軸方向
     return (h+t)/2,rot,d.length
+import os
+RED=os.environ.get("NEMO_OUTFIT")=="red"   # 赤コート: 長い裾(下半身の子)
 mask_body=[False]*16; mask_cape=[False]*16; mask_cape[1]=True   # マント同士は衝突しない
+if RED: mask_cape[2]=True   # 裾は付け根を覆う下半身の剛体(グループ3)とは衝突させない
 RB={}
 def rigid(bname,shape,size,dyn,group,mask,mass=1.0,ld=0.5,ad=0.5,name=None):
     b=arm.data.bones[bname]; loc,rot,L=bone_frame(b)
@@ -25,11 +28,13 @@ def rigid(bname,shape,size,dyn,group,mask,mass=1.0,ld=0.5,ad=0.5,name=None):
 # 体の衝突用(ボーン追従=0)
 for bn,r in (("upper_body2",0.145),("upper_body",0.135),("lower_body",0.15),("leg_L",0.07),("leg_R",0.07),("knee_L",0.055),("knee_R",0.055),("arm_L",0.05),("arm_R",0.05)):
     if bn in arm.data.bones:
-        L=bone_frame(arm.data.bones[bn])[2]; rigid(bn,"CAPSULE",(r,max(L-r,0.02),0),0,0,mask_body,mass=1)
+        if RED and bn.startswith(("leg","knee")): r=0.06
+        L=bone_frame(arm.data.bones[bn])[2]; rigid(bn,"CAPSULE",(r,max(L-r,0.02),0),0,2 if (RED and bn=="lower_body") else 0,mask_body,mass=1)
 # マント(物理=1)。付け根の上位に胸の追従剛体を使う
 caps=sorted([b.name for b in arm.data.bones if b.name.startswith("cape_")])
 for bn in caps:
-    L=bone_frame(arm.data.bones[bn])[2]; rigid(bn,"CAPSULE",(0.03,max(L-0.03,0.02),0),1,1,mask_cape,mass=0.3,ld=0.8,ad=0.9)
+    CR=0.02 if RED else 0.03
+    L=bone_frame(arm.data.bones[bn])[2]; rigid(bn,"CAPSULE",(CR,max(L-CR,0.02),0),1,1,mask_cape,mass=0.3,ld=0.8,ad=0.9)
 def joint(a,b,name,rot_lim):
     ra,rb=RB[a],RB[b]; loc=M@arm.data.bones[b].head_local
     FnRigidBody.setup_joint_object(obj=FnRigidBody.new_joint_object(ctx,jg,FnModel.get_empty_display_size(root)),name=name,name_e=name,
@@ -38,17 +43,18 @@ def joint(a,b,name,rot_lim):
 cols=sorted({int(n.split("_")[1]) for n in caps}); segs=sorted({int(n.split("_")[2]) for n in caps})
 lim=(math.radians(35),math.radians(10),math.radians(20))
 for c in cols:
-    joint("upper_body2",f"cape_{c}_0",f"マント{c+1}_1J",(math.radians(12),math.radians(5),math.radians(8)))
-    for s in segs[1:]: joint(f"cape_{c}_{s-1}",f"cape_{c}_{s}",f"マント{c+1}_{s+1}J",lim)
+    NMJ="裾" if RED else "マント"
+    joint("lower_body" if RED else "upper_body2",f"cape_{c}_0",f"{NMJ}{c+1}_1J",(math.radians(12),math.radians(5),math.radians(8)))
+    for s in segs[1:]: joint(f"cape_{c}_{s-1}",f"cape_{c}_{s}",f"{NMJ}{c+1}_{s+1}J",lim)
 # 横のつながり(隣の列の同じ節どうし、ゆるく)
 for c in cols[:-1]:
     for s in segs:
         a,b=f"cape_{c}_{s}",f"cape_{c+1}_{s}"; ra,rb=RB[a],RB[b]
-        FnRigidBody.setup_joint_object(obj=FnRigidBody.new_joint_object(ctx,jg,FnModel.get_empty_display_size(root)),name=f"マント横{c+1}_{s+1}",name_e=f"cape_h{c}_{s}",
+        FnRigidBody.setup_joint_object(obj=FnRigidBody.new_joint_object(ctx,jg,FnModel.get_empty_display_size(root)),name=f"{'裾' if RED else 'マント'}横{c+1}_{s+1}",name_e=f"cape_h{c}_{s}",
             location=(ra.location+rb.location)/2,rotation=Euler((0,0,0)),rigid_a=ra,rigid_b=rb,maximum_location=Vector((0.02,0.02,0.02)),minimum_location=Vector((-0.02,-0.02,-0.02)),
             maximum_rotation=Euler((0.5,0.5,0.5)),minimum_rotation=Euler((-0.5,-0.5,-0.5)),spring_angular=Vector((5,5,5)),spring_linear=Vector((50,50,50)))
 # 表示枠にマントを追加
-fr=root.mmd_root.display_item_frames.add(); fr.name="マント"; fr.name_e="cape"
+fr=root.mmd_root.display_item_frames.add(); fr.name="裾" if RED else "マント"; fr.name_e="coat skirt" if RED else "cape"
 for bn in caps:
     it=fr.data.add(); it.type="BONE"; it.name=bn
 bpy.ops.wm.save_as_mainfile(filepath=OUTF)

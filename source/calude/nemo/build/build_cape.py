@@ -124,35 +124,41 @@ OUTc=outer_mat("capelet_outer"); LINc=LIN.copy(); LINc.name="capelet_lining"
 CA,CB=0.075*math.pi,1.925*math.pi; NCA=56; NCR=10
 nk=B("neck"); ring=[v.co for v in wear.data.vertices if abs(v.co.z-(nk.z-0.005))<0.008 and abs(v.co.x)<0.09]
 RC=max(math.hypot(p.x,p.y-nk.y) for p in ring)+0.022
-ZC0=NZ-0.035; ZC1=NZ-0.25
-def surf2(t,z,lim=0.45):
-    d=Vector((math.sin(t),-math.cos(t),0)); o_=Vector((0,nk.y,z))
-    h,_,_,_=bvh.ray_cast(o_+d*0.6,-d)
-    return (Vector((h.x,h.y,0))-Vector((0,nk.y,0))).length if h and (Vector((h.x,h.y,0))-Vector((0,nk.y,0))).length<lim else 0.05
+ZC0=NZ-0.035; ZC1=NZ-0.25   # ZC1はUV用の旧基準(未使用)
+# 各列を首元から外へ「布を掛ける」ように1本ずつ伸ばす: 肩・上腕の上面に乗るあいだは沿わせ、
+# 支えが無くなれば重力で垂らす。長さは一定なので腕の上では短く止まり、腕は裾の下から出る。
+CL=0.15; STEP=CL/NCR; CLR=0.022
+# 支え判定用: 首より下の体・服だけ(頭や髪に引っかからないように)
+_bm=bmesh.new(); _bm.from_object(wear,dg)
+bmesh.ops.delete(_bm,geom=[f for f in _bm.faces if max(v.co.z for v in f.verts)>NZ-0.01],context="FACES")
+bvh=BVHTree.FromBMesh(_bm); _bm.free()
+def settle(p):
+    h,_,_,_=bvh.ray_cast(p+Vector((0,0,0.12)),Vector((0,0,-1)),0.12)   # 真上から見た支え(肩・腕の上面)
+    if h is not None and p.z<h.z+CLR: p=Vector((p.x,p.y,h.z+CLR))
+    d=Vector((p.x,p.y-nk.y,0)); L=d.length
+    if L>1e-4:   # 外側から首の軸へ水平に撃ち、いちばん外の面より内に入った点は外へ出す
+        d/=L; h,_,_,_=bvh.ray_cast(Vector((0,nk.y,p.z))+d*0.6,-d,0.6)
+        if h is not None:
+            Lh=(Vector((h.x,h.y-nk.y,0))).length
+            if L<Lh+CLR: p=Vector((0,nk.y,p.z))+d*(Lh+CLR)
+    return p
 cang=[CA+(CB-CA)*i/NCA for i in range(NCA+1)]
-cp=[]
-for r in range(NCR+1):
-    f=r/NCR; z=ZC0-(ZC0-ZC1)*f; row=[]
-    for i,a_ in enumerate(cang):
-        d=Vector((math.sin(a_),-math.cos(a_)*0.97,0))
-        row.append(Vector((0,nk.y,z))+d*(RC+0.012+0.17*f**0.8))
-    cp.append(row)
-# 体・腕の内側に入った点を外へ押し出し、格子をならす(数回くり返して肩と腕に沿わせる)
-for it in range(8):
-    for r in range(1,NCR+1):
-        for i in range(len(cang)):
-            p=cp[r][i]; loc,nrm,_,_=bvh.find_nearest(p)
-            if loc is not None and (p-loc).dot(nrm)<0.03: cp[r][i]=loc+nrm*0.032
+ccols=[]
+for a_ in cang:
+    d=Vector((math.sin(a_),-math.cos(a_)*0.97,0))
+    p=settle(Vector((0,nk.y,ZC0))+d*(RC+0.012)); col=[p]; dr=(d+Vector((0,0,-0.45))).normalized()
+    for r in range(NCR):
+        q=settle(p+dr*STEP)
+        dr=(q-p).normalized(); dr=(dr+Vector((0,0,-0.35))).normalized()   # 少しずつ垂れる
+        q=p+(q-p).normalized()*STEP; q=settle(q); col.append(q); p=q
+    ccols.append(col)
+cp=[[ccols[i][r] for i in range(len(cang))] for r in range(NCR+1)]
+for it in range(3):   # 隣の列とならして段差をなくす
     new=[row[:] for row in cp]
     for r in range(1,NCR+1):
         for i in range(1,len(cang)-1):
-            nb=[cp[r][i-1],cp[r][i+1],cp[r-1][i]]+([cp[r+1][i]] if r<NCR else [])
-            avg=sum(nb,Vector())/len(nb); new[r][i]=cp[r][i].lerp(avg,0.35)
+            new[r][i]=settle(cp[r][i].lerp((cp[r][i-1]+cp[r][i+1])*0.5,0.4))
     cp=new
-for r in range(1,NCR+1):   # 最後にもう一度押し出して食い込みを防ぐ
-    for i in range(len(cang)):
-        p=cp[r][i]; loc,nrm,_,_=bvh.find_nearest(p)
-        if loc is not None and (p-loc).dot(nrm)<0.028: cp[r][i]=loc+nrm*0.03
 co=bpy.data.objects.new("capelet",bpy.data.meshes.new("capelet")); bpy.context.scene.collection.objects.link(co)
 bm=bmesh.new(); V=[[bm.verts.new(p) for p in row] for row in cp]
 for r in range(NCR):
@@ -161,29 +167,40 @@ for r in range(NCR):
 # 立ち襟(肩ケープの首元に立つ、上縁は縁取り色)
 top=V[0]; cr=[]
 for i,a_ in enumerate(cang):
-    d=Vector((math.sin(a_),-math.cos(a_)*0.97,0)); cr.append([bm.verts.new(Vector((0,nk.y,NZ+0.055))+d*(RC-0.004)),bm.verts.new(Vector((0,nk.y,NZ+0.065))+d*(RC-0.002))])
+    d=Vector((math.sin(a_),-math.cos(a_)*0.97,0)); cr.append([bm.verts.new(Vector((0,nk.y,NZ+0.03))+d*(RC-0.004)),bm.verts.new(Vector((0,nk.y,NZ+0.04))+d*(RC-0.002))])
 for i in range(NCA):
     f_=bm.faces.new((top[i],top[i+1],cr[i+1][0],cr[i][0])); f_.smooth=True
     f_=bm.faces.new((cr[i][0],cr[i+1][0],cr[i+1][1],cr[i][1])); f_.material_index=2
-# 裏地: 表を複製して首の軸へ水平に6mm寄せ、向きを反転(solidifyは襟との折れ目で頂点が飛ぶため使わない)
+# 裏地: 表を複製して内側へ5mm寄せ、向きを反転。ケープ本体は格子から求めた法線、襟は首の軸への放射方向
+bm.normal_update(); bm.verts.index_update(); vn={v:v.normal.copy() for v in bm.verts}
 outer=bm.faces[:]
 r_=bmesh.ops.duplicate(bm,geom=outer)
 inner=[e for e in r_["geom"] if isinstance(e,bmesh.types.BMFace)]
-for v in {v for f_ in inner for v in f_.verts}:
-    d=Vector((v.co.x,v.co.y-nk.y,0))
-    if d.length>1e-4: v.co-=d.normalized()*0.006
+vmap=r_["vert_map"]
+for src,dst in vmap.items():
+    if not isinstance(src,bmesh.types.BMVert) or src not in vn or dst in vn: continue
+    d=Vector((src.co.x,src.co.y-nk.y,0)).normalized(); rr=src.index//(NCA+1) if src.index<(NCR+1)*(NCA+1) else -1
+    n_=vn[src]
+    if n_.dot(d)<0: n_=-n_
+    w_=0.0 if rr<0 else min(1.0,rr/2)   # 襟と付け根は放射方向、そこから下は面の法線へ徐々に切り替え
+    dst.co=src.co-(d.lerp(n_,w_)).normalized()*0.004
 bmesh.ops.reverse_faces(bm,faces=inner)
 for f_ in inner:
     if f_.material_index!=2: f_.material_index=1
 bm.to_mesh(co.data); bm.free()
 for m_ in (OUTc,LINc,TRIM): co.data.materials.append(m_)
+rowf=co.data.attributes.new("capelet_row","FLOAT","POINT")
+nrow=(NCR+1)*(NCA+1)
+for v in co.data.vertices:
+    k=v.index%(len(co.data.vertices)//2) if v.index>=nrow else v.index
+    rowf.data[v.index].value=(k//(NCA+1))/NCR if k<nrow else 0.0
 cvg={}
 def cg(nm):
     if nm not in cvg: cvg[nm]=co.vertex_groups.new(name=nm)
     return cvg[nm]
+shx=abs(B("upper_arm.L").x)
 for v in co.data.vertices:
-    f=max(0,min(1,(ZC0-v.co.z)/(ZC0-ZC1))); side=min(1,abs(v.co.x)/0.25)
-    wa=side*f*0.8; bone="upper_arm.L" if v.co.x>0 else "upper_arm.R"
+    wa=max(0,min(1,(abs(v.co.x)-shx+0.03)/0.08))*0.9; bone="upper_arm.L" if v.co.x>0 else "upper_arm.R"
     cg("chest").add([v.index],1-wa,"REPLACE")
     if wa>0: cg(bone).add([v.index],wa,"REPLACE")
 md2=co.modifiers.new("Armature","ARMATURE"); md2.object=arm; co.parent=arm
@@ -223,7 +240,7 @@ for p_ in me.polygons:
         for li in p_.loop_indices:
             co_=me.vertices[me.loops[li].vertex_index].co
             a_=math.atan2(co_.x,-(co_.y-nk.y)); a_=a_ if a_>0 else a_+2*math.pi
-            uvd[li].uv=((a_-CA)/(CB-CA),min(0.5,max(0,1-(ZC0-co_.z)/(ZC0-ZC1))))
+            uvd[li].uv=((a_-CA)/(CB-CA),min(0.5,1-me.attributes['capelet_row'].data[me.loops[li].vertex_index].value))
         continue
     if p_.material_index in capem:
         for li in p_.loop_indices:

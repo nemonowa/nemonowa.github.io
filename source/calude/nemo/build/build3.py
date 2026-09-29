@@ -1,3 +1,4 @@
+import os
 import bpy, sys, math
 from mathutils import Vector
 S=sys.argv[sys.argv.index("--")+1]
@@ -53,7 +54,7 @@ for b in arm.data.bones:
     if b.name.startswith(("hair","foot_rope")): b.name=b.name.replace(".","_")
 for b in arm.data.bones:
     if b.name.startswith("cape_"):
-        _,c_,s_=b.name.split("_"); J[b.name]=f"マント{int(c_)+1}_{int(s_)+1}"
+        _,c_,s_=b.name.split("_"); J[b.name]=("裾" if os.environ.get("NEMO_OUTFIT")=="red" else "マント")+f"{int(c_)+1}_{int(s_)+1}"
 bpy.context.view_layer.objects.active=arm; bpy.ops.object.mode_set(mode="EDIT")
 E=arm.data.edit_bones
 for o,n in REN.items():
@@ -108,9 +109,9 @@ from mmd_tools.operators.display_item import DisplayItemQuickSetup as DIQ
 DIQ.load_bone_groups=staticmethod(lambda mmd_root,armature:None)
 bpy.ops.mmd_tools.convert_to_mmd_model(scale=0.08,convert_material_nodes=True)
 import os
-WHITE=os.environ.get("NEMO_OUTFIT")=="white"
-root=arm.parent; root.name="nemo_formal" if WHITE else "nemo_military"
-root.mmd_root.name="ネモ(白礼装)" if WHITE else "ネモ(軍服)"; root.mmd_root.name_e="Nemo (formal)" if WHITE else "Nemo (military)"
+OUTF=os.environ.get("NEMO_OUTFIT") or "military"
+root=arm.parent; root.name={"white":"nemo_formal","red":"nemo_redcoat"}.get(OUTF,"nemo_military")
+root.mmd_root.name={"white":"ネモ(白礼装)","red":"ネモ(赤コート)"}.get(OUTF,"ネモ(軍服)"); root.mmd_root.name_e={"white":"Nemo (formal)","red":"Nemo (red coat)"}.get(OUTF,"Nemo (military)")
 root.mmd_root.comment_text=None if False else root.mmd_root.comment_text
 for pb in arm.pose.bones:
     pb.mmd_bone.name_j=J.get(pb.name,pb.name); pb.mmd_bone.name_e=pb.name
@@ -126,6 +127,7 @@ for o in (wear,head,bpy.data.objects["hair"]):
         mm=m.mmd_material
         if m.name in BASE:
             mm.diffuse_color=BASE[m.name]; mm.ambient_color=[c*0.5 for c in BASE[m.name]]
+        if m.name=="lens_orange": mm.alpha=0.5   # 透けるレンズ(PMXはmmd_materialのalphaで透過する)
         mm.specular_color=(0.08,0.08,0.08); mm.shininess=8 if m.name not in("gold","prosthetic","wear_metal") else 40
 DIQ.load_facial_items(root.mmd_root)
 FR=[("センター",["center","groove"]),("体(上)",["upper_body","upper_body2","neck","head"]),
@@ -144,7 +146,7 @@ sc.render.engine="BLENDER_EEVEE"
 import os
 os.makedirs(S+"/tex_out",exist_ok=True)
 for im in bpy.data.images:
-    if im.users==0 or im.name.startswith("_dummy") or im.source!="FILE" and im.name not in("prosthetic","vest","cape_lining"): continue
+    if im.users==0 or im.name.startswith("_dummy") or im.source!="FILE" and im.name not in("prosthetic","vest","cape_lining","coat_tex","lining_tex","trim_tex","pants_tex"): continue
     fn=S+"/tex_out/"+im.name.replace(" ","_")+".png"
     im.filepath_raw=fn; im.file_format="PNG"; im.save(); im.filepath=fn
 bpy.ops.wm.save_as_mainfile(filepath=S+"/nemo_s3.blend")
