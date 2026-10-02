@@ -150,8 +150,12 @@ blender --background input.blend --python .claude/skills/blender-cloud-render/sc
   自動選択はしない)。指定したアクションを対象アーマチュアに割り当ててから書き出す。
   書き出しフレーム範囲はアクションの`frame_range`(実際にキーフレームが打たれている範囲)
   をシーンに反映してから`use_frame_range=True`で書き出す。
-- `vmd_to_action.py`はVMDを**新規アクション**(`<VMD名>_bone`)として取り込み、
-  `action_name`指定時はそれをリネームする。既存アクションはそのまま残る。
+- `vmd_to_action.py`はVMDインポート後にアーマチュアへ割り当てられたアクションを
+  (`action_name`指定時のみ)リネームする。**mmd_toolsの`import_vmd`はアーマチュアに
+  現在割り当てられているアクションのFカーブを直接上書きする**(新規アクション
+  データブロックを作るわけではない)。既存アクションを別名で保持したい場合は、
+  インポート前に対象アーマチュアの`animation_data.action`を`None`にする、または
+  別のアクションを割り当てておくこと。
 - **`import_vmd`は`filepath`だけ渡すと何もせずFINISHEDを返す**: オペレータ内部は
   `self.files`+`self.directory`でファイルを列挙するため、スクリプトから呼ぶ場合は
   `directory=`と`files=[{"name": ...}]`を必ず渡すこと(エラーも警告も出ないので気付きにくい)。
@@ -159,57 +163,6 @@ blender --background input.blend --python .claude/skills/blender-cloud-render/sc
   (日本語)を直接照合するため、nowaのように英語名にリネームしたリグでは1本も一致せず、
   Fカーブ0本の空アクションになる。`"PMX"`は`mmd_bone.name_j`で照合する。
 - **`margin=0`にする**: 既定値5だと先頭に物理安定用の5フレームが挿入され、キーが後ろにずれる。
-- `root_object_name`は.blend内にmmd_root(ROOT)オブジェクトが複数ある場合のみ必須。
-  通常(1体のみ)は省略可で自動検出される。
-- `mmd_to_blend.py`のデフォルトscale(0.08)はmmd_toolsのPMXインポート標準値。
-  `blend_to_mmd.py`側はその逆数(12.5)でMMD標準スケールに戻す固定値になっているため、
-  異なるscaleでインポートした.blendを書き出す場合は両スクリプトのscale指定を揃えること。
-
-**Blender 4.0系固有のworkaroundが2つ入っている(4.2+では不要だが害もない)**:
-
-1. `mmd_to_blend.py`: `import_model`の`dictionary`引数は空文字`""`ではなく
-   `"DISABLED"`を渡す(空文字だとenumエラーで失敗する)。
-2. `blend_to_mmd.py`: Blender 4.0系は`mesh.corner_normals`が遅延計算のままで、
-   mmd_tools v4.0.0のexporter(Blender 4.1+で自動計算される前提のコード)が
-   `assert len(loop_normals) == len(mesh.loops)`で失敗する。これを避けるため、
-   エクスポート実行前にexporter内部の`__get_normals`をモンキーパッチし、
-   呼び出し直前に評価済みメッシュへ`calc_normals_split()`を挟んでいる
-   (アドオン本体は書き換えず、自分のスクリプト内でパッチを当てているだけなので
-   mmd_toolsの再インストールでも消えない)。
-
-**動作確認済みのラウンドトリップ**(PMX→blend→PMX→blend):
-テクスチャ14件・マテリアル12件・ボーン253件・モーフ49件・剛体181件・ジョイント357件
-を含む実モデルで、変換前後の件数一致とBlenderへの再インポート成功を確認済み。
-アーマチュアのIK/物理演算(剛体・ジョイント)・シェイプキー(頂点モーフ)・UVモーフ・
-グループモーフはすべて往復可能。
-
-### アニメーション(.vmd) ⇔ Blenderアクション 相互変換スクリプト
-
-`scripts/vmd_to_action.py`と`scripts/action_to_vmd.py`でVMDモーションとBlenderの
-アクション(Fカーブ)を相互変換できる。対象はボーンアニメーションのみ
-(`mmd_tools.import_vmd`/`export_vmd`はモーフ(表情)のキーフレームも扱えるが、
-本スキルのスクリプトでは検証済みの範囲としてボーンアニメーションを主眼にしている)。
-
-```bash
-# VMD -> Blenderアクション(既存の.blendに追加し、そのまま上書き保存する)
-blender --background input.blend --python .claude/skills/blender-cloud-render/scripts/vmd_to_action.py \
-  -- input.vmd [root_object_name] [action_name]
-
-# Blenderアクション -> VMD
-blender --background input.blend --python .claude/skills/blender-cloud-render/scripts/action_to_vmd.py \
-  -- output.vmd action_name [root_object_name]
-```
-
-- `action_to_vmd.py`はアクション名必須(.blend内には通常複数アクションが存在するため
-  自動選択はしない)。指定したアクションを対象アーマチュアに割り当ててから書き出す。
-  書き出しフレーム範囲はアクションの`frame_range`(実際にキーフレームが打たれている範囲)
-  をシーンに反映してから`use_frame_range=True`で書き出す。
-- `vmd_to_action.py`はVMDインポート後にアーマチュアへ割り当てられたアクションを
-  (`action_name`指定時のみ)リネームする。**mmd_toolsの`import_vmd`はアーマチュアに
-  現在割り当てられているアクションのFカーブを直接上書きする**(新規アクション
-  データブロックを作るわけではない)。既存アクションを別名で保持したい場合は、
-  インポート前に対象アーマチュアの`animation_data.action`を`None`にする、または
-  別のアクションを割り当てておくこと。
 - `root_object_name`は.blend内にmmd_root(ROOT)オブジェクトが複数ある場合のみ必須。
 - **非表示オブジェクトはselect_set()が無視される**: 両スクリプトとも対象アーマチュア/
   メッシュに対して`hide_set(False)`を先に呼んでから`select_set(True)`している。
@@ -232,6 +185,15 @@ blender --background input.blend --python .claude/skills/blender-cloud-render/sc
 - **solidifyは鋭い折れ目で頂点が飛ぶ**: 襟とケープの境目などでは、面を複製して軸方向へ一定量ずらし、向きを反転する方式で裏地を作る。
 - **mmd_toolsの剛体物理の確認は同じプロセス内で**: `build_rig`後にフレームを進めて保存し、別プロセスで開くと演算キャッシュが無く結果が再現されない。物理を進めたらそのままレンダーまで行う。
 - **PMX書き出し前に生成画像をファイル化**: スクリプト内で作った画像(`source='GENERATED'`)はファイルパスが無くテクスチャがコピーされない。書き出し前に`image.save()`でファイル化する。
+- **服は「スクリプトで再生成」できる形で作る**: 元モデル→剥がし(strip)→服生成→物理→PMX書き出し→再インポート→コレクション統合、の各工程を別スクリプトにし、`build_all.sh`で一括再生成できるようにする(実例: `source/calude/nemo/build/`、`source/calude/nowa_build/`)。修正依頼のたびに手作業の差分が積み重ならず、数十秒〜数分で作り直せる。
+- **複数衣装は1つの.blendにコレクションで同梱**: 各衣装をPMX経由で往復させた.blendを`merge_outfits.py`で1ファイルに統合し、既定衣装だけ表示、他は非表示にする。PMXは衣装ごとに`pmx/<衣装名>/`へテクスチャ込みで書き出す。
+- **ブレンドファイルの保存ではバックアップを作らない**: `bpy.context.preferences.filepaths.save_version = 0`にしないと`*.blend1`が残り、誤ってコミットされる。
+- **服の継ぎ目を消すには同じメッシュ内で延長する**: 上半身と裾を別パーツで作ると腰に段差・陰影の境目が出る。上半身の境界リングの頂点から同じbmesh内で裾を伸ばす。
+- **服が体・顔に貫通しないよう押し出す**: 襟などは頭・髪・首のBVHに対し`find_nearest`で一定距離(1cm程度)離す。ドレープはレイキャストで下方向の支持点を探して「垂らす」と自然になる。レイの距離は短く(0.3m程度)制限しないと手や反対側の腕に当たる。
+- **フリルはのこぎり歯にしない**: 単純な三角波だと正面から歯車状に見える。丸みのある折り返し断面+波打つ縁にし、位相をずらして2重にすると柔らかく見える。
+- **透過素材**: PMXでは`mmd_material.alpha`で透過を設定する(ノードのアルファだけだと書き出し後に不透明になる)。EEVEEプレビューの透過のちらつきは`blend_method='BLEND'`+`show_backface=False`で抑えられる。不透明な裏地を敷くと「透ける生地」に見えなくなるので注意。
+- **揺れ物の物理確認**: 静止60〜90フレーム(数mm以内の揺れなら安定)、脚上げ、全身の急移動の3通りでテストし、PMX再インポート後のモデルでも同じテストをする。元.blendにアイドル用アクションが付いていると、1フレーム目でポーズが変わり物理が暴れたように見えるので外してから試す。
+- **身長の確認**: 頭頂の高さは、アホ毛のボーン(`ahoge*`等)にウェイトが乗った頂点や頭の横の飾りを除いて測る。1BU=1m(mmd_toolsのscale 0.08で取り込んだ場合)。
 
 ## レンダリング設定の勘所
 
