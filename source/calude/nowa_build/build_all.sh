@@ -6,7 +6,7 @@ set -u
 S=$1; D=$2; H=$(cd "$(dirname "$0")" && pwd); REPO=$(cd "$H/../../.." && pwd); SK=$REPO/.claude/skills/blender-cloud-render/scripts
 run(){ local tag=$1; shift; for i in 1 2 3; do "$@" 2>&1 | tee $S/last.log | grep -q "$tag" && return 0; echo "retry $tag"; done; echo "FAILED $tag"; exit 1; }
 mkdir -p $S; cd $S
-[ -f nowa_orig.blend ] || git -C $REPO show HEAD:source/calude/nowa.blend > nowa_orig.blend      # 元のモデル(コミット済み)
+[ -f nowa_orig.blend ] || git -C $REPO show 472b1e6^:source/calude/nowa.blend > nowa_orig.blend      # 着物追加前の元のモデル(HEADはもう2コレクション結合版なので、その1つ前のコミットから取る)
 run DONE1  blender -b nowa_orig.blend -P $H/build_strip.py -- $S                 # 旧衣装の撤去
 run DONE2  blender -b nowa_s1.blend -P $H/build_kimono.py -- $S                  # 着物・素足・サンダル・揺れ物ボーン
 run DONEP  blender -b nowa_s2.blend -P $H/build_physics.py -- $S/nowa_s3.blend   # 剛体+ジョイント+表示枠

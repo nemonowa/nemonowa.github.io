@@ -56,6 +56,16 @@ def main():
         dictionary="DISABLED",
     )
 
+    # インポート直後は剛体・ジョイントが表示されたままなので、MMDタブの「表示」と同じ状態(非表示)にして保存する
+    for root in [o for o in bpy.data.objects if o.mmd_type == "ROOT"]:
+        root.mmd_root.show_rigid_bodies = False
+        root.mmd_root.show_joints = False
+        root.mmd_root.show_temporary_objects = False
+        root.mmd_root.show_armature = False
+    for o in bpy.data.objects:
+        if o.mmd_type in {"RIGID_BODY", "JOINT", "NON_COLLISION_CONSTRAINT", "TRACK_TARGET"}:
+            o.hide_set(True)
+
     os.makedirs(os.path.dirname(blend_path), exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=blend_path)
     print(f"[mmd_to_blend] saved: {blend_path}")

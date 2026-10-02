@@ -44,10 +44,9 @@ def mk(name,name_j,tex=None,col=(1,1,1),alpha=1.0,shin=5.0,spec=0.0,edge=False,b
     m.blend_method=blend or ("BLEND" if alpha<1 else "OPAQUE"); m.show_transparent_back=False
     return m
 M={}
-M["bodice"]=mk("kimono_bodice","着物トップ",tex=KT.bodice_tex(),alpha=0.76,blend="BLEND")   # 胴用(くらげを胸の位置に配置)
+M["bodice"]=mk("kimono_bodice","着物トップ",tex=KT.bodice_tex(),alpha=0.80,blend="BLEND")   # 胴用(くらげを胸の位置に配置)
 M["jelly"]=mk("kimono_jelly","着物くらげ",tex=KT.jelly_tex(),alpha=0.76,blend="BLEND")   # 半透明の青い着物地(重なる所は濃くなる)
 M["lining"]=mk("kimono_lining","着物の縁",tex=KT.lining_tex())                      # 前合わせの重なりの厚み(縁の側面)
-M["fill"]=mk("kimono_fill","着物下地",col=(0.42,0.36,0.58),shin=3)                      # 体の隙間を埋める下地(透ける布の下でうっすら体色に見える)
 M["shade"]=mk("kimono_shade","重なりの影",col=(0.0,0.02,0.22),alpha=0.34,blend="BLEND")   # 上前の下に落ちる薄い影
 M["navy"]=mk("kimono_navy","紺フリル",tex=KT.navy_tex(),shin=8)
 M["white"]=mk("kimono_white","白フリル",col=(0.97,0.97,1.0))
@@ -61,9 +60,12 @@ M["lilac"]=mk("kimono_lilac","ラベンダーフリル",col=(0.78,0.66,0.96))
 M["sandal"]=mk("kimono_sandal","下駄",col=(0.03,0.03,0.035),shin=20,spec=0.2)
 M["bfrill"]=mk("kimono_bfrill","青フリル",tex=KT.navy_tex(col=(0.16,0.34,0.90),edge=(0.75,0.92,1.0),seed=11),shin=8)
 # 素足: 元の肌マテリアルを複製(body.pngの肌色の1点を指すUVで塗る)
-skin=bpy.data.materials["Skin"].copy(); skin.name="Skin_foot"; skin.mmd_material.name_j="素足"; skin.mmd_material.name_e="foot skin"
+skin=bpy.data.materials["Skin"].copy(); skin.name="Skin_fill"; skin.mmd_material.name_j="肌補完"; skin.mmd_material.name_e="skin fill (feet/torso)"
 M["skin"]=skin
-MATORDER=["jelly","lining","navy","white","obi","bow","bead","jewel","skirt","lilac","sandal","bfrill","skin","shade","bowdark","fill","bodice"]
+skinf=bpy.data.materials["Face"].copy(); skinf.name="Skin_neck_fill"; skinf.mmd_material.name_j="首補完"; skinf.mmd_material.name_e="neck fill"
+M["skinface"]=skinf
+for _m in (skin,skinf): _m.mmd_material.is_double_sided=True; _m.use_backface_culling=False   # 穴埋め面は裏からも見える/向きに依存しない
+MATORDER=["jelly","lining","navy","white","obi","bow","bead","jewel","skirt","lilac","sandal","bfrill","skin","shade","bowdark","bodice","skinface"]
 MI={k:i for i,k in enumerate(MATORDER)}
 
 # ================= 2. 体の参照(レイキャスト用BVH・ウェイトコピー用KDTree) =================
@@ -87,6 +89,17 @@ for p in body.data.polygons:
         if 0.03<abs(c.x)<0.12 and abs(c.z-0.33)<best[sg]:
             best[sg]=abs(c.z-0.33); SUV[sg]=Vector(sum((uvl[l].uv for l in p.loop_indices),Vector((0,0)))/len(p.loop_indices))
 print("skin uv",dict(SUV))
+def _poly_uv(p): return Vector(sum((uvl[l].uv for l in p.loop_indices),Vector((0,0)))/len(p.loop_indices))
+def _nearest_uv(matname,target):
+    best_=1e9; uv_=Vector((0.5,0.5))
+    for p in body.data.polygons:
+        if p.material_index==mnames.index(matname):
+            d_=(p.center-target).length
+            if d_<best_: best_=d_; uv_=_poly_uv(p)
+    return uv_
+SUV_T=_nearest_uv("Skin",Vector((0,-0.09,1.2)))      # 胸の肌の色(穴埋め用)
+SUV_N=_nearest_uv("Face",Vector((0,-0.03,1.30)))     # 首の肌の色(顔マテリアルの首の下端)
+print("fill uv torso",tuple(SUV_T),"neck",tuple(SUV_N))
 # 元のすねの下端は(ブーツで隠れていたため)UVが影色の部分を指していて、素足にすると紫がかった帯になる → 上の肌色の1点へ貼り直す
 for p in body.data.polygons:
     if p.material_index==mnames.index("Skin") and p.center.z<0.33 and 0.03<abs(p.center.x)<0.16:
@@ -232,7 +245,53 @@ def ruffle_soft2(acc,pts,nrm,dirs,width,amp,lam,mat,wf,**kw):
     k2=dict(kw); k2["phase"]=kw.get("phase",0.0)+math.pi
     ruffle(acc,[p-n*0.0016 for p,n in zip(pts,nrm)],nrm,dirs,width*0.84,amp*0.8,lam,mat,wf,soft=True,**k2)
 
-# ---- 4a. 着物トップ。内側は肌色の充填(体の隙間を埋めるだけ。透ける布の下に体の形がうっすら見える)、外は半透明の青い布 ----
+# ---- 4-0. 素肌の穴埋め: 元のモデルは服で隠れていた所(胸〜腹〜脇の大きな穴、首の下の帯状の穴)に肌のジオメトリが無い。
+# 体の軸から外へ向けて内側からレイを撃ち、穴(命中なし)を見つけ、周りの実在する肌の半径から滑らかに補間した面で塞ぐ(境界は1マス重ねて少し内側に入れる) ----
+FZ0,FZ1,DZF,NTF=0.90,1.32,0.004,120
+FZS=[FZ0+DZF*j for j in range(int(round((FZ1-FZ0)/DZF))+1)]
+def inner_hit(th,z):
+    d=dirv(th); o=Vector((0,CY,z)); h,_,_,_=bvh.ray_cast(o,d,0.30)
+    if h is None: return None
+    r=(h-o).dot(d)
+    if z>=1.285: return r if r<0.06 else None            # 首(顔マテリアルの首の壁)
+    re=r_ell(th,min(z,1.28))
+    return r if 0.55*re<=r<=1.4*re else None
+KN=[[inner_hit(2*math.pi*i/NTF,z) for z in FZS] for i in range(NTF)]
+HOLE={(i,j) for i in range(NTF) for j in range(len(FZS)) if KN[i][j] is None}
+R=[[KN[i][j] if KN[i][j] is not None else r_ell(2*math.pi*i/NTF,min(FZS[j],1.28)) for j in range(len(FZS))] for i in range(NTF)]
+for _ in range(600):       # 穴の半径をまわりの値から緩和(ラプラシアン)で滑らかに
+    R2=[row[:] for row in R]
+    for (i,j) in HOLE:
+        nb=[R[(i-1)%NTF][j],R[(i+1)%NTF][j]]
+        if j>0: nb.append(R[i][j-1])
+        if j<len(FZS)-1: nb.append(R[i][j+1])
+        R2[i][j]=sum(nb)/len(nb)
+    R=R2
+HD=set(HOLE)
+for (i,j) in HOLE:
+    for di,dj in ((1,0),(-1,0),(0,1),(0,-1)): HD.add(((i+di)%NTF,j+dj))
+print("hole nodes",len(HOLE),"patch nodes",len(HD))
+def fill_vert(i,j,cache={}):
+    if (i,j) in cache: return cache[(i,j)]
+    th=2*math.pi*i/NTF; z=FZS[j]; r=R[i][j]-(0.0012 if KN[i][j] is not None else 0.0)
+    co=Vector((0,CY,z))+dirv(th)*r
+    _,idx,_d=kd.find(co); w=norm_w(dict(VW[idx]))
+    v=acc.vert(co,w); cache[(i,j)]=v; return v
+nfill=0
+for i in range(NTF):
+    for j in range(len(FZS)-1):
+        cs=[(i,j),((i+1)%NTF,j),((i+1)%NTF,j+1),(i,j+1)]
+        if not any(c in HD for c in cs): continue
+        mat="skinface" if FZS[j]>=1.262 else "skin"
+        uv=SUV_N if mat=="skinface" else SUV_T
+        f=acc.face([fill_vert(*c) for c in cs][::-1],mat,[tuple(uv)]*4,smooth=True)
+        if f is not None:
+            f.normal_update(); ctr=f.calc_center_median()
+            if f.normal.dot(ctr-Vector((0,CY,ctr.z)))<0: f.normal_flip()
+            nfill+=1
+print("skin fill faces",nfill)
+
+# ---- 4a. 着物トップ。下は4-0で埋めた実在の素肌(透ける布の下に体の形がうっすら見える)、外は半透明の青い布 ----
 def top_z(th):
     """上端の高さ。前は首の付け根でまるくすくった襟ぐり(中央が低く、首の両脇で高い)、そこから肩口の切り込みへ斜めに下がる。"""
     a=abs(math.sin(th)); front=math.cos(th)>=0
@@ -264,7 +323,6 @@ def shell(off,mat,zoff,uvf=None):
     G=[[P[i][j] for i in range(NC)] for j in range(NR+1)]
     uvf=uvf or (lambda r,c:(c/NC,(ZG[c%NC][r]-ZB)/0.32))      # u=角度/2π(前中央が0)、v=高さ0.32m
     return acc.grid(G,lambda co,r,c:body_w(co),mat,uvf,closed=True,ref=lambda p:Vector((0,CY,p.z)),smooth=True)
-shell(0.006,"fill",0.003,uvf=lambda r,c:(0.5,0.5))     # 肌色寄りの下地(不透明): 体の欠けを埋め、透ける布の下にうっすら体が見える
 shell(OFF_U,"bodice",0.0)                                    # 下前(全周)
 # ---- 4b. 上前: 別パーツの重ね層(一段高く、縁に厚みの側面と影、縁に紺のやわらかいフリル) ----
 NS=44

@@ -21,7 +21,7 @@ for name,path in others:
         if o is None or o.type in("CAMERA","LIGHT"): continue
         cB.objects.link(o)
     # 既定は通常だけ表示。着物はコレクションのチェックで表示切替
-    cB.hide_viewport=True; cB.hide_render=True; lc[cB.name].hide_viewport=True
+    cB.hide_render=True; lc[cB.name].hide_viewport=True   # モニター(Collection.hide_viewport)は使わない。目が効かなくなる
     counts.append(len(cB.objects))
 bpy.ops.wm.save_as_mainfile(filepath=out)
 print("DONEM",counts)

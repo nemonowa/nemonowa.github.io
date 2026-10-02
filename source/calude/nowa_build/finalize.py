@@ -17,4 +17,6 @@ for sc in bpy.data.screens:
         for sp in ar.spaces:
             if sp.type=="VIEW_3D": sp.shading.color_type="TEXTURE"
 bpy.context.scene.display.shading.color_type="TEXTURE"
+import os; sys.path.insert(0,os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","nemo","build") if "nowa_build" in __file__ else os.path.dirname(os.path.abspath(__file__)))
+import outfit_visibility; print("VIS",outfit_visibility.fix())
 bpy.ops.wm.save_as_mainfile(filepath=out,compress=True)

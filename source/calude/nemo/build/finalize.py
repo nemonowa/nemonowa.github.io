@@ -1,5 +1,7 @@
 # 配布用の仕上げ: テクスチャ埋め込み、ソリッド表示でも色が出るようビューポート色とシェーディングを設定
 import bpy,sys,numpy as np
+bpy.ops.preferences.addon_enable(module='mmd_tools')
+bpy.context.preferences.filepaths.save_version=0
 out=sys.argv[sys.argv.index("--")+1]
 bpy.ops.file.pack_all()
 for m in bpy.data.materials:
@@ -13,4 +15,6 @@ for sc in bpy.data.screens:
         for sp in ar.spaces:
             if sp.type=="VIEW_3D": sp.shading.color_type="TEXTURE"
 bpy.context.scene.display.shading.color_type="TEXTURE"
+import os; sys.path.insert(0,os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","nemo","build") if "nowa_build" in __file__ else os.path.dirname(os.path.abspath(__file__)))
+import outfit_visibility; print("VIS",outfit_visibility.fix())
 bpy.ops.wm.save_as_mainfile(filepath=out,compress=True)
