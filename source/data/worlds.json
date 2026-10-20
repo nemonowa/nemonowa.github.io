@@ -2,6 +2,25 @@
   "version": 1,
   "worlds": [
     {
+      "id": "W-f552e88c",
+      "title": "TUSB NEO",
+      "description": "Minecraftで遊べる超高難易度スカイブロック配布マップ。ーーー初見の感覚をもう一度。\nMinecraft Java 1.10.2（+ Optifine）。neo の Esc メニューからも導入できる。\nPV：https://youtu.be/ye4yzx5rBMU",
+      "edition": "je",
+      "category": "skyblock",
+      "version": "1.10.2",
+      "tags": [
+        "スカイブロック",
+        "高難易度",
+        "TUSB"
+      ],
+      "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/tusbneo",
+      "downloadHost": "github.com",
+      "imageUrl": null,
+      "author": "v12Lovers",
+      "createdAt": "2026-10-20T22:14:23.670Z",
+      "updatedAt": "2026-10-20T22:14:23.670Z"
+    },
+    {
       "id": "W-65a15b4d",
       "title": "⚓｜The 1000m Dropper",
       "description": "生き残って下を目指すMinecraftのドロッパー。高度1000mを駆け抜けろ！\nBreak through the limits! Survive and dive deep!!\n導入：zip を展開して .minecraft/saves に置く。正常に始まるとチャット欄に通知が出る。\n利用規約：実況歓迎、転載禁止。",
@@ -60,5 +79,5 @@
       "updatedAt": "2026-10-20T22:14:37.278Z"
     }
   ],
-  "updatedAt": "2026-10-20T22:16:32.445Z"
+  "updatedAt": "2026-10-20T22:16:35.860Z"
 }
