@@ -58,26 +58,7 @@
       "author": "Project-NEXUS",
       "createdAt": "2026-10-20T21:49:11.962Z",
       "updatedAt": "2026-10-20T21:49:11.962Z"
-    },
-    {
-      "id": "W-6e7a6b91",
-      "title": "TUSB NEO",
-      "description": "Minecraftで遊べる超高難易度スカイブロック配布マップ。ーーー初見の感覚をもう一度。\nMinecraft Java 1.10.2（+ Optifine）。neo の Esc メニューからも導入できる。\nPV：https://youtu.be/ye4yzx5rBMU",
-      "edition": "je",
-      "category": "skyblock",
-      "version": "1.10.2",
-      "tags": [
-        "スカイブロック",
-        "高難易度",
-        "TUSB"
-      ],
-      "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/tusbneo",
-      "downloadHost": "github.com",
-      "imageUrl": null,
-      "author": "v12Lovers",
-      "createdAt": "2026-10-20T21:49:11.962Z",
-      "updatedAt": "2026-10-20T21:49:11.962Z"
     }
   ],
-  "updatedAt": "2026-10-20T21:49:11.962Z"
+  "updatedAt": "2026-10-20T22:14:20.623Z"
 }
