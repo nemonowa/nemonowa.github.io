@@ -44,6 +44,8 @@
       .wd-form .wd-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
       .wd-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
       #submit-result { min-height: 1.4em; }
+      .wd-tags-pick { border: 1px solid rgba(127, 127, 127, 0.4); border-radius: 6px; padding: 6px 10px; }
+      .wd-tags-pick label { display: inline-flex; gap: 4px; margin: 2px 12px 2px 0; align-items: center; }
     </style>
   </head>
   <body>
@@ -62,13 +64,11 @@
               <label>区分<select name="category" id="f-category" required></select></label>
               <label>対応版（任意）<input name="version" maxlength="30" placeholder="例：1.21.4" /></label>
             </div>
-            <label>題<input name="title" maxlength="60" required /></label>
-            <label>配布リンク（https://…）<input name="downloadUrl" type="url" required placeholder="配布ページや Google ドライブなどのリンク" /></label>
-            <label>説明（遊び方・注意・二次配布の可否など）<textarea name="description" maxlength="1500" required></textarea></label>
-            <div class="wd-row">
-              <label>タグ（空白か、で区切る・8つまで）<input name="tags" maxlength="200" /></label>
-              <label>画像のリンク（https://…・任意）<input name="imageUrl" type="url" /></label>
-            </div>
+            <label>題 <span class="wd-note" data-count="title"></span><input name="title" maxlength="100" required /></label>
+            <label>配布リンク（https://…）<input name="downloadUrl" type="url" maxlength="500" required placeholder="配布ページや Google ドライブなどのリンク" /></label>
+            <label>説明（遊び方・注意・二次配布の可否など） <span class="wd-note" data-count="description"></span><textarea name="description" maxlength="1500" required></textarea></label>
+            <fieldset class="wd-tags-pick"><legend>タグ（作品共有場所のタグから・<span id="f-tag-max">3</span>つまで。world・Minecraft と区分のタグは自動で付きます）</legend><div id="f-tags"></div></fieldset>
+            <label>サムネイルのリンク（https://…・任意）<input name="imageUrl" type="url" maxlength="500" /></label>
             <label>作者名（サイトに載ります）<input name="author" maxlength="40" required /></label>
             <label class="wd-hp" aria-hidden="true">この欄は空のままにしてください<input name="website" tabindex="-1" autocomplete="off" /></label>
             <label><span><input type="checkbox" name="agree" required /> 自分の作品か、作者に許可を得たリンクです。リンク先の内容に責任を持ちます。</span></label>
@@ -78,6 +78,7 @@
         </details>
         <div class="wd-cats" id="editions"></div>
         <div class="wd-cats" id="cats"></div>
+        <div class="wd-cats" id="tagchips"></div>
         <div class="wd-bar">
           <input id="q" type="search" placeholder="題・説明・タグ・作者で探す" />
           <select id="sort"><option value="new">新着順</option><option value="old">古い順</option><option value="title">題の順</option></select>
@@ -98,6 +99,9 @@
       let worlds = [];
       let edition = "";
       let category = "";
+      let tagFilter = "";
+      // 上限・タグは C.A.I. が worlds.json の rules に書く（Discord の作品共有場所に合わせた値）。無い時はこの既定
+      let rules = { limits: { title: 100, description: 1500, tags: 3, url: 500 }, tagChoices: ["RPG", "Action", "STG", "Game", "3D", "2D", "DataPack", "mod"] };
 
       const $ = (id) => document.getElementById(id);
       const el = (tag, attrs = {}, ...kids) => {
@@ -131,11 +135,49 @@
       function renderChips() {
         chips("editions", EDITIONS, edition, (v) => { edition = v; renderChips(); renderList(); });
         chips("cats", CATEGORIES, category, (v) => { category = v; renderChips(); renderList(); });
+        const box = $("tagchips");
+        box.replaceChildren();
+        for (const t of rules.tagChoices) {
+          const n = worlds.filter((w) => (w.tags || []).includes(t)).length;
+          if (n === 0) continue;
+          const c = el("button", { class: "wd-chip", type: "button", "aria-pressed": String(tagFilter === t), text: `#${t} ${n}` });
+          c.addEventListener("click", () => { tagFilter = tagFilter === t ? "" : t; renderChips(); renderList(); });
+          box.append(c);
+        }
+      }
+
+      /** フォームを rules の上限・タグに合わせる（文字数の表示、タグの選択肢） */
+      function applyRules() {
+        const form = $("submit-form");
+        const L = rules.limits;
+        form.elements.title.maxLength = L.title;
+        form.elements.description.maxLength = L.description;
+        form.elements.downloadUrl.maxLength = L.url;
+        form.elements.imageUrl.maxLength = L.url;
+        $("f-tag-max").textContent = L.tags;
+        for (const name of ["title", "description"]) {
+          const input = form.elements[name];
+          const out = form.querySelector(`[data-count="${name}"]`);
+          const show = () => { out.textContent = `${input.value.length} / ${input.maxLength}`; };
+          input.addEventListener("input", show);
+          show();
+        }
+        const box = $("f-tags");
+        box.replaceChildren();
+        for (const t of rules.tagChoices) {
+          const cb = el("input", { type: "checkbox", value: t });
+          cb.addEventListener("change", () => {
+            const on = box.querySelectorAll("input:checked").length;
+            for (const x of box.querySelectorAll("input")) x.disabled = !x.checked && on >= L.tags;
+          });
+          box.append(el("label", {}, cb, el("span", { text: t })));
+        }
       }
 
       function matches(w) {
         if (edition && w.edition !== edition) return false;
         if (category && w.category !== category) return false;
+        if (tagFilter && !(w.tags || []).includes(tagFilter)) return false;
         const q = $("q").value.trim().toLowerCase().replace(/^#/, "");
         if (!q) return true;
         return [w.title, w.description, w.author, ...(w.tags || [])].some((t) => String(t || "").toLowerCase().includes(q));
@@ -182,6 +224,11 @@
           ? el("p", {}, el("a", { class: "wd-dl", href, target: "_blank", rel: "noopener noreferrer nofollow", text: "配布ページへ ↗" }),
               el("span", { class: "wd-note", text: `　${w.downloadHost || new URL(href).host}` }))
           : el("p", { text: "配布リンクがありません" });
+        // 感想・質問は Discord の「作品共有場所」のスレッドで（C.A.I. が公開時に作る）
+        const forum = safeUrl(w.forumUrl) && new URL(w.forumUrl).host === "discord.com"
+          ? el("a", { class: "wd-chip", href: w.forumUrl, target: "_blank", rel: "noopener noreferrer", text: "💬 Discord の作品共有場所で話す ↗" })
+          : null;
+        if (forum) dl.append(el("br"), forum);
         const authorWorks = worlds.filter((x) => x.author === w.author && x.id !== w.id);
         view.append(
           el("p", {}, back),
@@ -227,6 +274,7 @@
             if (!form.reportValidity()) return;
             const data = Object.fromEntries(new FormData(form));
             delete data.agree;
+            data.tags = [...$("f-tags").querySelectorAll("input:checked")].map((x) => x.value);
             const button = form.querySelector("button");
             button.disabled = true;
             result.textContent = "送っています…";
@@ -239,6 +287,8 @@
               const body = await r.json().catch(() => ({}));
               if (r.ok) {
                 form.reset();
+                for (const x of $("f-tags").querySelectorAll("input")) x.disabled = false;
+                for (const n of ["title", "description"]) form.elements[n].dispatchEvent(new Event("input"));
                 result.textContent = body.published ? "✅ 公開しました（反映は数分かかります）。" : "✅ 受け付けました。運営が確かめてから載ります（数日かかることがあります）。";
               } else {
                 result.textContent = `❌ ${body.error || "送れませんでした（" + r.status + "）"}`;
@@ -256,6 +306,8 @@
         .catch(() => ({ worlds: [] }))
         .then((m) => {
           worlds = Array.isArray(m.worlds) ? m.worlds : [];
+          if (m.rules && m.rules.limits && Array.isArray(m.rules.tagChoices)) rules = m.rules;
+          applyRules();
           for (const id of ["q", "sort"]) $(id).addEventListener("input", renderList);
           renderChips();
           renderList();
