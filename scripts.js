@@ -13,8 +13,11 @@ function toggleMenu(menuId) {
   });
 }
 
+// サイトのルート（この scripts.js がある場所）。どの深さのページから読んでも、移した先でも同じ所を指す
+const SITE_ROOT = new URL(".", document.currentScript ? document.currentScript.src : location.href);
+
 // header.html を読み込む
-fetch("https://nemonowa.github.io/header.html")
+fetch(new URL("header.html", SITE_ROOT))
   .then((response) => response.text())
   .then((data) => {
     document.getElementById("header").innerHTML = data;
@@ -22,7 +25,7 @@ fetch("https://nemonowa.github.io/header.html")
   .catch((error) => console.error("Error loading header:", error));
 
 // footer.html を読み込む
-fetch("https://nemonowa.github.io/footer.html")
+fetch(new URL("footer.html", SITE_ROOT))
   .then((response) => response.text())
   .then((data) => {
     document.getElementById("footer").innerHTML = data;
@@ -30,7 +33,7 @@ fetch("https://nemonowa.github.io/footer.html")
   .catch((error) => console.error("Error loading footer:", error));
 
 // ui.html を読み込む
-fetch("https://nemonowa.github.io/ui.html")
+fetch(new URL("ui.html", SITE_ROOT))
   .then((response) => response.text())
   .then((data) => {
     document.getElementById("ui").innerHTML = data;

@@ -1,0 +1,267 @@
+<!-- 名称：配布ワールド共有 -->
+<!-- 説明：有志が Minecraft の配布ワールドを共有する場所。ファイルは置かず、作者の配布先へのリンクを載せる。 -->
+<!-- 説明：投稿は誰でも Discord の /world submit から（運営が確かめてから載る）。データ（source/data/worlds.json）は C.A.I.（project-cai の function/worlds.js）が書く。 -->
+<!-- 説明：移しやすいよう、サイト内の物は相対パスで読む（og:image だけは仕様上、絶対 URL）。 -->
+<!DOCTYPE html>
+<html lang="ja" itemtype="http://schema.org/WebPage">
+  <head>
+    <title>配布ワールド共有 - Project✯NEXUS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1e28d2" />
+    <link rel="icon" href="../../../icon.png" />
+    <meta property="og:image" content="https://nemonowa.github.io/icon.png" />
+    <meta property="og:title" content="配布ワールド共有 - Project✯NEXUS" />
+    <meta property="og:description" content="有志が Minecraft の配布ワールドを共有する場所。Copyright © SoraFlete. All Rights Reserved." />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <script src="../../../scripts.js"></script>
+    <style>
+      .wd-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+      .wd-bar input, .wd-bar select { padding: 6px 8px; }
+      .wd-bar input[type="search"] { flex: 1 1 220px; min-width: 0; }
+      .wd-cats { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+      .wd-chip { border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px; font-size: 0.85em; cursor: pointer; opacity: 0.7; background: none; color: inherit; }
+      .wd-chip[aria-pressed="true"] { opacity: 1; font-weight: 700; }
+      #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; list-style: none; padding: 0; }
+      #grid li { border-radius: 8px; overflow: hidden; background: rgba(127, 127, 127, 0.1); cursor: pointer; }
+      #grid li:hover { background: rgba(127, 127, 127, 0.2); }
+      .wd-thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: rgba(127, 127, 127, 0.25); }
+      .wd-card { padding: 10px 12px; }
+      .wd-card h3 { margin: 0 0 6px; font-size: 1em; overflow-wrap: anywhere; }
+      .wd-sub { font-size: 0.8em; opacity: 0.75; }
+      .wd-tag { display: inline-block; font-size: 0.75em; margin: 4px 4px 0 0; padding: 1px 6px; border-radius: 4px; background: rgba(127, 127, 127, 0.2); cursor: pointer; }
+      .wd-detail { max-width: 860px; }
+      .wd-detail img { max-width: 100%; border-radius: 8px; }
+      .wd-desc { white-space: pre-wrap; overflow-wrap: anywhere; }
+      .wd-meta { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 12px 0; }
+      .wd-dl { display: inline-block; padding: 10px 18px; border-radius: 8px; background: #3aa35a; color: #fff; font-weight: 700; text-decoration: none; }
+      .wd-note { font-size: 0.85em; opacity: 0.8; }
+      .wd-form { display: grid; gap: 10px; max-width: 640px; margin: 12px 0 24px; padding: 16px; border-radius: 8px; background: rgba(127, 127, 127, 0.1); }
+      .wd-form label { display: grid; gap: 4px; font-size: 0.9em; }
+      .wd-form input, .wd-form select, .wd-form textarea { padding: 6px 8px; font: inherit; }
+      .wd-form textarea { min-height: 8em; resize: vertical; }
+      .wd-form .wd-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+      .wd-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+      #submit-result { min-height: 1.4em; }
+    </style>
+  </head>
+  <body>
+    <header id="header"></header>
+    <main>
+      <h1>🗺️ 配布ワールド共有</h1>
+      <section id="list-view">
+        <p>有志が作った Minecraft の配布ワールドを紹介しています。ダウンロードは作者の配布先から行います。</p>
+        <p class="wd-note">投稿は誰でも、このページのフォームか Discord の <code>/world submit</code> から（運営が確かめてから載ります）。</p>
+        <details id="submit-box">
+          <summary>📮 配布ワールドを投稿する</summary>
+          <form id="submit-form" class="wd-form" novalidate>
+            <div class="wd-row">
+              <label>エディション
+                <select name="edition" required><option value="je">Java版</option><option value="be">統合版</option></select></label>
+              <label>区分<select name="category" id="f-category" required></select></label>
+              <label>対応版（任意）<input name="version" maxlength="30" placeholder="例：1.21.4" /></label>
+            </div>
+            <label>題<input name="title" maxlength="60" required /></label>
+            <label>配布リンク（https://…）<input name="downloadUrl" type="url" required placeholder="配布ページや Google ドライブなどのリンク" /></label>
+            <label>説明（遊び方・注意・二次配布の可否など）<textarea name="description" maxlength="1500" required></textarea></label>
+            <div class="wd-row">
+              <label>タグ（空白か、で区切る・8つまで）<input name="tags" maxlength="200" /></label>
+              <label>画像のリンク（https://…・任意）<input name="imageUrl" type="url" /></label>
+            </div>
+            <label>作者名（サイトに載ります）<input name="author" maxlength="40" required /></label>
+            <label class="wd-hp" aria-hidden="true">この欄は空のままにしてください<input name="website" tabindex="-1" autocomplete="off" /></label>
+            <label><span><input type="checkbox" name="agree" required /> 自分の作品か、作者に許可を得たリンクです。リンク先の内容に責任を持ちます。</span></label>
+            <button type="submit">送る</button>
+            <p id="submit-result" role="status"></p>
+          </form>
+        </details>
+        <div class="wd-cats" id="editions"></div>
+        <div class="wd-cats" id="cats"></div>
+        <div class="wd-bar">
+          <input id="q" type="search" placeholder="題・説明・タグ・作者で探す" />
+          <select id="sort"><option value="new">新着順</option><option value="old">古い順</option><option value="title">題の順</option></select>
+        </div>
+        <p id="summary">読み込み中…</p>
+        <ul id="grid"></ul>
+      </section>
+      <section id="detail-view" class="wd-detail" hidden></section>
+    </main>
+    <footer id="footer"></footer>
+    <div id="ui"></div>
+    <script>
+      const EDITIONS = { je: "Java版", be: "統合版" };
+      const CATEGORIES = {
+        adventure: "アドベンチャー・RPG", escape: "脱出", athletic: "アスレチック", minigame: "ミニゲーム",
+        building: "建築・造形", pvp: "PvP", skyblock: "スカイブロック", survival: "サバイバル", other: "その他",
+      };
+      let worlds = [];
+      let edition = "";
+      let category = "";
+
+      const $ = (id) => document.getElementById(id);
+      const el = (tag, attrs = {}, ...kids) => {
+        const e = document.createElement(tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else e.setAttribute(k, v);
+        }
+        e.append(...kids);
+        return e;
+      };
+      const fmtDate = (s) => { const d = new Date(s); return isNaN(d) ? "—" : d.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" }); };
+      // C.A.I. が https だけを通しているが、ページ側でも https 以外のリンクは張らない
+      const safeUrl = (u) => { try { return new URL(u).protocol === "https:" ? u : null; } catch { return null; } };
+      const thumb = (w) => {
+        const src = safeUrl(w.imageUrl);
+        return src ? el("img", { class: "wd-thumb", src, alt: "", loading: "lazy", referrerpolicy: "no-referrer" }) : el("div", { class: "wd-thumb" });
+      };
+
+      function chips(boxId, map, current, onPick) {
+        const box = $(boxId);
+        box.replaceChildren();
+        const all = [["", "すべて"], ...Object.entries(map)];
+        for (const [value, label] of all) {
+          const n = value ? worlds.filter((w) => (boxId === "editions" ? w.edition : w.category) === value).length : worlds.length;
+          if (value && n === 0) continue;
+          const c = el("button", { class: "wd-chip", type: "button", "aria-pressed": String(current === value), text: `${label} ${n}` });
+          c.addEventListener("click", () => onPick(value));
+          box.append(c);
+        }
+      }
+      function renderChips() {
+        chips("editions", EDITIONS, edition, (v) => { edition = v; renderChips(); renderList(); });
+        chips("cats", CATEGORIES, category, (v) => { category = v; renderChips(); renderList(); });
+      }
+
+      function matches(w) {
+        if (edition && w.edition !== edition) return false;
+        if (category && w.category !== category) return false;
+        const q = $("q").value.trim().toLowerCase().replace(/^#/, "");
+        if (!q) return true;
+        return [w.title, w.description, w.author, ...(w.tags || [])].some((t) => String(t || "").toLowerCase().includes(q));
+      }
+
+      function renderList() {
+        const order = $("sort").value;
+        const shown = worlds.filter(matches).sort((a, b) =>
+          order === "old" ? a.createdAt.localeCompare(b.createdAt) : order === "title" ? a.title.localeCompare(b.title, "ja") : b.createdAt.localeCompare(a.createdAt));
+        const grid = $("grid");
+        grid.replaceChildren();
+        for (const w of shown) {
+          const tags = el("div");
+          for (const t of w.tags || []) {
+            const tag = el("span", { class: "wd-tag", text: `#${t}` });
+            tag.addEventListener("click", (ev) => { ev.stopPropagation(); $("q").value = t; renderList(); });
+            tags.append(tag);
+          }
+          const li = el("li", {}, thumb(w), el("div", { class: "wd-card" },
+            el("h3", { text: w.title }),
+            el("div", { class: "wd-sub", text: `${EDITIONS[w.edition] || ""}・${CATEGORIES[w.category] || ""}${w.version ? `・${w.version}` : ""}` }),
+            el("div", { class: "wd-sub", text: `作者：${w.author || "—"}　${fmtDate(w.createdAt)}` }),
+            tags));
+          li.addEventListener("click", () => { location.hash = w.id; });
+          grid.append(li);
+        }
+        $("summary").textContent = worlds.length ? `${shown.length} 件を表示（全 ${worlds.length} 件）` : "まだ作品はありません。最初の投稿をお待ちしています。";
+      }
+
+      function renderDetail(w) {
+        const view = $("detail-view");
+        view.replaceChildren();
+        const back = el("a", { href: "#", text: "← 一覧に戻る" });
+        const meta = el("div", { class: "wd-meta" });
+        const row = (k, v) => meta.append(el("strong", { text: k }), el("span", { text: v || "—" }));
+        row("エディション", EDITIONS[w.edition]);
+        row("区分", CATEGORIES[w.category]);
+        row("対応版", w.version);
+        row("作者", w.author);
+        row("タグ", (w.tags || []).map((t) => `#${t}`).join(" "));
+        row("掲載日", fmtDate(w.createdAt));
+        const href = safeUrl(w.downloadUrl);
+        const dl = href
+          ? el("p", {}, el("a", { class: "wd-dl", href, target: "_blank", rel: "noopener noreferrer nofollow", text: "配布ページへ ↗" }),
+              el("span", { class: "wd-note", text: `　${w.downloadHost || new URL(href).host}` }))
+          : el("p", { text: "配布リンクがありません" });
+        const authorWorks = worlds.filter((x) => x.author === w.author && x.id !== w.id);
+        view.append(
+          el("p", {}, back),
+          el("h2", { text: w.title }),
+          ...(safeUrl(w.imageUrl) ? [el("img", { src: w.imageUrl, alt: "", referrerpolicy: "no-referrer" })] : []),
+          meta,
+          dl,
+          el("p", { class: "wd-note", text: "ダウンロードは作者の配布先で行います。このサイトはファイルを預かっておらず、配布先の内容には責任を負いません。二次配布や導入方法は作者の説明に従ってください。" }),
+          el("hr"),
+          el("div", { class: "wd-desc", text: w.description || "（説明なし）" }));
+        if (authorWorks.length) {
+          const ul = el("ul");
+          for (const x of authorWorks) ul.append(el("li", {}, el("a", { href: `#${x.id}`, text: x.title })));
+          view.append(el("h3", { text: `${w.author} のほかの作品` }), ul);
+        }
+      }
+
+      function route() {
+        const id = decodeURIComponent(location.hash.slice(1));
+        const w = id && worlds.find((x) => x.id === id);
+        $("list-view").hidden = Boolean(w);
+        $("detail-view").hidden = !w;
+        if (w) { renderDetail(w); document.title = `${w.title} - 配布ワールド共有`; window.scrollTo(0, 0); }
+        else document.title = "配布ワールド共有 - Project✯NEXUS";
+      }
+
+      // ---- 投稿フォーム：カイの口（source/data/site.json の caiApiBase）へ送る。空ならフォームは閉じたまま Discord を案内する
+      for (const [v, label] of Object.entries(CATEGORIES)) $("f-category").append(el("option", { value: v, text: label }));
+      fetch("../../data/site.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then((cfg) => {
+          const base = String(cfg.caiApiBase || "").trim();
+          const form = $("submit-form");
+          const result = $("submit-result");
+          if (!base) {
+            form.querySelector("button").disabled = true;
+            result.textContent = "サイトからの投稿は準備中です。Discord の /world submit から投稿してください。";
+            return;
+          }
+          form.addEventListener("submit", async (ev) => {
+            ev.preventDefault();
+            if (!form.reportValidity()) return;
+            const data = Object.fromEntries(new FormData(form));
+            delete data.agree;
+            const button = form.querySelector("button");
+            button.disabled = true;
+            result.textContent = "送っています…";
+            try {
+              const r = await fetch(new URL("worlds/submit", base.replace(/\/?$/, "/")), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+              });
+              const body = await r.json().catch(() => ({}));
+              if (r.ok) {
+                form.reset();
+                result.textContent = body.published ? "✅ 公開しました（反映は数分かかります）。" : "✅ 受け付けました。運営が確かめてから載ります（数日かかることがあります）。";
+              } else {
+                result.textContent = `❌ ${body.error || "送れませんでした（" + r.status + "）"}`;
+              }
+            } catch {
+              result.textContent = "❌ 送れませんでした。時間をおいてもう一度試すか、Discord の /world submit を使ってください。";
+            } finally {
+              button.disabled = false;
+            }
+          });
+        });
+
+      fetch("../../data/worlds.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : { worlds: [] }))
+        .catch(() => ({ worlds: [] }))
+        .then((m) => {
+          worlds = Array.isArray(m.worlds) ? m.worlds : [];
+          for (const id of ["q", "sort"]) $(id).addEventListener("input", renderList);
+          renderChips();
+          renderList();
+          route();
+          window.addEventListener("hashchange", route);
+        });
+    </script>
+  </body>
+</html>
