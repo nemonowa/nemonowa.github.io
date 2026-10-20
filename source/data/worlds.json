@@ -3,18 +3,18 @@
   "worlds": [
     {
       "id": "W-f552e88c",
-      "title": "TUSB NEO",
-      "description": "Minecraftで遊べる超高難易度スカイブロック配布マップ。ーーー初見の感覚をもう一度。\nMinecraft Java 1.10.2（+ Optifine）。neo の Esc メニューからも導入できる。\nPV：https://youtu.be/ye4yzx5rBMU",
+      "title": "🌈｜The Unusual SkyBlock -Edition NEØ-",
+      "description": "Minecraftの超高難易度スカイブロック配布マップ。ー「初見の感覚」をもう一度。\n\n空の彼方には君の知らない世界がある。遥か天空の浮遊島群、眼下には奈落、想像を絶する強敵たち。君の手には杖と鶴橋。すべてを創り変える覚悟はいいか？エンダーパールの準備はOK？ならば「攻略」を開始しよう。君だけの世界征服を。遠慮なんかいらない、敵がそうであるように。\nすべてはTUSBv12をもっと面白く遊ぶため、新たなコマンドギミックやディメンション、アイテムやエンティティ、すべてのバランスを徹底的に調整し、その難易度と自由度は昇華した。君がワールドから去ったあれ以来、目を離してる間の片時も、その進化は止まったことはないんだぜ？ーーー初見の感覚をもう一度。\n\nMinecraft Java 1.10.2（+ Optifine）・v12.3.30。neo の Esc メニューからも導入できる。\nHomePage：https://tusbneo.glitch.me/\nYoutube：https://youtu.be/ye4yzx5rBMU\nDiscord：https://discord.gg/ax2HpwXmjx",
       "edition": "je",
       "category": "skyblock",
       "version": "1.10.2",
       "tags": [],
       "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/tusbneo",
       "downloadHost": "github.com",
-      "imageUrl": null,
+      "imageUrl": "https://raw.githubusercontent.com/nexusource/Project-NEXUS/refs/heads/main/TUSB%20NEO%EF%BC%9AWorld%20-%20by%20v12Lovers/media/0.jpg",
       "author": "v12Lovers",
       "createdAt": "2026-10-20T22:14:23.670Z",
-      "updatedAt": "2026-10-20T22:14:23.670Z",
+      "updatedAt": "2026-10-20T22:38:04.888Z",
       "forumUrl": "https://discord.com/channels/1233036571243188296/1326387778736619652",
       "forumThreadId": "1326387778736619652"
     },
