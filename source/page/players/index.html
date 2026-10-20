@@ -1,0 +1,81 @@
+<!-- 名称：艦員名簿 -->
+<!-- 説明：neo のプレイヤーの名前とスキン。中身（source/data/players.json・source/data/skins/）は C.A.I.（project-cai の account/sitePublish.js）が毎日 4:40 に書き出す。 -->
+<!-- 説明：載るのはプレイヤー全員（今は全員テスター）。アカウントを買った人だけは Discord の /profile public:False で外せる。 -->
+<!DOCTYPE html>
+<html lang="ja" itemtype="http://schema.org/WebPage">
+  <head>
+    <title>艦員名簿 - Project✯NEXUS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1e28d2" />
+    <link rel="icon" href="https://nemonowa.github.io/icon.png" />
+    <meta property="og:image" content="https://nemonowa.github.io/icon.png" />
+    <meta property="og:title" content="艦員名簿 - Project✯NEXUS" />
+    <meta property="og:description" content="neo のプレイヤーの名前とスキン。Copyright © SoraFlete. All Rights Reserved." />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://nemonowa.github.io/styles.css" />
+    <script src="https://nemonowa.github.io/scripts.js"></script>
+    <style>
+      #players { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; list-style: none; padding: 0; }
+      #players li { text-align: center; padding: 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.06); overflow-wrap: anywhere; }
+      #players canvas { width: 64px; height: 64px; image-rendering: pixelated; display: block; margin: 0 auto 8px; }
+      #players .id { font-size: 0.7em; opacity: 0.6; }
+      #search { width: 100%; max-width: 320px; padding: 6px 8px; margin-bottom: 16px; }
+    </style>
+  </head>
+  <body>
+    <header id="header"></header>
+    <main>
+      <h1>👤 艦員名簿</h1>
+      <p id="summary">読み込み中…</p>
+      <input id="search" type="search" placeholder="名前・ID で探す" />
+      <ul id="players"></ul>
+    </main>
+    <footer id="footer"></footer>
+    <div id="ui"></div>
+    <script>
+      // スキン（64×64 の Minecraft 形式）から顔（8×8）と帽子の層（40,8 の 8×8）を重ねて描く
+      function drawFace(canvas, src) {
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = false;
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 8, 8);
+          ctx.drawImage(img, 40, 8, 8, 8, 0, 0, 8, 8);
+        };
+        img.src = src;
+      }
+
+      function render(list, query) {
+        const ul = document.getElementById("players");
+        ul.replaceChildren();
+        const q = query.trim().toLowerCase();
+        for (const p of list) {
+          if (q && !p.name.toLowerCase().includes(q) && !p.id.toLowerCase().includes(q)) continue;
+          const li = document.createElement("li");
+          const canvas = document.createElement("canvas");
+          canvas.width = 8;
+          canvas.height = 8;
+          if (p.skin) drawFace(canvas, "../../data/" + p.skin);
+          const name = document.createElement("div");
+          name.textContent = p.name;
+          const id = document.createElement("div");
+          id.className = "id";
+          id.textContent = p.id;
+          li.append(canvas, name, id);
+          ul.append(li);
+        }
+      }
+
+      fetch("../../data/players.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : []))
+        .catch(() => [])
+        .then((list) => {
+          document.getElementById("summary").textContent = list.length ? `${list.length} 人` : "まだ誰も載っていません。";
+          const search = document.getElementById("search");
+          search.addEventListener("input", () => render(list, search.value));
+          render(list, "");
+        });
+    </script>
+  </body>
+</html>
