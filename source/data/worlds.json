@@ -1,5 +1,26 @@
 {
   "version": 1,
-  "worlds": [],
-  "updatedAt": "2026-10-20T22:14:34.117Z"
+  "worlds": [
+    {
+      "id": "W-5bf09b93",
+      "title": "🍀｜豊穣の大自然島 -CerestaFesta-",
+      "description": "Minecraftで遊べる超大規模オープンワールドA-RPG配布マップ（The World of Wonders）。\n神風に誘われて漂着した神秘の孤島『セレスタフェスタ』で、絶景と生態系を探索し、遺跡に眠る魔法の道具を集め、多様な職業のスキルで魔物と戦い、祝祭を成功へと導く。\n一章：風来と伝承の難破船入江／二章：牧歌と試練の碧天牧場／三章：祝祭と豊穣の黄金穀倉。\n配布ページに版ごとの zip と、neo から導入するサーバー用（CerestaFesta-Server.zip）がある。",
+      "edition": "je",
+      "category": "adventure",
+      "version": null,
+      "tags": [
+        "RPG",
+        "オープンワールド",
+        "探索",
+        "マルチ対応"
+      ],
+      "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/twow",
+      "downloadHost": "github.com",
+      "imageUrl": "https://github.com/user-attachments/assets/6ff8a229-0093-4dd0-962e-59e7e25208c1",
+      "author": "Project-NEXUS",
+      "createdAt": "2026-10-20T22:14:37.278Z",
+      "updatedAt": "2026-10-20T22:14:37.278Z"
+    }
+  ],
+  "updatedAt": "2026-10-20T22:16:11.861Z"
 }
