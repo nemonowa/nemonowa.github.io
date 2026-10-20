@@ -8,11 +8,7 @@
       "edition": "je",
       "category": "skyblock",
       "version": "1.10.2",
-      "tags": [
-        "スカイブロック",
-        "高難易度",
-        "TUSB"
-      ],
+      "tags": [],
       "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/tusbneo",
       "downloadHost": "github.com",
       "imageUrl": null,
@@ -29,11 +25,7 @@
       "edition": "je",
       "category": "athletic",
       "version": "1.20.4",
-      "tags": [
-        "ドロッパー",
-        "アスレチック",
-        "実況歓迎"
-      ],
+      "tags": [],
       "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/T1mD",
       "downloadHost": "github.com",
       "imageUrl": "https://raw.githubusercontent.com/nexusource/O-SourceArsenal/refs/heads/main/The%201000m%20Dropper%EF%BC%9AWorld%20-%20by%20Project-NEXUS/gallery/banner.png",
@@ -50,11 +42,7 @@
       "edition": "je",
       "category": "adventure",
       "version": "1.20.4",
-      "tags": [
-        "観光",
-        "探索",
-        "縦穴"
-      ],
+      "tags": [],
       "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/abyss",
       "downloadHost": "github.com",
       "imageUrl": "https://raw.githubusercontent.com/nexusource/Project-NEXUS/refs/heads/main/The%20Abyssal%20Hollow%20-%20by%20Project-NEXUS/media/2.jpg",
@@ -72,10 +60,7 @@
       "category": "adventure",
       "version": null,
       "tags": [
-        "RPG",
-        "オープンワールド",
-        "探索",
-        "マルチ対応"
+        "RPG"
       ],
       "downloadUrl": "https://github.com/nexusource/Project-NEXUS/releases/tag/twow",
       "downloadHost": "github.com",
@@ -87,5 +72,52 @@
       "forumThreadId": "1562229572618166294"
     }
   ],
-  "updatedAt": "2026-10-20T22:16:35.860Z"
+  "updatedAt": "2026-10-20T22:16:35.860Z",
+  "rules": {
+    "limits": {
+      "title": 100,
+      "message": 2000,
+      "description": 1500,
+      "tags": 3,
+      "url": 500,
+      "version": 30,
+      "author": 40,
+      "pending": 30
+    },
+    "tagChoices": [
+      "RPG",
+      "Action",
+      "STG",
+      "Game",
+      "3D",
+      "2D",
+      "DataPack",
+      "mod"
+    ],
+    "baseTags": [
+      "world",
+      "Minecraft"
+    ],
+    "categoryTags": {
+      "adventure": "RPG",
+      "athletic": "Action",
+      "minigame": "Action",
+      "pvp": "Action"
+    },
+    "editions": {
+      "je": "Java版",
+      "be": "統合版"
+    },
+    "categories": {
+      "adventure": "アドベンチャー・RPG",
+      "escape": "脱出",
+      "athletic": "アスレチック",
+      "minigame": "ミニゲーム",
+      "building": "建築・造形",
+      "pvp": "PvP",
+      "skyblock": "スカイブロック",
+      "survival": "サバイバル",
+      "other": "その他"
+    }
+  }
 }
