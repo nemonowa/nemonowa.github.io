@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeoSkyBox v1.1.56 アップデート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0810;
+    --bg-mid: #1a1622;
+    --bg-panel: #1d1926;
+    --bg-panel-alt: rgba(184,147,74,0.04);
+    --border-gold: #b8934a;
+    --border-gold-bright: #d9b968;
+    --border-gold-dim: #5a4a2c;
+    --text: #e8e2d4;
+    --text-muted: #9c93a8;
+    --text-dim: #766f82;
+    --accent-red: #b3564f;
+    --accent-teal: #5a9c92;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    padding: 56px 20px 80px;
+    background: radial-gradient(ellipse 900px 500px at 50% -10%, #241d30 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, 'Hiragino Mincho ProN', serif;
+    font-size: 19px;
+    line-height: 1.75;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-gold-dim);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(184,147,74,0.12), 0 24px 70px rgba(0,0,0,0.65), inset 0 0 120px rgba(184,147,74,0.025);
+    padding: 60px 68px 52px;
+    position: relative;
+  }
+  .page::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(184,147,74,0.25);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .corner { position:absolute; width:34px; height:34px; color: var(--border-gold); opacity:0.65; font-size:22px; line-height:1; }
+  .corner.tl { top:6px; left:6px; }
+  .corner.tr { top:6px; right:6px; transform: scaleX(-1); }
+  .corner.bl { bottom:6px; left:6px; transform: scaleY(-1); }
+  .corner.br { bottom:6px; right:6px; transform: scale(-1,-1); }
+
+  h1.title {
+    font-family:'Cinzel', serif; font-weight:700;
+    font-size: 27px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--border-gold-bright); text-align:center; margin: 12px 0 4px;
+  }
+  p.catchphrase {
+    font-family:'Cinzel', serif; font-weight:600;
+    text-align:center; font-size: 21px; color: var(--text);
+    margin: 0 0 28px; letter-spacing: 0.5px;
+  }
+  .divider {
+    display:flex; align-items:center; gap:14px;
+    margin: 34px 0; color: var(--border-gold); opacity:0.8;
+  }
+  .divider::before, .divider::after {
+    content:""; flex:1; height:1px;
+    background: linear-gradient(to right, transparent, var(--border-gold-dim), transparent);
+  }
+  .divider span { font-size:14px; }
+
+  p.intro {
+    font-style: italic; color: var(--text-muted); text-align:center;
+    margin: 0 0 30px; font-size: 20px; line-height:1.8;
+  }
+
+  ul.highlights {
+    list-style:none; padding: 22px 30px; margin: 0 0 36px;
+    border: 1px solid var(--border-gold-dim); border-radius:4px;
+    background: rgba(0,0,0,0.22);
+  }
+  ul.highlights li {
+    padding: 7px 0 7px 26px; position:relative; color: var(--text);
+  }
+  ul.highlights li::before {
+    content: "\2756";
+    position:absolute; left:0; top:7px; color: var(--border-gold); font-size:15px;
+  }
+
+  section.feature { margin: 8px 0 44px; }
+  section.feature h2 {
+    font-family:'Cinzel', serif; font-weight:600; font-size:21px;
+    color: var(--border-gold-bright); letter-spacing: 0.5px;
+    display:flex; align-items:baseline; gap:14px; margin: 0 0 4px;
+  }
+  section.feature h2::after {
+    content:""; flex:1; height:1px; align-self:center;
+    background: linear-gradient(to right, var(--border-gold-dim), transparent);
+  }
+  p.subtitle {
+    color: var(--text-dim); font-style:italic; font-size:17px; margin: 0 0 16px;
+  }
+
+  section.feature p { margin: 0 0 16px; }
+  section.feature p:last-child { margin-bottom: 0; }
+
+  table {
+    width:100%; border-collapse:collapse; margin: 18px 0 24px; font-size:17px;
+  }
+  th, td { padding: 11px 16px; border-bottom:1px solid var(--border-gold-dim); text-align:left; vertical-align:top; }
+  th {
+    font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.8px;
+    color: var(--border-gold); text-transform:uppercase;
+    border-bottom:2px solid var(--border-gold);
+  }
+  tbody tr:nth-child(even) td { background: var(--bg-panel-alt); }
+  table.bugfix td:first-child { color: var(--accent-red); }
+
+  strong { color: var(--border-gold-bright); font-weight:600; }
+
+  ul.plain, ol.plain { padding-left: 1.4em; margin: 0 0 16px; }
+  ul.plain li, ol.plain li { margin-bottom: 8px; }
+
+  footer.protocol {
+    text-align:center; color: var(--text-dim); font-size:14px;
+    letter-spacing:1.5px; margin-top: 48px; text-transform:uppercase;
+    font-family:'Cinzel', serif;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 40px 26px 36px; }
+    body { font-size:17px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="corner tl">&#10054;</div>
+  <div class="corner tr">&#10054;</div>
+  <div class="corner bl">&#10054;</div>
+  <div class="corner br">&#10054;</div>
+
+  <h1 class="title">NeoSkyBox v1.1.56</h1>
+  <p class="catchphrase">水が満ち、街が沈み、世界に物語が宿る。</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p class="intro">沈んだ沿岸都市の駅舎に雨が降り、水かさが少しずつ増していく——<br>
+  本ビルドは開発フェーズ676〜1129に相当する過去最大規模の拡張です。水量で動く新しい流体、世界観の正典と新次元、各次元の大ランドマーク、村人の暮らし、エンチャントと経験値、パーティクルと状態異常、空と影の刷新、地形に沿う当たり判定、アセットの全面整備と大幅な軽量化までを一挙に実装します。</p>
+
+  <ul class="highlights">
+    <li>流体を全面刷新：8段階の水量・有限の水・無限の海・雨と蒸発・U字管の圧力</li>
+    <li>ブロックの中に水が入る新方式（柵の中を水が流れ、松明は流される）</li>
+    <li>世界観の正典を確立し、新次元 VolValRose・Asgard・Plantopia を追加</li>
+    <li>初期次元がノスタルマキア（沈んだ沿岸の巨大都市圏）に。街路・高速道路・船・地下鉄・沈んだ中央駅</li>
+    <li>全次元にメインランドマークと各次元のボス</li>
+    <li>地形生成エンジン v2〜v4（侵食・堆積地形）を新規ワールドで採用</li>
+    <li>村人の暮らし：農家・漁師・畜産家・ビルダー・守衛、食事と睡眠、取引の独自化</li>
+    <li>MOB AI の強化（壁登り・日光延焼・危険回避・経路探索・ターゲット優先度）</li>
+    <li>エンチャント11種・経験値とオーブ・修繕・マグネット</li>
+    <li>パーティクルと状態異常の新設（感電・凍結・暗闇・閃光・被曝）、七色の炎</li>
+    <li>空・霧・夜空・オーロラ・影の刷新、各次元の個性ある空</li>
+    <li>当たり判定が地形の表面に沿うように。段差・移動の手触りを作り直し</li>
+    <li>次元ごとの時間軸と季節</li>
+    <li>ゲームプレイ拡張：モブ図鑑、襲撃、惑星の生存環境、動力網、旋律の錠、地形彫刻</li>
+    <li>ブロックの向き・隣接接続・形どおりの当たり判定。654種のブロックを新規登録</li>
+    <li>草花を新しい板のモデルに、道具類を立体のボクセル模型に、落ちたアイテムの見せ方を統一</li>
+    <li>UI 全面改善：ツールチップ・スクロール・折り返し・カーソル形状・キー操作音</li>
+    <li>初回ロードの高速化と、ゲーム全体の大幅な軽量化</li>
+    <li>プロトコル v32→v38</li>
+  </ul>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>流体の全面刷新</h2>
+    <p class="subtitle">水は量を持ち、流れ、溜まり、消える</p>
+    <p><strong>水は「源」と「流れ」ではなく、8段階の水量を持つ流体になりました。</strong>水は有限で、流れても量が保たれます。一方、海は無限の水源として振る舞うため、海を汲み尽くすことはできません。</p>
+    <table>
+      <thead><tr><th>要素</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>水量</td><td>1マスあたり8段階。流動性で粘りが変わる</td></tr>
+        <tr><td>天気</td><td>雨で水面が増え、暑い晴れで浅い水が蒸発。寒さで凍り、暖かいと溶ける</td></tr>
+        <tr><td>圧力</td><td>満水の上の水が満水の中を通って低い空きへ移る（U字管）。コマンドで切り替え可能</td></tr>
+        <tr><td>処理方式</td><td>変化があった周りだけを計算するきっかけ駆動。変更はまとめて1回で配信</td></tr>
+      </tbody>
+    </table>
+    <p>旧来の常時走査型の流体と比べて大幅に軽く、点検後はさらに約6倍高速になっています。既存ワールドの保存形式は変わりません。</p>
+  </section>
+
+  <section class="feature">
+    <h2>ブロックの中の水</h2>
+    <p class="subtitle">水はブロックではなく、マスに宿る</p>
+    <p>水をブロックの一種として扱うのをやめ、<strong>ブロックと流体を別々に持つ</strong>方式にしました。「水のIDではないのに水源として振る舞う」ような曖昧さがありません。</p>
+    <table>
+      <thead><tr><th>ブロックの性質</th><th>例</th><th>水との関係</th></tr></thead>
+      <tbody>
+        <tr><td>水を通す</td><td>柵・鉄格子など</td><td>中を水が流れる</td></tr>
+        <tr><td>水に壊される</td><td>松明など</td><td>水が来ると流される</td></tr>
+        <tr><td>水が必要</td><td>昆布など</td><td>水が引くと枯れる</td></tr>
+        <tr><td>水を入れられない</td><td>一般の固体</td><td>水中に置くとその水が消える（水抜きに使える）</td></tr>
+      </tbody>
+    </table>
+    <p>他のワールドから読み込んだ水没ブロックもこの方式へ変換されます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>世界観の正典と新しい次元</h2>
+    <p class="subtitle">技術史が逆転した世界</p>
+    <p>ストーリーと世界法則の正典を定め、既存・新規の次元をその中に位置づけました。進捗ツリー「Project✯NEXUS」を移植し、進捗画面には NEXUS 進捗タブと技術ツリータブが加わります。</p>
+    <table>
+      <thead><tr><th>次元</th><th>特徴</th></tr></thead>
+      <tbody>
+        <tr><td>VolValRose</td><td>溶岩の海、二帝国の戦線、活火山を要塞化した軍事都市。二帝国の兵が現れる</td></tr>
+        <tr><td>Asgard</td><td>超古代文明の遺構。固有の守護者と自動人形</td></tr>
+        <tr><td>Plantopia</td><td>落日の機械文明。タイムゲートで出入りする</td></tr>
+        <tr><td>タキヨンフィールド</td><td>旧バックルームズを改名。レトロデジタルの空</td></tr>
+      </tbody>
+    </table>
+    <p>HUB にはメモリー・クリスタルの納品所となるモニュメントを設置。高く登りすぎると遭難する、高度連動の遭難システムも加わりました。次元の名前・表記・色は設定ファイルから決められます。</p>
+  </section>
+
+  <section class="feature">
+    <h2>ノスタルマキア</h2>
+    <p class="subtitle">沈んだ沿岸の巨大都市圏</p>
+    <p><strong>新しいワールドの初期次元がノスタルマキアになりました。</strong>地区ごとに性格の違う街路、階層を持つ道路と高速道路、水没した街並み、崩れかけた個性ある建物が広がります。</p>
+    <ul class="plain">
+      <li>メインランドマーク「沈んだ中央駅」、地上を走る地下鉄の区間</li>
+      <li>船舶、墜落した航空機・ヘリコプター、廃墟・テント・キャンピングカーなど小構造物</li>
+      <li>ガソリンスタンド・消防署・警察署などの内装</li>
+      <li>信号機・街灯・枯れた街路樹など道路の装飾、高所・低所のバイオーム</li>
+    </ul>
+  </section>
+
+  <section class="feature">
+    <h2>各次元のメインランドマークとボス</h2>
+    <p class="subtitle">旅の目的地</p>
+    <table>
+      <thead><tr><th>次元</th><th>メインランドマーク</th></tr></thead>
+      <tbody>
+        <tr><td>OVERWORLD</td><td>遺物を祀る聖都</td></tr>
+        <tr><td>VolValRose</td><td>大城塞（山頂への導線つき）</td></tr>
+        <tr><td>RAINBOW_HEAVEN</td><td>雲海と天空の王宮</td></tr>
+        <tr><td>PLANTOPIA</td><td>マシン・メガタウン</td></tr>
+        <tr><td>THE_YOMI</td><td>伏魔殿の都と紫の瘴気沼</td></tr>
+        <tr><td>ASGARD</td><td>黄金の神都アースガルズ</td></tr>
+      </tbody>
+    </table>
+    <p>各次元にボスを配置し、新たにボス5体と、ブロックとエンティティを行き来する雑魚3種を追加しました。</p>
+  </section>
+
+  <section class="feature">
+    <h2>地形生成エンジン v2〜v4</h2>
+    <p class="subtitle">侵食と堆積が刻む地形</p>
+    <p>新しい地形エンジンは侵食と堆積を取り入れ、より自然な起伏を作ります。<strong>生成のバージョンは次元ごとに管理され、既存ワールドの地形は変わりません。</strong>新規ワールドの OVERWORLD・ASGARD・VolValRose から採用しています。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>村人の暮らし</h2>
+    <p class="subtitle">働き、食べ、眠り、守る</p>
+    <table>
+      <thead><tr><th>職業・行動</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>農家</td><td>耕して種を植え、収穫する</td></tr>
+        <tr><td>漁師・畜産家</td><td>魚や畜産物を生産（収穫後に休みを挟む）</td></tr>
+        <tr><td>ビルダー</td><td>草地を土の道に整える</td></tr>
+        <tr><td>守衛</td><td>鉄装備で武装し、ベッドの周りの敵を迎え撃つ</td></tr>
+        <tr><td>共通</td><td>1日2回の食事、夜はベッドへ。生産・共有・消費・繁殖が回る</td></tr>
+      </tbody>
+    </table>
+    <p>取引はオリジナルの意匠に改め、回数制限のない交易と日替わりの品ぞろえにしました。旅の商人も現れます。地形を書き換える行動は日暮れ・夜明けだけの超低頻度で動きます。</p>
+  </section>
+
+  <section class="feature">
+    <h2>MOB AI とエンティティの強化</h2>
+    <p class="subtitle">より賢く、より手強く</p>
+    <ul class="plain">
+      <li>クモ系の壁登り、飛行MOBの高度変更、ゾンビ・スケルトンの日光延焼</li>
+      <li>水・溶岩の自動回避、経路探索の強化、複数ターゲットの優先順位付け（水中MOBにも）</li>
+      <li>敵対MOBが村人も襲うように。個別MOB専用AIを差し替えられる基盤</li>
+      <li>大きさ（スケール）の属性：見た目・当たり判定・目線・間合いまで追随。自然湧きの一部は子供に</li>
+      <li>当たり判定をモデルの実寸から自動算出。防具の見た目を全MOB共通の経路で描画</li>
+      <li>反発係数（弾む）ブロックとエンティティの弾性</li>
+      <li>見た目の無かったエンティティ41体のモデルを作成、似すぎていた4体を独自の解釈で作り直し</li>
+    </ul>
+  </section>
+
+  <section class="feature">
+    <h2>エンチャントと経験値</h2>
+    <p class="subtitle">道具が育つ</p>
+    <p>エンチャントを本格化し、対応する効果を11種に広げました。ツールチップにエンチャント行が表示されます。経験値システムと経験値オーブを作り直し、修繕に対応。独自のエンチャント「マグネット」はアイテムや経験値を引き寄せます。</p>
+  </section>
+
+  <section class="feature">
+    <h2>パーティクルと状態異常</h2>
+    <p class="subtitle">出来事が目に見える</p>
+    <p>炎上や状態効果の見た目を作り込み、マルチプレイでも同期します。<strong>感電・凍結・暗闇・閃光・被曝</strong>の5つの状態異常を新設しました。七色の炎、出来事ごとのパーティクル、任意の色を指定できる <code>/particle</code> コマンドも加わっています。</p>
+    <p>耐性・火炎耐性などの効果はレベルで強さが変わり、マイナスのレベルも指定できます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>空と影の刷新</h2>
+    <p class="subtitle">次元ごとの空</p>
+    <table>
+      <thead><tr><th>対象</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>地上の空</td><td>物理ベースの空、実写の天球テクスチャ、品質設定</td></tr>
+        <tr><td>夜空</td><td>星雲・天の川の星図、月の満ち欠け、オーロラ・虹</td></tr>
+        <tr><td>次元</td><td>タキヨンフィールドのレトロデジタル、Plantopia のネガティブな空</td></tr>
+        <tr><td>霧・液体</td><td>視界の表現を刷新</td></tr>
+        <tr><td>影</td><td>影が動く・消える・線が走るなどの不具合を解消</td></tr>
+        <tr><td>明るさ</td><td>光源からの距離で見え方を決める方式に移行</td></tr>
+      </tbody>
+    </table>
+    <p>遠くで地形がちらつく問題も根本から解消しました。</p>
+  </section>
+
+  <section class="feature">
+    <h2>地形に沿う当たり判定と移動</h2>
+    <p class="subtitle">見た目どおりに歩ける</p>
+    <p>マーチングキューブ法から発展させたなめらかな地形表面に、<strong>当たり判定が沿うようになりました</strong>。斜面を見た目どおりに歩けます。</p>
+    <p>段差の登り、ジャストジャンプ・エアストレイフ・スライドを作り直し、壁沿いにしか動けない・丸い縁で押し戻されるといった引っかかりを解消しました。騎乗中や高速移動時のガクつきも直っています。</p>
+  </section>
+
+  <section class="feature">
+    <h2>時間と季節</h2>
+    <p class="subtitle">次元ごとに時が流れる</p>
+    <p>時間の流れを次元ごとに持つようになり、HUB・NEXUS は現実の時刻と同期します。季節と月日が加わり、気温と作物の成長が季節で変わります。季節の振幅は次元の軸の傾きで決まります。作物の成長は分単位の体感に揃えました。</p>
+  </section>
+
+  <section class="feature">
+    <h2>ゲームプレイの拡張</h2>
+    <p class="subtitle">遊びの幅を広げる</p>
+    <table>
+      <thead><tr><th>機能</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>モブ図鑑・トロフィー</td><td>倒したモブを記録。トロフィーには特効があり、頭部の装備にもなる</td></tr>
+        <tr><td>襲撃イベント</td><td>敵の群れが押し寄せる</td></tr>
+        <tr><td>惑星の生存環境</td><td>気圧・放射線・真空などに備えが必要</td></tr>
+        <tr><td>動力網</td><td>動力を伝えて装置を動かす</td></tr>
+        <tr><td>旋律に応える錠</td><td>決まった旋律で開く</td></tr>
+        <tr><td>地形彫刻</td><td>地形を削って形づくる</td></tr>
+        <tr><td>クレジット</td><td>遠近クロールのエンドロールとクレジット画面</td></tr>
+      </tbody>
+    </table>
+    <p>満腹時は食べ始められなくなり、爆発がモブにも効くようになりました。奈落に落ちると耐性を貫くダメージを受けます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>ブロックの形と登録</h2>
+    <p class="subtitle">向き・つながり・形どおりの判定</p>
+    <ul class="plain">
+      <li>向きを持つブロック（操作系ブロックを含む）、隣とつながるブロック</li>
+      <li>形に合わせた当たり判定と照準</li>
+      <li>ドアの開閉、2マスのブロック、樽やチェスト類の開閉、レバー・ボタンの操作モーション</li>
+      <li>画像やモデルだけがあった互換ブロック654種を登録</li>
+      <li>立方体のまま描かれていた形のあるブロック128種にモデルを用意</li>
+      <li>ブロックの値と性質をモデルファイルひとつで決められるように（設定ファイルからの上書きも可能）</li>
+    </ul>
+  </section>
+
+  <section class="feature">
+    <h2>見た目の刷新</h2>
+    <p class="subtitle">草花・道具・落ちたアイテム</p>
+    <table>
+      <thead><tr><th>対象</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>草花</td><td>細い葉や茎を交差した薄い板と透明の抜きで表現。草原の草花の頂点は大幅に減少</td></tr>
+        <tr><td>キノコ</td><td>赤いキノコの型を茶色のキノコや菌類へ展開</td></tr>
+        <tr><td>道具</td><td>ツルハシ・斧・シャベル・クワ・剣など33種を立体のボクセル模型に</td></tr>
+        <tr><td>落ちたアイテム</td><td>縮小・回転・浮遊、個数で重なる、希少度の色の光の輪</td></tr>
+        <tr><td>トロフィー</td><td>落ちている時も手に持った時も頭だけを描く</td></tr>
+        <tr><td>アイコン・装備</td><td>アイコン440種、身に着けた時の見た目101種、防具・衣装モデルの作り直し</td></tr>
+        <tr><td>プレイヤー</td><td>頭をスキンの頭部で描く</td></tr>
+      </tbody>
+    </table>
+    <p>ヤギの色違いは1つのモデルの見た目違いに統合しました（保存済みの個体はそのまま読み替えます）。</p>
+  </section>
+
+  <section class="feature">
+    <h2>UI の全面改善</h2>
+    <p class="subtitle">迷わない画面</p>
+    <ul class="plain">
+      <li>全画面のボタン・スライダーにホバーツールチップ。コンボボックスに▼</li>
+      <li>縦スクロールと文字の折り返しを共通化（チャット・書見台・クラフト一覧など）</li>
+      <li>要素に応じたマウスカーソル形状</li>
+      <li>クリエイティブパレットとクラフトパネルのグリッド統一・並び替え・名前検索</li>
+      <li>インベントリやチェストのスロットを大きく</li>
+      <li>文字入力欄のコピー・貼り付け・Home/End、Escの二重反応を解消</li>
+      <li>品質プリセットに目安のメモリ量を表示、描画距離は1チャンクから</li>
+      <li>キー操作音（Esc・Enter・Tab・マップ・メニュー・Fキーなど12種）</li>
+    </ul>
+  </section>
+
+  <section class="feature">
+    <h2>音</h2>
+    <p class="subtitle">足音から BGM まで</p>
+    <p>足音の分類を細かくし（石・土・砂利など）、音符ブロックの9音色、ギター・太鼓、ボス警告、END の BGM、泳ぐ音と水しぶきを追加しました。<strong>出典が確かめられない音源は撤去し、出典の確かな素材へ差し替えています。</strong>同梱音声の権利者と利用規約をクレジットに明記しました。</p>
+  </section>
+
+  <section class="feature">
+    <h2>読み込みと軽量化</h2>
+    <p class="subtitle">速く、軽く</p>
+    <table>
+      <thead><tr><th>対象</th><th>改善</th></tr></thead>
+      <tbody>
+        <tr><td>地形の頂点</td><td>36→16バイト、インデックス化、全チャンク共通のインデックスで GPU メモリを削減</td></tr>
+        <tr><td>メッシュ生成</td><td>ホットパスを4.7倍高速化、空のセルを早期に省略</td></tr>
+        <tr><td>初回ロード・次元移動</td><td>周囲が揃うまでメッシュ化を保留、暗転中の反映を拡大、進捗の読み込みを別スレッドに</td></tr>
+        <tr><td>エンティティ</td><td>600体で 4.0ms → 2.65ms/tick</td></tr>
+        <tr><td>周期処理</td><td>低頻度クロックとイベント駆動へ移し、tick 処理を増やさない方針を徹底</td></tr>
+        <tr><td>チャンク同期</td><td>シードと差分だけを送る方式</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="feature">
+    <h2>マルチプレイの整合性</h2>
+    <p class="subtitle">ホストの世界を正しく共有</p>
+    <p>受信スレッドや描画スレッドがワールド・プレイヤーの状態を直接書く経路をなくし、ホスト側の処理へ一本化しました。状態効果の見た目、スケール、経験値などがゲストにも同期されます。流体の変化はまとめて配信されます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>主要バグ修正</h2>
+    <p class="subtitle">症状と修正</p>
+    <table class="bugfix">
+      <thead><tr><th>症状</th><th>修正内容</th></tr></thead>
+      <tbody>
+        <tr><td>耐性効果がボス・エリートに効いていなかった</td><td>未付与の判定を修正し、他の効果も横断点検</td></tr>
+        <tr><td>状態効果の一覧でクラッシュ</td><td>同時変更に安全な形へ</td></tr>
+        <tr><td>地形が透明になって見えなくなる</td><td>安全側のフォールバックを追加</td></tr>
+        <tr><td>遠くの地形がちらつく</td><td>チャンク境界で面を二重に張っていた真因を修正</td></tr>
+        <tr><td>影がプレイヤーの位置で動く・消える・線が走る</td><td>書き込みと読み出しの不整合、バイアスを修正</td></tr>
+        <tr><td>走行中にプレイヤーモデルがずれて画面を覆う</td><td>フレーム内の補間値を一貫させた</td></tr>
+        <tr><td>次元転移中にゲームごと落ちる</td><td>画像読み込みのクラッシュを修正し、転移先が整うまで暗転で待つ</td></tr>
+        <tr><td>盲目で自分のモデルが黒く塗り潰される</td><td>見た目を作り直し</td></tr>
+        <tr><td>バグ報告が届かない</td><td>送信処理を修正</td></tr>
+        <tr><td>水などの流体が固体になって入れない</td><td>判定を修正</td></tr>
+        <tr><td>バケツ・瓶・釣り竿が水面に反応しない、汲んでも水が減らない</td><td>視線上の最初の流体を狙い、量を正しく減らす</td></tr>
+        <tr><td>起動時にタイトルコールがループ・二重に鳴る</td><td>再生の管理を修正</td></tr>
+        <tr><td>起動時に Esc 画面が出ずカーソルだけ出る</td><td>初期化の順序を修正</td></tr>
+        <tr><td>形のあるブロックが手持ち・インベントリで立方体になる</td><td>モデルで描画</td></tr>
+        <tr><td>チャットのスクロールバーやIビームがメイン画面に残る</td><td>表示条件を修正</td></tr>
+        <tr><td>Esc メニューで言語を切り替えると表示が崩れる</td><td>切り替え後に画面を作り直す</td></tr>
+        <tr><td>ベンチマークが常に失敗していた</td><td>次元の指定を修正</td></tr>
+      <tr><td>ワールドに入り直すと最後にいた次元ではなく初期次元から始まり、古いワールドではシードや持ち物が作り直されることがあった</td><td>最後に保存した次元から入り、足りない保存は既存の保存から引き継ぐ</td></tr>
+      <tr><td>次元の移動で、直前の定期保存より後のブロック編集が失われた</td><td>切り替えの前に書き出す</td></tr>
+      <tr><td>ポータルで次元を移ると、移動先の未生成の地形が別の版で作られることがあった</td><td>移動のたびに次元の版を取り直す</td></tr>
+      <tr><td>多数のシルバーフィッシュを攻撃するとサーバーが固まった</td><td>仲間への呼びかけを1回に</td></tr>
+      <tr><td>インベントリを閉じる・捨てて拾う・死ぬと、道具の耐久値やエンチャントが元に戻った</td><td>すべての経路で耐久値とエンチャントを保つ</td></tr>
+      <tr><td>時間を止めている間に保存が連発し、死ぬと復活できなかった</td><td>止まらない経過時間で判定</td></tr>
+      <tr><td>村人が作った畑や道がマルチプレイの相手に見えなかった</td><td>変更を配信する</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="feature">
+    <h2>既知の問題・実機確認待ち</h2>
+    <p class="subtitle">正直に</p>
+    <ul class="plain">
+      <li>流体の刷新、ブロックの中の水、草花の板モデル、道具の模型、落ちたアイテムの見せ方、共通インデックスは実機での見た目の確認がまだ</li>
+      <li>雨・蒸発・凍結はプレイヤーの周りだけを間引いて処理する簡略化あり</li>
+      <li>一部の同梱音声は利用規約上の対応が残っている</li>
+      <li>装飾の展示の仕組みは今後対応</li>
+      <li>弓・爆発などで倒した敵は、戦利品と経験値を落とさない</li>
+    </ul>
+  </section>
+
+  <section class="feature">
+    <h2>その他</h2>
+    <ul class="plain">
+      <li>アセットをモデルファイル中心に整理し、欠落アセットを復元</li>
+      <li>ログの簡潔化（起動時のログスパム解消、パスをファイル名だけに）</li>
+      <li>管理者用テクスチャ一覧を作り直し</li>
+      <li>伐採による樹冠崩落のドロップをまとめて出す</li>
+      <li>ジュークボックスの自動再生、ピグリンの溶岩回避と物々交換</li>
+    </ul>
+  </section>
+
+  <footer class="protocol">Protocol v32 &rarr; v38</footer>
+</div>
+</body>
+</html>

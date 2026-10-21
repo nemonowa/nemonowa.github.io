@@ -1,0 +1,112 @@
+<!-- 名称：更新情報 -->
+<!-- 説明：NeoSkyBox（neo）の配布版ごとの更新情報。データ（source/data/updates.json と updates/neoskybox-vNN.html）は -->
+<!-- 説明：nexus.neo の neo/admin/changelog/export_to_site.py が書き出す。#v56 のように版の番号で、その版を開いて表示する。 -->
+<!DOCTYPE html>
+<html lang="ja" itemtype="http://schema.org/WebPage">
+  <head>
+    <title>更新情報 - Project✯NEXUS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1e28d2" />
+    <link rel="icon" href="../../../icon.png" />
+    <meta property="og:image" content="https://nemonowa.github.io/icon.png" />
+    <meta property="og:title" content="更新情報 - Project✯NEXUS" />
+    <meta property="og:description" content="NeoSkyBox の配布版ごとの更新情報。Copyright © SoraFlete. All Rights Reserved." />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <script src="../../../scripts.js"></script>
+    <style>
+      .up-list { display: grid; gap: 14px; margin: 16px 0; padding: 0; list-style: none; }
+      .up { border: 1px solid rgba(127, 127, 127, 0.35); border-radius: 8px; padding: 14px 16px; }
+      .up:target, .up.open { border-color: #1e28d2; }
+      .up-head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+      .up-ver { font-family: "DM Mono", monospace; font-weight: 700; font-size: 1.15em; }
+      .up-phase { font-size: 0.85em; opacity: 0.7; }
+      .up-latest { font-size: 0.8em; border: 1px solid currentColor; border-radius: 999px; padding: 0 8px; }
+      .up-catch { margin: 6px 0 0; font-weight: 700; }
+      .up-intro { margin: 8px 0 0; opacity: 0.85; }
+      .up ul { margin: 8px 0 0; padding-left: 1.3em; }
+      .up-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: 0.95em; }
+      .up-actions button { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
+    </style>
+  </head>
+  <body>
+    <header id="header"></header>
+    <main>
+      <h1>📜 更新情報</h1>
+      <p>NeoSkyBox の配布版ごとの更新情報です。新しい版が上です。ゲームの Esc → 詳細設定 →「配布ワールド・バグ一覧」の「更新情報」からも見られます。</p>
+      <p id="summary">読み込み中…</p>
+      <ol class="up-list" id="list"></ol>
+    </main>
+    <footer id="footer"></footer>
+    <script>
+      const DATA = "../../data/";
+      const SHOW = 6;
+      const el = (tag, attrs = {}, ...kids) => {
+        const e = document.createElement(tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === "text") e.textContent = v;
+          else e.setAttribute(k, v);
+        }
+        e.append(...kids);
+        return e;
+      };
+
+      function card(v, latest) {
+        const id = `v${v.number}`;
+        const li = el("li", { class: "up", id });
+        const head = el("div", { class: "up-head" }, el("span", { class: "up-ver", text: v.version }));
+        if (v.phases) head.append(el("span", { class: "up-phase", text: `開発フェーズ ${v.phases[0]}〜${v.phases[1]}` }));
+        if (latest) head.append(el("span", { class: "up-latest", text: "最新" }));
+        li.append(head);
+        if (v.catchphrase) li.append(el("p", { class: "up-catch", text: v.catchphrase }));
+        if (v.intro) li.append(el("p", { class: "up-intro", text: v.intro }));
+        const ul = el("ul");
+        v.highlights.forEach((h, i) => {
+          const item = el("li", { text: h });
+          if (i >= SHOW) item.hidden = true;
+          ul.append(item);
+        });
+        li.append(ul);
+        const actions = el("div", { class: "up-actions" });
+        if (v.highlights.length > SHOW) {
+          const more = el("button", { type: "button", text: `ほか ${v.highlights.length - SHOW} 件も見る` });
+          more.addEventListener("click", () => open(li, more));
+          actions.append(more);
+          li._more = more;
+        }
+        actions.append(el("a", { href: DATA + v.file, target: "_blank", rel: "noopener", text: "全文を読む" }));
+        li.append(actions);
+        return li;
+      }
+
+      function open(li, more = li._more) {
+        li.classList.add("open");
+        li.querySelectorAll("ul > li[hidden]").forEach((x) => (x.hidden = false));
+        more?.remove();
+      }
+
+      function route() {
+        const li = location.hash && document.getElementById(location.hash.slice(1));
+        if (!li || !li.classList.contains("up")) return;
+        open(li);
+        // ヘッダー・フッター（scripts.js）が後から入って位置がずれるので、少し待ってからも合わせる
+        li.scrollIntoView({ block: "start" });
+        setTimeout(() => li.scrollIntoView({ block: "start" }), 400);
+      }
+
+      fetch(DATA + "updates.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((d) => {
+          const list = document.getElementById("list");
+          d.versions.forEach((v, i) => list.append(card(v, i === 0)));
+          document.getElementById("summary").textContent = `${d.versions.length} 版`;
+          route();
+          window.addEventListener("hashchange", route);
+        })
+        .catch((e) => {
+          document.getElementById("summary").textContent = `読み込めませんでした（${e.message}）。時間をおいて開き直してください。`;
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeoSkyBox v1.1.50 アップデート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0810;
+    --bg-mid: #1a1622;
+    --bg-panel: #1d1926;
+    --bg-panel-alt: rgba(184,147,74,0.04);
+    --border-gold: #b8934a;
+    --border-gold-bright: #d9b968;
+    --border-gold-dim: #5a4a2c;
+    --text: #e8e2d4;
+    --text-muted: #9c93a8;
+    --text-dim: #766f82;
+    --accent-red: #b3564f;
+    --accent-teal: #5a9c92;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    padding: 56px 20px 80px;
+    background: radial-gradient(ellipse 900px 500px at 50% -10%, #241d30 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, 'Hiragino Mincho ProN', serif;
+    font-size: 19px;
+    line-height: 1.75;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-gold-dim);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(184,147,74,0.12), 0 24px 70px rgba(0,0,0,0.65), inset 0 0 120px rgba(184,147,74,0.025);
+    padding: 60px 68px 52px;
+    position: relative;
+  }
+  .page::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(184,147,74,0.25);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .corner { position:absolute; width:34px; height:34px; color: var(--border-gold); opacity:0.65; font-size:22px; line-height:1; }
+  .corner.tl { top:6px; left:6px; }
+  .corner.tr { top:6px; right:6px; transform: scaleX(-1); }
+  .corner.bl { bottom:6px; left:6px; transform: scaleY(-1); }
+  .corner.br { bottom:6px; right:6px; transform: scale(-1,-1); }
+
+  h1.title {
+    font-family:'Cinzel', serif; font-weight:700;
+    font-size: 27px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--border-gold-bright); text-align:center; margin: 12px 0 4px;
+  }
+  p.catchphrase {
+    font-family:'Cinzel', serif; font-weight:600;
+    text-align:center; font-size: 21px; color: var(--text);
+    margin: 0 0 28px; letter-spacing: 0.5px;
+  }
+  .divider {
+    display:flex; align-items:center; gap:14px;
+    margin: 34px 0; color: var(--border-gold); opacity:0.8;
+  }
+  .divider::before, .divider::after {
+    content:""; flex:1; height:1px;
+    background: linear-gradient(to right, transparent, var(--border-gold-dim), transparent);
+  }
+  .divider span { font-size:14px; }
+
+  p.intro {
+    font-style: italic; color: var(--text-muted); text-align:center;
+    margin: 0 0 30px; font-size: 20px; line-height:1.8;
+  }
+
+  ul.highlights {
+    list-style:none; padding: 22px 30px; margin: 0 0 36px;
+    border: 1px solid var(--border-gold-dim); border-radius:4px;
+    background: rgba(0,0,0,0.22);
+  }
+  ul.highlights li {
+    padding: 7px 0 7px 26px; position:relative; color: var(--text);
+  }
+  ul.highlights li::before {
+    content: "\2756";
+    position:absolute; left:0; top:7px; color: var(--border-gold); font-size:15px;
+  }
+
+  section.feature { margin: 8px 0 44px; }
+  section.feature h2 {
+    font-family:'Cinzel', serif; font-weight:600; font-size:21px;
+    color: var(--border-gold-bright); letter-spacing: 0.5px;
+    display:flex; align-items:baseline; gap:14px; margin: 0 0 4px;
+  }
+  section.feature h2::after {
+    content:""; flex:1; height:1px; align-self:center;
+    background: linear-gradient(to right, var(--border-gold-dim), transparent);
+  }
+  p.subtitle {
+    color: var(--text-dim); font-style:italic; font-size:17px; margin: 0 0 16px;
+  }
+
+  section.feature p { margin: 0 0 16px; }
+  section.feature p:last-child { margin-bottom: 0; }
+
+  table {
+    width:100%; border-collapse:collapse; margin: 18px 0 24px; font-size:17px;
+  }
+  th, td { padding: 11px 16px; border-bottom:1px solid var(--border-gold-dim); text-align:left; vertical-align:top; }
+  th {
+    font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.8px;
+    color: var(--border-gold); text-transform:uppercase;
+    border-bottom:2px solid var(--border-gold);
+  }
+  tbody tr:nth-child(even) td { background: var(--bg-panel-alt); }
+  table.bugfix td:first-child { color: var(--accent-red); }
+
+  strong { color: var(--border-gold-bright); font-weight:600; }
+
+  ul.plain, ol.plain { padding-left: 1.4em; margin: 0 0 16px; }
+  ul.plain li, ol.plain li { margin-bottom: 8px; }
+
+  footer.protocol {
+    text-align:center; color: var(--text-dim); font-size:14px;
+    letter-spacing:1.5px; margin-top: 48px; text-transform:uppercase;
+    font-family:'Cinzel', serif;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 40px 26px 36px; }
+    body { font-size:17px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="corner tl">&#10054;</div>
+  <div class="corner tr">&#10054;</div>
+  <div class="corner bl">&#10054;</div>
+  <div class="corner br">&#10054;</div>
+
+  <h1 class="title">NeoSkyBox v1.1.50</h1>
+  <p class="catchphrase">冒険は更なる次元へ。宇宙空間、星間文明、異次元、侵攻を開始せよ。</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p class="intro">1つの世界を超え、20のディメンションが開かれる——<br>
+  本ビルドは、地表の冒険から宇宙規模の探索へと舞台を拡張する大型アップデートです。</p>
+
+  <ul class="highlights">
+    <li>新ディメンション20種！太陽系の惑星・衛星から異空間まで</li>
+    <li>TerrainFeatureパイプライン：ディメンションごとの地形生成を自動登録型プラグインで実現</li>
+    <li>Mobシステム刷新！アノテーション自動登録＋敵味方6種の新モブ</li>
+    <li>重力物理（GravitySim）：砂・砂利の落下、丸太・葉の構造崩壊</li>
+    <li>木の伐採エフェクト：伐採時に破片が物理演算で飛散</li>
+    <li>採掘パーティクル：全ブロックに3D破砕エフェクト</li>
+    <li>テクスチャアトラス：ブロックテクスチャのPNG読み込みとアトラス自動構築</li>
+    <li>物理ベーススカイシェーダ：レイリー/ミー散乱・手続き雲・天の川・惑星ごとの空</li>
+    <li>夜明け／日暮れ演出</li>
+    <li>ゲームモード（サバイバル/クリエイティブ/アドベンチャー/スペクテイター）</li>
+    <li>Mod JARローダー＋Mod API</li>
+    <li>スプライトブロック（花・草・キノコ等の板ポリゴン描画）</li>
+    <li>プロトコル v6→v9</li>
+  </ul>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>ディメンション拡張</h2>
+    <p class="subtitle">太陽系と異空間への20の扉</p>
+    <p>ワールド生成が単一の「オーバーワールド」から<strong>20種のディメンション</strong>へ拡張されました。各ディメンションは独自の地形生成パイプラインを持ち、地表・空・鉱石・構造物のすべてが惑星ごとに設計されています。</p>
+    <table>
+      <thead><tr><th>ディメンション</th><th>特徴</th></tr></thead>
+      <tbody>
+        <tr><td>水星</td><td>焦げたレゴリスの荒野。巨大クレーターと断崖</td></tr>
+        <tr><td>金星</td><td>火山性平原。パンケーキドームとコロナリング</td></tr>
+        <tr><td>火星</td><td>赤い酸化岩の砂漠。巨大火山と峡谷、砂嵐</td></tr>
+        <tr><td>木星・土星</td><td>大気のみの浮遊世界。雲バンドとリングウォークウェイ</td></tr>
+        <tr><td>ネザー</td><td>3D密度場による天井/床の洞窟空間</td></tr>
+        <tr><td>エンド</td><td>虚空に浮かぶ断片群島。眠りの都</td></tr>
+        <tr><td>バックルームズ</td><td>Y軸6層構造の半異界空間</td></tr>
+        <tr><td>ネクサス</td><td>ハブディメンション。公式サーバー認証ゲート付き</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>TerrainFeatureパイプライン</h2>
+    <p class="subtitle">自動登録型の地形生成プラグイン</p>
+    <p>地形生成アーキテクチャを「1機能＝1クラス」のパイプラインへ全面刷新しました。各地形要素は実行優先度と対象ディメンションを宣言するだけで自動登録され、手動の登録コードは不要です。</p>
+    <p>12段階の生成フェーズ（高さマップ→地形彫り→鉱石→構造物→装飾など）を経て地形が組み上がり、フェーズ間には隙間があるため任意の位置に新要素を挿入できます。<code>/locate</code>で構造物の座標検索、<code>/place</code>で手動配置も可能になりました。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>Mobシステムと重力物理</h2>
+    <p class="subtitle">アノテーション自動登録と、崩れる世界</p>
+    <p>Mobクラスに専用アノテーションを付与するだけで自動検出・登録される仕組みを導入し、ニワトリ・ウシ・ブタなどの友好Mobと、クモ・スケルトン・自爆する「ボマー」などの敵対Mob、計6種を新規実装しました。アンデッド系は夜間に移動速度と索敵距離が強化されます。</p>
+    <p>ブロックに自然な重力も実装。砂・砂利・コンクリートパウダーは直下が空くと落下し、丸太や葉は地面との接続が絶たれると構造崩壊を起こします。伐採で幹を切ると、上部の樹冠が崩れ落ちながら物理演算で破片を飛び散らせます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>テクスチャとスカイシェーダ</h2>
+    <p class="subtitle">単色から、質感と呼吸する空へ</p>
+    <p>ブロックの見た目が単色カラーからテクスチャ画像へ進化しました。テクスチャ未設定のブロックは従来通り単色で描画されます。</p>
+    <p>空の描画も、レイリー散乱・ミー散乱による大気の色変化、手続き的な雲、星空と天の川を再現する物理ベースレンダリングに刷新。ディメンションごとに空の見え方が切り替わり、宇宙空間では惑星が浮かぶ星空が、無大気天体では地平線に星が見える荒涼とした空が描かれます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>その他</h2>
+    <ul class="plain">
+      <li>夜明け（04:00）・日暮れ（22:00）に全画面タイトル演出が発生するように</li>
+      <li>サバイバル・クリエイティブ・アドベンチャー・スペクテイターの4ゲームモードを実装</li>
+      <li>外部Modを読み込むMod JARローダーとMod APIを新設</li>
+      <li>花・草・キノコなどをポイントスプライトとして描画するスプライトブロックを追加</li>
+      <li>装備アイテムによる移動速度ボーナスや望遠鏡ズームなどの効果を実装</li>
+      <li>プロトコル v6→v9：タイトル演出・ゲームモード切替の各パケットを追加</li>
+    </ul>
+  </section>
+
+  <footer class="protocol">Protocol v6 &rarr; v9</footer>
+</div>
+</body>
+</html>

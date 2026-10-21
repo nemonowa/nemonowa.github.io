@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeoSkyBox v1.1.49 アップデート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0810;
+    --bg-mid: #1a1622;
+    --bg-panel: #1d1926;
+    --bg-panel-alt: rgba(184,147,74,0.04);
+    --border-gold: #b8934a;
+    --border-gold-bright: #d9b968;
+    --border-gold-dim: #5a4a2c;
+    --text: #e8e2d4;
+    --text-muted: #9c93a8;
+    --text-dim: #766f82;
+    --accent-red: #b3564f;
+    --accent-teal: #5a9c92;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    padding: 56px 20px 80px;
+    background: radial-gradient(ellipse 900px 500px at 50% -10%, #241d30 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, 'Hiragino Mincho ProN', serif;
+    font-size: 19px;
+    line-height: 1.75;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-gold-dim);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(184,147,74,0.12), 0 24px 70px rgba(0,0,0,0.65), inset 0 0 120px rgba(184,147,74,0.025);
+    padding: 60px 68px 52px;
+    position: relative;
+  }
+  .page::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(184,147,74,0.25);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .corner { position:absolute; width:34px; height:34px; color: var(--border-gold); opacity:0.65; font-size:22px; line-height:1; }
+  .corner.tl { top:6px; left:6px; }
+  .corner.tr { top:6px; right:6px; transform: scaleX(-1); }
+  .corner.bl { bottom:6px; left:6px; transform: scaleY(-1); }
+  .corner.br { bottom:6px; right:6px; transform: scale(-1,-1); }
+
+  h1.title {
+    font-family:'Cinzel', serif; font-weight:700;
+    font-size: 27px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--border-gold-bright); text-align:center; margin: 12px 0 4px;
+  }
+  p.catchphrase {
+    font-family:'Cinzel', serif; font-weight:600;
+    text-align:center; font-size: 21px; color: var(--text);
+    margin: 0 0 28px; letter-spacing: 0.5px;
+  }
+  .divider {
+    display:flex; align-items:center; gap:14px;
+    margin: 34px 0; color: var(--border-gold); opacity:0.8;
+  }
+  .divider::before, .divider::after {
+    content:""; flex:1; height:1px;
+    background: linear-gradient(to right, transparent, var(--border-gold-dim), transparent);
+  }
+  .divider span { font-size:14px; }
+
+  p.intro {
+    font-style: italic; color: var(--text-muted); text-align:center;
+    margin: 0 0 30px; font-size: 20px; line-height:1.8;
+  }
+
+  ul.highlights {
+    list-style:none; padding: 22px 30px; margin: 0 0 36px;
+    border: 1px solid var(--border-gold-dim); border-radius:4px;
+    background: rgba(0,0,0,0.22);
+  }
+  ul.highlights li {
+    padding: 7px 0 7px 26px; position:relative; color: var(--text);
+  }
+  ul.highlights li::before {
+    content: "\2756";
+    position:absolute; left:0; top:7px; color: var(--border-gold); font-size:15px;
+  }
+
+  section.feature { margin: 8px 0 44px; }
+  section.feature h2 {
+    font-family:'Cinzel', serif; font-weight:600; font-size:21px;
+    color: var(--border-gold-bright); letter-spacing: 0.5px;
+    display:flex; align-items:baseline; gap:14px; margin: 0 0 4px;
+  }
+  section.feature h2::after {
+    content:""; flex:1; height:1px; align-self:center;
+    background: linear-gradient(to right, var(--border-gold-dim), transparent);
+  }
+  p.subtitle {
+    color: var(--text-dim); font-style:italic; font-size:17px; margin: 0 0 16px;
+  }
+
+  section.feature p { margin: 0 0 16px; }
+  section.feature p:last-child { margin-bottom: 0; }
+
+  table {
+    width:100%; border-collapse:collapse; margin: 18px 0 24px; font-size:17px;
+  }
+  th, td { padding: 11px 16px; border-bottom:1px solid var(--border-gold-dim); text-align:left; vertical-align:top; }
+  th {
+    font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.8px;
+    color: var(--border-gold); text-transform:uppercase;
+    border-bottom:2px solid var(--border-gold);
+  }
+  tbody tr:nth-child(even) td { background: var(--bg-panel-alt); }
+  table.bugfix td:first-child { color: var(--accent-red); }
+
+  strong { color: var(--border-gold-bright); font-weight:600; }
+
+  ul.plain, ol.plain { padding-left: 1.4em; margin: 0 0 16px; }
+  ul.plain li, ol.plain li { margin-bottom: 8px; }
+
+  footer.protocol {
+    text-align:center; color: var(--text-dim); font-size:14px;
+    letter-spacing:1.5px; margin-top: 48px; text-transform:uppercase;
+    font-family:'Cinzel', serif;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 40px 26px 36px; }
+    body { font-size:17px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="corner tl">&#10054;</div>
+  <div class="corner tr">&#10054;</div>
+  <div class="corner bl">&#10054;</div>
+  <div class="corner br">&#10054;</div>
+
+  <h1 class="title">NeoSkyBox v1.1.49</h1>
+  <p class="catchphrase">シードは一意。無数に枝分かれした「世界」は無限へ広がる。</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p class="intro">流体が流れ、天候が変わり、大地が呼吸し始める——<br>
+  本ビルドは、ただ眺めるだけだった世界を「干渉できる世界」へ進化させる大型アップデートです。</p>
+
+  <ul class="highlights">
+    <li>新世界の地形生成アルゴリズムを実装（読み込み前提から、プロシージャル生成へ）</li>
+    <li>シード値からバイオーム・気候を分布生成</li>
+    <li>木・草・花などの植生を自動配置</li>
+    <li>鉱石の高さ分布生成、洞窟の地下構造物</li>
+    <li>点群メッシュ生成：マーチングキューブ法から発展させた独自の描画理論</li>
+    <li>統一素材理論：名前・耐久値・カラーコードの3属性ですべてを表現</li>
+    <li>天候システム新規実装：晴れ・雨・雷雨・雪・砂嵐・陽炎・ブリザード・流星群の8種</li>
+    <li>流体物理新規実装：7段階の流水、水⇄氷の相転移、半流動ハザード</li>
+    <li>世界への干渉力を統合：DPS方式のブロック破壊・攻撃システム</li>
+    <li>マルチプレイの本格対応：ブロック破壊のホスト権威化、チャンク整合性チェック</li>
+    <li>ウェイポイントシステム新規実装</li>
+    <li>スレッド安全性の全面的な見直し</li>
+    <li>プロトコル v1→v6</li>
+  </ul>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>地形生成エンジン</h2>
+    <p class="subtitle">読み込み前提から、無限のプロシージャル生成へ</p>
+    <p>ワールドの手続き生成システムを一新しました。温度×湿度の3×3グリッドに基づく9種のバイオームに、高度による上書き（海岸・岩肌・高山・雪冠）が加わります。温度・湿度・肥沃度・大陸性の4軸からなる気候フィールドが、地形の性格を連続的に制御します。</p>
+    <p>2.5D高さマップと3D密度場（洞窟）、浮島を組み合わせ、ドメインワープでグリッドの規則性を消しています。稀に出現する高振幅の制御点により、劇的な山塊や峡谷も生成されます。地下には鉱石・装飾・洞窟構造が自動生成され、手配置した地域には固有の気候・高度バイアスを適用できます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>点群メッシュ生成</h2>
+    <p class="subtitle">「1情報＝1点」の地形描画理論</p>
+    <p>旧来のボクセルゲームは「1ブロック＝1立方体」を並べて地形を描いてきました。本アップデートでは、各ブロックの情報をその中心にある1つの点とみなし、隣接する点同士の関係から表面を生成する、マーチングキューブ法から発展させた独自の描画手法を導入しました。</p>
+    <p><strong>素材の硬さが形に現れます。</strong>ブロックごとの「硬さ」パラメータで角の丸みが連続的に変化し、bedrockや板材は正確な立方体を保つ一方、砂は柔らかく丸まり、水は完全に滑らかな形状になります。全ブロックの硬さを最大値にすれば従来の立方体描画と数学的に一致するため、この描画法は旧来表現を完全に包含する上位互換です。ワールドの保存形式やコリジョン判定には一切手を入れていません。</p>
+    <p>これに合わせ、ブロックの属性を<strong>名前・耐久値・カラーコードの3つだけ</strong>で表す統一素材理論を導入しました。破壊時間・爆発耐性・形状硬度はすべて耐久値からの導出関数として自動算出され、世界の見た目がそのまま物性の可視化になります。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>植生・鉱石・地下構造物</h2>
+    <p class="subtitle">大地が資源と緑をまとう</p>
+    <p>バイオームごとに固有の樹種と地表植物が自動配置されます。肥沃度が木や草花の密度を左右し、肥沃な土地ほど鬱蒼と茂ります。</p>
+    <table>
+      <thead><tr><th>鉱石</th><th>ピーク深度</th><th>チャンク期待数</th></tr></thead>
+      <tbody>
+        <tr><td>石炭</td><td>浅層</td><td>14.0</td></tr>
+        <tr><td>鉄</td><td>中層</td><td>9.0</td></tr>
+        <tr><td>金</td><td>深層</td><td>3.0</td></tr>
+        <tr><td>ダイヤモンド</td><td>最深部</td><td>1.2</td></tr>
+        <tr><td>エメラルド</td><td>全層</td><td>1.0（単体）</td></tr>
+      </tbody>
+    </table>
+    <p>希少な鉱石から先に配置することで、ダイヤモンドやエメラルドが他の鉱脈に潰されず確実に生成されます。洞窟には廃坑の木柱や、低確率で特殊構造物を秘めた小石室も出現します。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>天候と流体</h2>
+    <p class="subtitle">世界が実際に降り、流れる</p>
+    <p>天気が世界に実際に影響するようになりました。晴れ・雨・雷雨に加え、雪・砂嵐・陽炎・ブリザード・流星群の8種類を実装。雷雨中の落雷は地形を変化させ、雪原では雨が自動的に雪へ変わります。虹や流星群には探索イベントが付随します。</p>
+    <p>水源から7段階の流水が実際に広がり、プレイヤーは水流に押されるようになりました。気温に連動した水⇄氷の可逆変化、溶岩→玄武岩の不可逆変化に加え、流砂・流泥・粉雪といった半流動ブロックが足を取るハザードとして機能します。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>世界への干渉力とマルチプレイ</h2>
+    <p class="subtitle">押しっぱなしで壊し、確実に届く</p>
+    <p>「1クリック＝1ヒット」の連打ゲームを廃止し、押しっぱなしで毎tick干渉力を蓄積するDPS方式に刷新しました。ブロックとエンティティを同じインターフェースで扱うことで、攻撃と採掘の分岐がない設計になっています。</p>
+    <p>マルチプレイでは、同じブロックを複数人が同時に破壊した際のアイテム重複付与バグを修正。破壊の確定判定はホストのみが行います。ホストが約2秒間隔でチャンクのチェックサムを配信し、クライアント側の不一致を検知すると自動で再送要求する仕組みも導入しました。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>その他</h2>
+    <ul class="plain">
+      <li>ウェイポイントシステムを新規実装。マップ画面から目的地マーカーを設置・編集・削除でき、探検/建築/危険などのカテゴリに分類可能</li>
+      <li>GLスレッド／サーバースレッド間の競合を体系的に修正するスレッド安全性の全面見直し</li>
+      <li>コンソールからstop/save/helpを受け付けられるように</li>
+      <li>ログにエラーコードを付与し、問題の追跡を容易化</li>
+      <li>プロトコル v1→v6：攻撃同期・アイテム付与・チャンク整合性・天候の各パケットを追加</li>
+    </ul>
+  </section>
+
+  <footer class="protocol">Protocol v1 &rarr; v6</footer>
+</div>
+</body>
+</html>

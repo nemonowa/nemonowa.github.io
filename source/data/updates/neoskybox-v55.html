@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeoSkyBox v1.1.55 アップデート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0810;
+    --bg-mid: #1a1622;
+    --bg-panel: #1d1926;
+    --bg-panel-alt: rgba(184,147,74,0.04);
+    --border-gold: #b8934a;
+    --border-gold-bright: #d9b968;
+    --border-gold-dim: #5a4a2c;
+    --text: #e8e2d4;
+    --text-muted: #9c93a8;
+    --text-dim: #766f82;
+    --accent-red: #b3564f;
+    --accent-teal: #5a9c92;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    padding: 56px 20px 80px;
+    background: radial-gradient(ellipse 900px 500px at 50% -10%, #241d30 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, 'Hiragino Mincho ProN', serif;
+    font-size: 19px;
+    line-height: 1.75;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-gold-dim);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(184,147,74,0.12), 0 24px 70px rgba(0,0,0,0.65), inset 0 0 120px rgba(184,147,74,0.025);
+    padding: 60px 68px 52px;
+    position: relative;
+  }
+  .page::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(184,147,74,0.25);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .corner { position:absolute; width:34px; height:34px; color: var(--border-gold); opacity:0.65; font-size:22px; line-height:1; }
+  .corner.tl { top:6px; left:6px; }
+  .corner.tr { top:6px; right:6px; transform: scaleX(-1); }
+  .corner.bl { bottom:6px; left:6px; transform: scaleY(-1); }
+  .corner.br { bottom:6px; right:6px; transform: scale(-1,-1); }
+
+  h1.title {
+    font-family:'Cinzel', serif; font-weight:700;
+    font-size: 27px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--border-gold-bright); text-align:center; margin: 12px 0 4px;
+  }
+  p.catchphrase {
+    font-family:'Cinzel', serif; font-weight:600;
+    text-align:center; font-size: 21px; color: var(--text);
+    margin: 0 0 28px; letter-spacing: 0.5px;
+  }
+  .divider {
+    display:flex; align-items:center; gap:14px;
+    margin: 34px 0; color: var(--border-gold); opacity:0.8;
+  }
+  .divider::before, .divider::after {
+    content:""; flex:1; height:1px;
+    background: linear-gradient(to right, transparent, var(--border-gold-dim), transparent);
+  }
+  .divider span { font-size:14px; }
+
+  p.intro {
+    font-style: italic; color: var(--text-muted); text-align:center;
+    margin: 0 0 30px; font-size: 20px; line-height:1.8;
+  }
+
+  ul.highlights {
+    list-style:none; padding: 22px 30px; margin: 0 0 36px;
+    border: 1px solid var(--border-gold-dim); border-radius:4px;
+    background: rgba(0,0,0,0.22);
+  }
+  ul.highlights li {
+    padding: 7px 0 7px 26px; position:relative; color: var(--text);
+  }
+  ul.highlights li::before {
+    content: "\2756";
+    position:absolute; left:0; top:7px; color: var(--border-gold); font-size:15px;
+  }
+
+  section.feature { margin: 8px 0 44px; }
+  section.feature h2 {
+    font-family:'Cinzel', serif; font-weight:600; font-size:21px;
+    color: var(--border-gold-bright); letter-spacing: 0.5px;
+    display:flex; align-items:baseline; gap:14px; margin: 0 0 4px;
+  }
+  section.feature h2::after {
+    content:""; flex:1; height:1px; align-self:center;
+    background: linear-gradient(to right, var(--border-gold-dim), transparent);
+  }
+  p.subtitle {
+    color: var(--text-dim); font-style:italic; font-size:17px; margin: 0 0 16px;
+  }
+
+  section.feature p { margin: 0 0 16px; }
+  section.feature p:last-child { margin-bottom: 0; }
+
+  table {
+    width:100%; border-collapse:collapse; margin: 18px 0 24px; font-size:17px;
+  }
+  th, td { padding: 11px 16px; border-bottom:1px solid var(--border-gold-dim); text-align:left; vertical-align:top; }
+  th {
+    font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.8px;
+    color: var(--border-gold); text-transform:uppercase;
+    border-bottom:2px solid var(--border-gold);
+  }
+  tbody tr:nth-child(even) td { background: var(--bg-panel-alt); }
+  table.bugfix td:first-child { color: var(--accent-red); }
+
+  strong { color: var(--border-gold-bright); font-weight:600; }
+
+  ul.plain, ol.plain { padding-left: 1.4em; margin: 0 0 16px; }
+  ul.plain li, ol.plain li { margin-bottom: 8px; }
+
+  footer.protocol {
+    text-align:center; color: var(--text-dim); font-size:14px;
+    letter-spacing:1.5px; margin-top: 48px; text-transform:uppercase;
+    font-family:'Cinzel', serif;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 40px 26px 36px; }
+    body { font-size:17px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="corner tl">&#10054;</div>
+  <div class="corner tr">&#10054;</div>
+  <div class="corner bl">&#10054;</div>
+  <div class="corner br">&#10054;</div>
+
+  <h1 class="title">NeoSkyBox v1.1.55</h1>
+  <p class="catchphrase">世界を選び、武を構え、頂点に挑む。</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p class="intro">起動すると、まずハブワールドに降り立つ——これまで育てたどの世界にも、ここから入り直せる。<br>
+  本ビルドは開発フェーズ238〜675に相当する過去最大規模の拡張であり、複数ワールドを行き来できるハブワールド・空腹度システムの刷新・調理システムの大改修・銃火器と近接武器の実戦投入・防具の耐久と新規ティア・MOBの脅威度システム整備・ボス戦演出・前作アイテム資産の輸入・音響とグラフィックスの全面刷新までを一挙に実装します。</p>
+
+  <ul class="highlights">
+    <li>ハブワールド：起動後に必ず経由する拠点次元。複数ワールドの保存・切替・削除・シード指定に対応</li>
+    <li>空腹度システムを刷新：段階的なデバフとダッシュ制限、無操作でもわずかに消費が進む</li>
+    <li>椅子・ベッドに座る／眠る演出を追加</li>
+    <li>調理システム大改修：かまど・燻製機を新設。燃料ゲート・実時間タイマー・レシピ選択UI</li>
+    <li>銃器12種・弓4種が実際に発射できるように。近接武器13種にもステータス差</li>
+    <li>防具の耐久消費を実装。金防具を強化し、次元防具・最弱の「リーフアーマー」を新設</li>
+    <li>状態効果を大幅拡張し、ポーションは新規追加のたび自動生成されるように</li>
+    <li>ボス演出システムを新設：警告演出・共通強化・ボスバー同期。ドラゴンAIをフェーズ制に強化</li>
+    <li>MOBの脅威度（レベル）システムとバニラ互換ステータスNBTを整備</li>
+    <li>看板・金床・書見台を追加</li>
+    <li>村人取引をバニラMinecraft互換NBTで読み込めるように</li>
+    <li>前作の伝説級アイテム資産を輸入（名前・説明・一部の効果）</li>
+    <li>足音・生物アンビエント・BGM・ジュークボックス・携帯楽器など音響を全面刷新</li>
+    <li>シェーダー・星空・オーロラなどグラフィックスを強化し、移動時のガクつきを解消</li>
+    <li>地形生成の海・陸地判定を次元ごとに設定できるよう一般化</li>
+    <li>次元転移のロード安定化・高速化、転移演出への画像表示に対応</li>
+    <li>マルチプレイの整合性を強化（状態効果・クラフト・所持品などのホスト権威検証）</li>
+    <li>前バージョン以降のバグレビュー報告のほぼ全件を修正</li>
+    <li>プロトコル v23→v32</li>
+  </ul>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>ハブワールド</h2>
+    <p class="subtitle">拠点から、世界を選ぶ</p>
+    <p><strong>起動すると必ずハブ次元を経由する</strong>ようになりました。育てたワールドはここから選んで入場します。</p>
+    <p>ハブには4つの専用ブロックがあり、種を植えて新しいワールドを育てる・シードを読む・世界に名前を付ける・特殊な種をしまう、という操作ができます。ワールド作成時にシードを指定することも、いらなくなったワールドを削除することもできるようになりました。庭には直近に遊んだワールドが台座に並び、正面ゲートには直前のワールドへの入口が用意されます。</p>
+    <p>ハブ自体は何も保存されない無状態の空間で、常にADVENTUREモードに固定されます。台座の表示件数には上限があり、それを超えるワールドは今回は表示されません。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>空腹度システムの刷新</h2>
+    <p class="subtitle">満ちる、減る、無理をすれば応える</p>
+    <p>空腹度が単なる数値から、<strong>本格的な段階制のデバフシステム</strong>になりました。</p>
+    <table>
+      <thead><tr><th>満腹度の目安</th><th>効果</th></tr></thead>
+      <tbody>
+        <tr><td>90%以上</td><td>HPが自然回復する</td></tr>
+        <tr><td>30%以上</td><td>ダッシュができる</td></tr>
+        <tr><td>40%以下</td><td>採掘力・攻撃力が低下する</td></tr>
+        <tr><td>0</td><td>周期的にダメージを受ける</td></tr>
+      </tbody>
+    </table>
+    <p>食事で満タンを超えた分は上限なく積み上がり、ホットバー付近のアイコンが金色に変化して「無駄になっていない」ことが分かります。時間経過でゆっくり通常の満腹度へ戻ります。また、<strong>まったく操作をしていなくても空腹度はごくわずかに減っていく</strong>ようになりました（満タンから何もしなければ1時間ほどで飢餓状態に達します）。</p>
+    <p>睡眠中・座っている間はこの基礎消費が止まります。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>座る・眠る</h2>
+    <p class="subtitle">椅子とベッドの演出</p>
+    <p>新設の<strong>椅子ブロック</strong>（染色16色に対応）と、既存のスラブ系ブロック・ベッドに座ったり眠ったりできるようになりました。座る・寝るたびに専用のセリフが流れます。</p>
+    <p>睡眠による時間スキップは今回も実装していません。見た目と、ベッドについては従来通りのスポーン地点更新のみです。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>調理システムの大改修</h2>
+    <p class="subtitle">かまど・燻製機、燃料と実時間</p>
+    <p>料理システムがブロック備え付けのインベントリを持つ本格的なものへと作り直されました。</p>
+    <p><strong>かまど</strong>と<strong>燻製機</strong>を新設し、焚き火・かまど・燻製機の3施設は多くのレシピで相互に代替できます。木炭が新たに精錬できるようになりました。</p>
+    <p>調理には<strong>燃料</strong>が必要になりました。木材系は短く、石炭・木炭は8倍長く燃えます。燃料が切れると調理はそこで一時停止し、進捗を保ったまま燃料を追加すれば続きから再開します。作業台では、同じ材料から複数のレシピが同時に成立する場合（斧と鶴嘴が同じ材料になる場合など）、<strong>どちらを作るか選ぶ画面</strong>が出るようになりました。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>武器が実戦力に</h2>
+    <p class="subtitle">銃・弓・近接武器の個性化</p>
+    <p>これまで見た目だけだった<strong>銃器12種・弓4種が、実際に構えて撃てる</strong>ようになりました。日本刀・トンファーのような軽量高速の武器、大太刀・大剣のような重量高火力の武器、方天画戟・槍のような間合いの長い武器など、<strong>近接武器13種</strong>にも用途に応じたステータス差を付けました。</p>
+    <p>現状は同じ系統（銃/弓/近接それぞれ）の中でおおむね横並びの基準値のため、銃器同士・弓同士の個体差はまだ今後の調整課題として残っています。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>防具の刷新</h2>
+    <p class="subtitle">耐久・次元防具・最弱ティア</p>
+    <p><strong>防具にも耐久値ができ、使い込むと壊れて防御力を失う</strong>ようになりました（スロットからは消えず、軽減効果だけを失います）。</p>
+    <p>金防具は「マイクラより頑丈に」という方針のもと、石より上・鉄より下へ明確に強化されました。木＜石＜金＜鉄＜ダイヤの序列に整理されています。</p>
+    <p>各次元固有のクリスタル素材から作る<strong>次元防具</strong>（17次元分、計68アイテム）を新設。ダイヤ防具を上回る性能を持ちますが、次元ごとの強弱差や専用の見た目はまだ用意されていません。逆に、草木の繊維で作る最弱ティア「<strong>リーフアーマー</strong>」も新設し、木の防具よりさらに手前の最初期装備として用意しました。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>状態効果とポーションの大幅拡張</h2>
+    <p>状態効果を19種類新たに実装し、GLOWING（縁取りハイライト）・INVISIBILITY・NAUSEA・STRENGTH/WEAKNESS・SPEED/SLOWNESS・LEVITATIONなど、本家おなじみの効果が一通り使えるようになりました。</p>
+    <p><strong>新しい状態効果を追加すると、飲用・スプラッシュ・残留の3種のポーションが自動生成される</strong>仕組みになったため、以後は個別のアイテム登録作業が不要になります。消費アイテムは<strong>複数の状態効果を同時に付与</strong>できるようになりました。</p>
+    <p>文字装飾（太字・下線・文字化け演出・斜体）も表示できるようになり、輸入した特殊なアイテムの説明文が本来の見た目で表示されます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>ボス戦とドラゴン強化</h2>
+    <p>ボス級MOB共通の演出基盤を新設し、出現時の警告演出・体力に応じた耐性強化・専用のボスバー表示（マルチプレイでも同期）が使えるようになりました。ENDのボスアリーナも戦闘に耐える広さへ拡張しています。</p>
+    <p><strong>ドラゴンのAIをHP割合に応じた3段階のフェーズ制</strong>に強化しました。体力が減るほどブレス攻撃や突進、頭上への隕石召喚といった全体攻撃を繰り出すようになります。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>MOBの脅威度システム</h2>
+    <p class="subtitle">レベルとステータスの体系化</p>
+    <p>MOB全体のHP・攻撃力・ノックバックを、脅威度（weak〜worldsの10段階）に基づいて体系的に整理しました。バニラMinecraft互換の<code>Attributes</code>タグにも対応し、外部データからのステータス指定も読み込めます。</p>
+    <p>この整理に伴い、多くのMOBの強さが見直されています（例：ドラゴンやCthulhuはより手強く、体格の大きい生物ほど頑丈に）。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>新規ブロック：看板・金床・書見台</h2>
+    <ul class="plain">
+      <li><strong>看板</strong>：文字を書き込んで設置できます</li>
+      <li><strong>金床</strong>：アイテムの改名ができます（修理・素材合成には対応していません）</li>
+      <li><strong>書見台</strong>：本を置いてページをめくれます。バニラ形式のコマンドで直接テキストを流し込むこともできます</li>
+    </ul>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>村人取引のバニラ互換化</h2>
+    <p>村人の取引データを、<strong>バニラMinecraft互換のNBT形式</strong>で読み込めるようにしました。既存のコマンドで作られた取引データ資産をそのまま持ち込めます。村人自身のAIは今回も徘徊のみの簡易なものです。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>前作アイテム資産の輸入</h2>
+    <p>前作から受け継がれた伝説級アイテムを、<strong>名前・説明文・色付き装飾・一部のステータス（攻撃力ボーナスや状態効果）</strong>まで読み込めるようになりました。数千件規模を見据え、実際に手に取るまで詳細を読み込まない仕組みになっています。</p>
+    <p>低確率で入手できる特殊な構造物・アイテムについての具体的な内容は、攻略性を保つため伏せます。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>音響の全面刷新</h2>
+    <p>CC0ライセンスの音源への刷新を進め、<strong>足音</strong>（地面の材質ごとに音が変わる）・<strong>生物のアンビエント音</strong>（バイオームや時間帯で頻度が変化）・<strong>次元別BGM</strong>（21次元中17次元に拡充）・<strong>ジュークボックス</strong>・<strong>携帯楽器</strong>（口笛・トイピアノ・ハーモニカ）を新設しました。被弾・死亡・拾得・調理完了・実績解除の効果音も個別に鳴るようになっています。</p>
+    <p>BGM選択用のローカル音源置き場は今回もまだ空のままです。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>グラフィックスの強化</h2>
+    <ul class="plain">
+      <li><strong>移動中の全画面のガクつきを解消</strong>：ゲームロジックの更新頻度とは独立した滑らかな描画補間（レンダー補間）を追加しました</li>
+      <li><strong>惑星ごとの空演出が復活</strong>：資産の欠落により無効化されていた惑星別の空を全次元で復旧・完成させました</li>
+      <li><strong>星空の見た目を改善</strong>：北極付近に星が集中していた問題を解消し、瞬き・流れ星を追加</li>
+      <li><strong>雲の影・水面ハイライト・降雨時の波紋</strong>などのシェーダー効果を追加</li>
+      <li>トーンマッピング・色調補正を全画質設定で標準有効化</li>
+    </ul>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>地形生成の一般化</h2>
+    <p class="subtitle">海と陸地の設定を次元ごとに</p>
+    <p>地形の海・陸地判定パラメータを次元定義ファイルから調整できるよう一般化しました。オーバーワールドだけでなく、ネザーやガス惑星の「海」に相当する部分も同じ仕組みで設定できます。ENDの断片密度もこの延長で調整可能になりましたが、断片の広がり方の都合上、ENDが取りうる陸地の割合には理論上の上限があります。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>次元転移の安定化と演出強化</h2>
+    <p>次元をまたぐ移動でチャンクが虫食い状に描画されない・境界だけ抜け落ちる・稀に固まる/落ちるといった不具合を、根本の原因まで遡って解消しました。既存のセーブデータを多く抱えるワールドほど発生しやすい問題でしたが、繰り返し発生した類似の不具合を踏まえ、以後同種の問題が起きにくい構造へ作り替えています。</p>
+    <p>転移中の暗転演出には、任意の画像をランダム表示できるようになりました。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>マルチプレイの整合性強化</h2>
+    <p>状態効果・クラフト・着火などの操作について、<strong>リモートプレイヤーの意図をホストが検証してから反映する</strong>方式へ揃えました。従来はリモート側の自己申告をそのまま信じていた箇所や、ホストの権威なしにディスクへ書き込んでしまう箇所がありましたが、それぞれ是正しています。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>コマンド機能拡充</h2>
+    <p><code>/give</code>の上限チェック、<code>/fill</code>の各モード（destroy/hollow/keep/outline）、<code>/clone</code>のマスクモード、<code>/tp</code>でのエンティティ指定・Mob対応、<code>/effect</code>・<code>/give</code>・<code>/loot give</code>の複数対象化とMob対応、<code>/gamemode</code>の遠隔変更など、これまで未実装だった引数・挙動を幅広く実装しました。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>主要バグ修正</h2>
+    <table class="bugfix">
+      <thead><tr><th>症状</th><th>修正内容</th></tr></thead>
+      <tbody>
+        <tr><td><strong>「/kill」実行時にゲーム全体がクラッシュすることがあった</strong></td><td>サーバー側スレッドから描画専用の処理を誤って呼んでいたことが原因。呼び出し経路を分離</td></tr>
+        <tr><td><strong>一部のMOBが黒く／まだらにしか描画されないことがあった</strong></td><td>影描画の内部状態が他の描画処理を巻き込んで壊していたことが原因。描画資源を分離</td></tr>
+        <tr><td><strong>次元切替直後、まれに即座に落ちる／地形が壊れて見えることがあった</strong></td><td>読み込み完了時の世代チェック漏れが原因。世代管理を一本化して再発防止</td></tr>
+        <tr><td><strong>既存セーブの多いワールドで、一部の地形が待っても読み込まれないことがあった</strong></td><td>再描画要求の取りこぼしが原因。要求のキューイング方式を修正</td></tr>
+        <tr><td>CRESTA_FESTA（次元）への渡航でクラッシュすることがあった</td><td>地形生成の定義が丸ごと抜けていたことが原因</td></tr>
+        <tr><td>一部プレイヤーモデルの前後・上下が反転して表示されることがあった</td><td>描画の回転合成順序を修正</td></tr>
+        <tr><td>焚き火・ライターで点けた火が他プレイヤーに見えない／自分の画面でも遅れて反映されることがあった</td><td>ブロック変更の同期処理漏れを修正</td></tr>
+        <tr><td>REMOTEクライアントが自分のディスクへワールドデータや設定を無条件保存してしまうことがあった</td><td>保存経路にホスト権威チェックを追加</td></tr>
+        <tr><td>前バージョンのバグレビュー報告のうち未修正だった項目</td><td>ほぼ全件を本ビルドまでに修正済み</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>その他</h2>
+    <ul class="plain">
+      <li>インベントリ画面を作り直し、ホットバーを常設HUD要素へ統合（見た目・操作感は変わりません）</li>
+      <li>ネイティブアイテムの定義をJSON駆動へ全面移行（データの持ち方の変更のみで、内容・挙動は維持）</li>
+      <li>MOD資産をゲーム本体（jar）にも同梱し、配布時の同梱漏れで機能が丸ごと欠落しないように</li>
+      <li>ノックバック処理を共通の仕組みへ整理し、被弾時の状態効果付与にも対応できる土台を用意</li>
+      <li>各種パフォーマンス改善（地形読み込みの高速化、ロックの見直し、無駄な走査の削減など）</li>
+    </ul>
+  </section>
+
+  <footer class="protocol">Protocol v23 &rarr; v32</footer>
+</div>
+</body>
+</html>

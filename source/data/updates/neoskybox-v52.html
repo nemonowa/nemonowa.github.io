@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeoSkyBox v1.1.52 アップデート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0810;
+    --bg-mid: #1a1622;
+    --bg-panel: #1d1926;
+    --bg-panel-alt: rgba(184,147,74,0.04);
+    --border-gold: #b8934a;
+    --border-gold-bright: #d9b968;
+    --border-gold-dim: #5a4a2c;
+    --text: #e8e2d4;
+    --text-muted: #9c93a8;
+    --text-dim: #766f82;
+    --accent-red: #b3564f;
+    --accent-teal: #5a9c92;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    padding: 56px 20px 80px;
+    background: radial-gradient(ellipse 900px 500px at 50% -10%, #241d30 0%, var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, 'Hiragino Mincho ProN', serif;
+    font-size: 19px;
+    line-height: 1.75;
+  }
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-gold-dim);
+    border-radius: 6px;
+    box-shadow: 0 0 0 1px rgba(184,147,74,0.12), 0 24px 70px rgba(0,0,0,0.65), inset 0 0 120px rgba(184,147,74,0.025);
+    padding: 60px 68px 52px;
+    position: relative;
+  }
+  .page::before {
+    content: "";
+    position: absolute; inset: 14px;
+    border: 1px solid rgba(184,147,74,0.25);
+    border-radius: 3px;
+    pointer-events: none;
+  }
+  .corner { position:absolute; width:34px; height:34px; color: var(--border-gold); opacity:0.65; font-size:22px; line-height:1; }
+  .corner.tl { top:6px; left:6px; }
+  .corner.tr { top:6px; right:6px; transform: scaleX(-1); }
+  .corner.bl { bottom:6px; left:6px; transform: scaleY(-1); }
+  .corner.br { bottom:6px; right:6px; transform: scale(-1,-1); }
+
+  h1.title {
+    font-family:'Cinzel', serif; font-weight:700;
+    font-size: 27px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--border-gold-bright); text-align:center; margin: 12px 0 4px;
+  }
+  p.catchphrase {
+    font-family:'Cinzel', serif; font-weight:600;
+    text-align:center; font-size: 21px; color: var(--text);
+    margin: 0 0 28px; letter-spacing: 0.5px;
+  }
+  .divider {
+    display:flex; align-items:center; gap:14px;
+    margin: 34px 0; color: var(--border-gold); opacity:0.8;
+  }
+  .divider::before, .divider::after {
+    content:""; flex:1; height:1px;
+    background: linear-gradient(to right, transparent, var(--border-gold-dim), transparent);
+  }
+  .divider span { font-size:14px; }
+
+  p.intro {
+    font-style: italic; color: var(--text-muted); text-align:center;
+    margin: 0 0 30px; font-size: 20px; line-height:1.8;
+  }
+
+  ul.highlights {
+    list-style:none; padding: 22px 30px; margin: 0 0 36px;
+    border: 1px solid var(--border-gold-dim); border-radius:4px;
+    background: rgba(0,0,0,0.22);
+  }
+  ul.highlights li {
+    padding: 7px 0 7px 26px; position:relative; color: var(--text);
+  }
+  ul.highlights li::before {
+    content: "\2756";
+    position:absolute; left:0; top:7px; color: var(--border-gold); font-size:15px;
+  }
+
+  section.feature { margin: 8px 0 44px; }
+  section.feature h2 {
+    font-family:'Cinzel', serif; font-weight:600; font-size:21px;
+    color: var(--border-gold-bright); letter-spacing: 0.5px;
+    display:flex; align-items:baseline; gap:14px; margin: 0 0 4px;
+  }
+  section.feature h2::after {
+    content:""; flex:1; height:1px; align-self:center;
+    background: linear-gradient(to right, var(--border-gold-dim), transparent);
+  }
+  p.subtitle {
+    color: var(--text-dim); font-style:italic; font-size:17px; margin: 0 0 16px;
+  }
+
+  section.feature p { margin: 0 0 16px; }
+  section.feature p:last-child { margin-bottom: 0; }
+
+  table {
+    width:100%; border-collapse:collapse; margin: 18px 0 24px; font-size:17px;
+  }
+  th, td { padding: 11px 16px; border-bottom:1px solid var(--border-gold-dim); text-align:left; vertical-align:top; }
+  th {
+    font-family:'Cinzel', serif; font-size:13px; letter-spacing:0.8px;
+    color: var(--border-gold); text-transform:uppercase;
+    border-bottom:2px solid var(--border-gold);
+  }
+  tbody tr:nth-child(even) td { background: var(--bg-panel-alt); }
+  table.bugfix td:first-child { color: var(--accent-red); }
+
+  strong { color: var(--border-gold-bright); font-weight:600; }
+
+  ul.plain, ol.plain { padding-left: 1.4em; margin: 0 0 16px; }
+  ul.plain li, ol.plain li { margin-bottom: 8px; }
+
+  footer.protocol {
+    text-align:center; color: var(--text-dim); font-size:14px;
+    letter-spacing:1.5px; margin-top: 48px; text-transform:uppercase;
+    font-family:'Cinzel', serif;
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 40px 26px 36px; }
+    body { font-size:17px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="corner tl">&#10054;</div>
+  <div class="corner tr">&#10054;</div>
+  <div class="corner bl">&#10054;</div>
+  <div class="corner br">&#10054;</div>
+
+  <h1 class="title">NeoSkyBox v1.1.52</h1>
+  <p class="catchphrase">世界が動き出す。スコアが刻まれる。</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <p class="intro">宝箱が軋みながら開き、スコアボードに英雄の名が刻まれる——<br>
+  本ビルドは中規模拡張であり、スコアボードシステム・チェスト開閉アニメーション・リッチテキスト・BBModelブロック描画を一挙に実装します。</p>
+
+  <ul class="highlights">
+    <li>スコアボードシステム：目標・プレイヤースコア・演算・永続化を完備</li>
+    <li>チェスト開閉アニメーション：右クリックで開閉、マルチプレイ同期対応</li>
+    <li>BBModelブロック描画：Blockbench形式のモデルをブロックとしてチャンクに焼き込み</li>
+    <li>リッチテキストコンポーネント：セレクタ・スコア・NBT・キーバインドを動的解決</li>
+    <li>/scoreboardコマンド：objectives/playersの2グループ、8種の演算子</li>
+    <li>テキストの影描画に対応し読みやすさが向上</li>
+    <li>v51既知バグ4件を修正</li>
+    <li>プロトコル v12→v13</li>
+  </ul>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>スコアボードシステム</h2>
+    <p class="subtitle">数値で世界を管理する</p>
+    <p>Minecraft互換のスコアボードを新規実装しました。目標の作成・削除・一覧表示に加え、プレイヤースコアの<code>set</code>/<code>add</code>/<code>remove</code>/<code>reset</code>操作が可能です。</p>
+    <p><code>operation</code>コマンドでは代入・加減乗除・剰余・比較・スワップの8種の演算子を使い、スコア間の算術演算ができます。ワールドメタデータと統合され、自動保存・復元されます。スコア変更コマンドはホストのみ実行可能です。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>チェスト開閉アニメーションとBBModelブロック</h2>
+    <p class="subtitle">宝箱が息をする</p>
+    <p>右クリックでチェスト等のブロックの開閉を切り替えられるようになりました。閉じた状態は静的にチャンクへ焼き込まれ追加の描画コストはゼロで、開閉中のみ動的描画に切り替わります。マルチプレイでは開閉状態がホストとクライアント間でリアルタイムに同期されます。</p>
+    <p>あわせて、特定のブロックをBlockbench形式の3Dモデルとして描画する仕組みも導入。デフォルトはアンビルで、チャンク構築時に各面がオパークメッシュへ焼き込まれるため、1チャンク1ドローコールの原則は保たれています。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>リッチテキストコンポーネント</h2>
+    <p class="subtitle">動的な文字表現</p>
+    <table>
+      <thead><tr><th>コンポーネント</th><th>説明</th></tr></thead>
+      <tbody>
+        <tr><td>selector</td><td>@a @s @p をプレイヤー名に展開</td></tr>
+        <tr><td>score</td><td>スコアボードの値をリアルタイム表示</td></tr>
+        <tr><td>nbt</td><td>エンティティのフィールド値を取得</td></tr>
+        <tr><td>keybind</td><td>プレイヤーのキー設定に合わせた操作名を表示</td></tr>
+      </tbody>
+    </table>
+    <p><code>/tellraw</code>や<code>/title</code>で使うJSONテキストに、これらの動的コンポーネントを組み込めるようになりました。チャット表示にも統合済みです。</p>
+  </section>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <section class="feature">
+    <h2>v51既知バグの修正</h2>
+    <table class="bugfix">
+      <thead><tr><th>症状</th><th>修正内容</th></tr></thead>
+      <tbody>
+        <tr><td>水棲モブが水中で不自然に沈む/浮く</td><td>垂直方向の抵抗計算が二重適用されていたのを修正</td></tr>
+        <tr><td>ボマーの自爆判定が不自然（上下をすり抜ける）</td><td>起爆判定をY軸も含めた3D距離に修正</td></tr>
+        <tr><td>エモート再生が稀に競合する</td><td>状態管理を原子的に切り替わる方式へ変更</td></tr>
+        <tr><td>まれにブロック情報のキャッシュが競合する</td><td>キャッシュ更新の排他制御を見直し</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="feature">
+    <h2>その他</h2>
+    <ul class="plain">
+      <li>テキストに影を付けて描画するAPIを追加し、視認性が向上</li>
+      <li>アセットパッケージの配信元を更新</li>
+      <li>約50ファイルのヘッダコメントを簡潔な現在形に整理</li>
+      <li>プロトコル v12→v13：チェストの開閉状態を同期する新規パケットを追加</li>
+    </ul>
+  </section>
+
+  <footer class="protocol">Protocol v12 &rarr; v13</footer>
+</div>
+</body>
+</html>
