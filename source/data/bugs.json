@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "nextId": 2,
+  "bugs": [
+    {
+      "id": 1,
+      "key": "NEO-1",
+      "title": "*BUG=X は argonaute_nemo に報告された！",
+      "content": "*BUG=X は argonaute_nemo に報告された！",
+      "status": "open",
+      "source": "game",
+      "version": "フェーズ1505",
+      "os": "Windows 11 10.0 (amd64)",
+      "threadId": "1562577671614103746",
+      "createdAt": "2026-10-21T21:33:26.511Z",
+      "updatedAt": "2026-10-21T21:33:26.511Z",
+      "resolvedAt": null,
+      "history": [
+        {
+          "at": "2026-10-21T21:33:26.511Z",
+          "status": "open"
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-10-21T21:33:26.511Z"
+}
