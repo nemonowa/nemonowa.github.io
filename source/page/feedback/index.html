@@ -1,0 +1,193 @@
+<!-- 名称：要望・報告 -->
+<!-- 説明：neo のバグ以外の報告（要望・質問・報告・その他）の一覧。データ（source/data/feedback.json）は C.A.I.（project-cai の function/bugTracker.js）が書く。 -->
+<!-- 説明：一覧・検索・絞り込み・並べ替えと、#FB-<番号> での個別表示をこの1枚で行う。報告者は載せない。バグはバグトラッカー（source/page/bug/）。 -->
+<!DOCTYPE html>
+<html lang="ja" itemtype="http://schema.org/WebPage">
+  <head>
+    <title>要望・報告 - Project✯NEXUS</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1e28d2" />
+    <link rel="icon" href="../../../icon.png" />
+    <meta property="og:image" content="https://nemonowa.github.io/icon.png" />
+    <meta property="og:title" content="要望・報告 - Project✯NEXUS" />
+    <meta property="og:description" content="neo の要望・質問・報告の一覧と対応状況。Copyright © SoraFlete. All Rights Reserved." />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../styles.css" />
+    <script src="../../../scripts.js"></script>
+    <style>
+      .bt-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; align-items: center; }
+      .bt-bar input, .bt-bar select { padding: 6px 8px; }
+      .bt-bar input[type="search"] { flex: 1 1 220px; min-width: 0; }
+      .bt-counts { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 16px; }
+      .bt-chip { border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px; font-size: 0.85em; cursor: pointer; opacity: 0.75; background: none; color: inherit; }
+      .bt-chip[aria-pressed="true"] { opacity: 1; font-weight: 700; }
+      table.bt { width: 100%; border-collapse: collapse; }
+      table.bt th, table.bt td { text-align: left; padding: 6px 8px; border-bottom: 1px solid rgba(127, 127, 127, 0.3); vertical-align: top; }
+      table.bt tr[data-key] { cursor: pointer; }
+      table.bt tr[data-key]:hover { background: rgba(127, 127, 127, 0.12); }
+      .bt-key { font-family: "DM Mono", monospace; white-space: nowrap; }
+      .bt-status { white-space: nowrap; font-weight: 700; }
+      .s-open { color: #d9534f; } .s-confirmed { color: #e0a030; } .s-in_progress { color: #3a8fd9; }
+      .s-resolved { color: #3aa35a; } .s-wont_fix, .s-duplicate { color: #888; }
+      .bt-detail { white-space: pre-wrap; overflow-wrap: anywhere; }
+      .bt-meta { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 12px 0; }
+      .bt-hide-sm { }
+      @media (max-width: 640px) { .bt-hide-sm { display: none; } }
+    </style>
+  </head>
+  <body>
+    <header id="header"></header>
+    <main>
+      <h1>💡 要望・報告</h1>
+      <section id="list-view">
+        <p>ゲーム内の報告や Discord の「🔰｜よくある質問」に届き、上級士官が確かめた要望・質問・報告の一覧と対応状況です。バグは<a href="../bug/">バグトラッカー</a>にあります。</p>
+        <div class="bt-counts" id="counts"></div>
+        <div class="bt-bar">
+          <input id="q" type="search" placeholder="番号（FB-12）・題・内容で探す" />
+          <select id="type"><option value="">種類：すべて</option><option value="feature_request">💡 要望</option><option value="question">❓ 質問</option><option value="report">🐆 報告</option><option value="other">📮 その他</option></select>
+          <select id="source"><option value="">出どころ：すべて</option><option value="game">ゲーム</option><option value="discord">Discord</option></select>
+          <select id="version"><option value="">版：すべて</option></select>
+          <select id="sort">
+            <option value="new">新しい順</option><option value="old">古い順</option><option value="updated">更新順</option>
+          </select>
+        </div>
+        <p id="summary">読み込み中…</p>
+        <table class="bt">
+          <thead><tr><th>番号</th><th>種類</th><th>状態</th><th>題</th><th class="bt-hide-sm">版</th><th class="bt-hide-sm">報告日</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </section>
+      <section id="detail-view" hidden></section>
+    </main>
+    <footer id="footer"></footer>
+    <div id="ui"></div>
+    <script>
+      const STATUS = {
+        open: "未対応", confirmed: "確認済み", in_progress: "対応中",
+        resolved: "解決済み", wont_fix: "対応しない", duplicate: "重複",
+      };
+      const CLOSED = new Set(["resolved", "wont_fix", "duplicate"]);
+      const SOURCE = { game: "ゲーム", discord: "Discord" };
+      const TYPE = { feature_request: "💡 要望", question: "❓ 質問", report: "🐆 報告", other: "📮 その他" };
+      let bugs = [];
+      let statusFilter = "unresolved"; // unresolved / all / 状態の値
+
+      const $ = (id) => document.getElementById(id);
+      const el = (tag, attrs = {}, ...kids) => {
+        const e = document.createElement(tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else e.setAttribute(k, v);
+        }
+        e.append(...kids);
+        return e;
+      };
+      const fmtDate = (s) => {
+        if (!s) return "—";
+        const d = new Date(s);
+        return isNaN(d) ? String(s) : d.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+      };
+      const keyOf = (b) => b.key || `FB-${b.id}`;
+      const statusEl = (s) => el("span", { class: `bt-status s-${s}`, text: STATUS[s] || s });
+
+      function renderCounts() {
+        const box = $("counts");
+        box.replaceChildren();
+        const count = (pred) => bugs.filter(pred).length;
+        const chips = [
+          ["unresolved", `未解決 ${count((b) => !CLOSED.has(b.status))}`],
+          ["all", `すべて ${bugs.length}`],
+          ...Object.keys(STATUS).map((s) => [s, `${STATUS[s]} ${count((b) => b.status === s)}`]),
+        ];
+        for (const [value, label] of chips) {
+          const c = el("button", { class: "bt-chip", type: "button", "aria-pressed": String(statusFilter === value), text: label });
+          c.addEventListener("click", () => { statusFilter = value; renderCounts(); renderList(); });
+          box.append(c);
+        }
+      }
+
+      function matches(b) {
+        if (statusFilter === "unresolved" ? CLOSED.has(b.status) : statusFilter !== "all" && b.status !== statusFilter) return false;
+        if ($("type").value && (b.type || "other") !== $("type").value) return false;
+        if ($("source").value && (b.source || "discord") !== $("source").value) return false;
+        if ($("version").value && b.version !== $("version").value) return false;
+        const q = $("q").value.trim().toLowerCase();
+        if (!q) return true;
+        return [keyOf(b), String(b.id), b.title, b.content].some((t) => String(t || "").toLowerCase().includes(q));
+      }
+
+      function renderList() {
+        const order = $("sort").value;
+        const time = (s) => new Date(s).getTime() || 0;
+        const shown = bugs.filter(matches).sort((a, b) =>
+          order === "old" ? a.id - b.id : order === "updated" ? time(b.updatedAt || b.createdAt) - time(a.updatedAt || a.createdAt) : b.id - a.id);
+        const tbody = $("rows");
+        tbody.replaceChildren();
+        for (const b of shown) {
+          const tr = el("tr", { "data-key": keyOf(b) },
+            el("td", { class: "bt-key", text: keyOf(b) }),
+            el("td", { text: TYPE[b.type] || TYPE.other }),
+            el("td", {}, statusEl(b.status)),
+            el("td", { text: b.title || "(題なし)" }),
+            el("td", { class: "bt-hide-sm", text: b.version || "—" }),
+            el("td", { class: "bt-hide-sm", text: fmtDate(b.createdAt) }));
+          tr.addEventListener("click", () => { location.hash = keyOf(b); });
+          tbody.append(tr);
+        }
+        $("summary").textContent = bugs.length ? `${shown.length} 件を表示（全 ${bugs.length} 件）` : "まだ載っている報告はありません。";
+      }
+
+      function renderDetail(b) {
+        const view = $("detail-view");
+        view.replaceChildren();
+        const back = el("a", { href: "#", text: "← 一覧に戻る" });
+        const meta = el("div", { class: "bt-meta" });
+        const row = (k, v) => meta.append(el("strong", { text: k }), v instanceof Node ? v : el("span", { text: v || "—" }));
+        row("種類", TYPE[b.type] || TYPE.other);
+        row("状態", statusEl(b.status));
+        if (b.status === "duplicate" && b.duplicateOf) {
+          row("重複の元", el("a", { href: `#FB-${b.duplicateOf}`, text: `FB-${b.duplicateOf}` }));
+        }
+        row("出どころ", SOURCE[b.source] || "Discord");
+        row("版", b.version);
+        row("OS", b.os);
+        row("対応した版", b.fixVersion);
+        row("報告日時", fmtDate(b.createdAt));
+        row("更新日時", fmtDate(b.updatedAt));
+        if (b.resolvedAt) row("終了日時", fmtDate(b.resolvedAt));
+        const history = el("ul");
+        for (const h of b.history || []) history.append(el("li", { text: `${fmtDate(h.at)}　${STATUS[h.status] || h.status}` }));
+        view.append(
+          el("p", {}, back),
+          el("h2", { text: `${keyOf(b)}　${b.title || "(題なし)"}` }),
+          meta,
+          el("hr"),
+          el("div", { class: "bt-detail", text: b.content || "(内容なし)" }),
+          ...(history.childElementCount ? [el("h3", { text: "経緯" }), history] : []));
+      }
+
+      function route() {
+        const m = location.hash.match(/^#FB-(\d+)$/i);
+        const b = m && bugs.find((x) => x.id === Number(m[1]));
+        $("list-view").hidden = Boolean(b);
+        $("detail-view").hidden = !b;
+        if (b) { renderDetail(b); document.title = `${keyOf(b)} ${b.title} - 要望・報告`; window.scrollTo(0, 0); }
+        else document.title = "要望・報告 - Project✯NEXUS";
+      }
+
+      fetch("../../data/feedback.json", { cache: "no-cache" })
+        .then((r) => (r.ok ? r.json() : { items: [] }))
+        .catch(() => ({ items: [] }))
+        .then((m) => {
+          bugs = Array.isArray(m.items) ? m.items : [];
+          const versions = [...new Set(bugs.map((b) => b.version).filter(Boolean))].sort().reverse();
+          for (const v of versions) $("version").append(el("option", { value: v, text: v }));
+          for (const id of ["q", "type", "source", "version", "sort"]) $(id).addEventListener("input", renderList);
+          renderCounts();
+          renderList();
+          route();
+          window.addEventListener("hashchange", route);
+        });
+    </script>
+  </body>
+</html>
