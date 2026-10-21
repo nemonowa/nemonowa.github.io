@@ -1,6 +1,6 @@
 <!-- 名称：配布ワールド共有 -->
 <!-- 説明：有志が Minecraft の配布ワールドを共有する場所。ファイルは置かず、作者の配布先へのリンクを載せる。 -->
-<!-- 説明：投稿は誰でも Discord の /world submit から（運営が確かめてから載る）。データ（source/data/worlds.json）は C.A.I.（project-cai の function/worlds.js）が書く。 -->
+<!-- 説明：投稿は誰でも、このページのフォームか Discord の「📥｜作品共有場所」から（上級士官が確かめてから載る）。データ（source/data/worlds.json）は C.A.I.（project-cai の function/worlds.js）が書く。 -->
 <!-- 説明：移しやすいよう、サイト内の物は相対パスで読む（og:image だけは仕様上、絶対 URL）。 -->
 <!DOCTYPE html>
 <html lang="ja" itemtype="http://schema.org/WebPage">
@@ -54,7 +54,7 @@
       <h1>🗺️ 配布ワールド共有</h1>
       <section id="list-view">
         <p>有志が作った Minecraft の配布ワールドを紹介しています。ダウンロードは作者の配布先から行います。</p>
-        <p class="wd-note">投稿は誰でも、このページのフォームか Discord の <code>/world submit</code> から（運営が確かめてから載ります）。</p>
+        <p class="wd-note">投稿は誰でも、このページのフォームか Discord の「📥｜作品共有場所」フォーラムから（運営が確かめてから載ります）。</p>
         <details id="submit-box">
           <summary>📮 配布ワールドを投稿する</summary>
           <form id="submit-form" class="wd-form" novalidate>
@@ -266,7 +266,7 @@
           const result = $("submit-result");
           if (!base) {
             form.querySelector("button").disabled = true;
-            result.textContent = "サイトからの投稿は準備中です。Discord の /world submit から投稿してください。";
+            result.textContent = "サイトからの投稿は準備中です。Discord の「📥｜作品共有場所」フォーラムに投稿してください。";
             return;
           }
           form.addEventListener("submit", async (ev) => {
@@ -294,7 +294,7 @@
                 result.textContent = `❌ ${body.error || "送れませんでした（" + r.status + "）"}`;
               }
             } catch {
-              result.textContent = "❌ 送れませんでした。時間をおいてもう一度試すか、Discord の /world submit を使ってください。";
+              result.textContent = "❌ 送れませんでした。時間をおいてもう一度試すか、Discord の「📥｜作品共有場所」フォーラムに投稿してください。";
             } finally {
               button.disabled = false;
             }
