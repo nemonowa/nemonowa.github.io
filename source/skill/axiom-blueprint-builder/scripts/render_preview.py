@@ -10,12 +10,12 @@ import sys, argparse
 sys.path.insert(0, __file__.rsplit('/', 1)[0])
 from PIL import Image, ImageDraw
 from bplib import read_bp
-from colors import col
+from colors import col, INVISIBLE
 ap = argparse.ArgumentParser(); ap.add_argument('src'); ap.add_argument('out')
 ap.add_argument('--yaw', type=int, default=0); ap.add_argument('--scale', type=float, default=0)
 ap.add_argument('--clip'); ap.add_argument('--bg', default='#9cc7e8')
 a = ap.parse_args()
-bl = read_bp(a.src)['blocks']
+bl = {k: v for k, v in read_bp(a.src)['blocks'].items() if v.split('[')[0] not in INVISIBLE}   # 光源ブロック等は描かない
 if a.clip:
     x0, y0, z0, x1, y1, z1 = map(int, a.clip.split(','))
     bl = {k: v for k, v in bl.items() if x0 <= k[0] <= x1 and y0 <= k[1] <= y1 and z0 <= k[2] <= z1}

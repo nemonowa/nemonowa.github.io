@@ -34,6 +34,7 @@ description: "Minecraft（26.3 対応）の建築 MOD「Axiom」のブループ�
 - `assets/local_viewer.html` — ユーザーのPCで .bp フォルダを選んで読む単体HTML（JSでパース）。
 - `examples/example_pavilion.py` — 最小の完全な例。新規作成はこれをコピーして始める。
 - `examples/format_check_26_3/` — **26.3 形式の確認用**（`format_check.py`）とユーザーの 26.3 実ファイル `sample_26.3.bp`（形式の一次資料）。
+- `examples/vatican/` — **サン・ピエトロ大聖堂と広場を 1:1（約43万ブロック）**：解析的な立体→厚さ2の殻、内部に面するセルだけ内装材、尖頭ドーム＋リブ、楕円オフセットで柱廊を並べる。実在の大建築を殻で作る雛形。
 - `examples/advanced_showcase/` — **高レベル建築の総合例**：丘（fbm＋侵食＋なめらかな縁）の上のゴシック礼拝堂（尖頭窓・控え壁とフライング・バットレス・バラ窓・高さ場の屋根・八角尖塔）、円塔の円錐屋根、玉ねぎドーム、部品の回転複製の街灯と懸垂線の鎖、大木、風化。約3.4万ブロック。
 - `examples/pyramid_dungeon/` — **ピラミッド型ダンジョン**（高台＋45°階段ピラミッド＋3層：迷路・棘の穴・溶岩の島・螺旋・ボス・宝物庫。キットの `maze/spiral/open_end` を使用）。
 - `examples/example_dungeon.py` — 最小のダンジョン例（隠し蓋→棘の穴→溶岩→宝物庫、宝箱とスポナーをBlockEntitiesで書く、検証とマップまで）。
