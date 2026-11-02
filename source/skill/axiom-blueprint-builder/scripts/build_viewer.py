@@ -8,7 +8,7 @@ python3 build_viewer.py OUT.html --samples DIR_OR_FILES... [--archive DIR_OR_FIL
 データは「外から見える面」だけに間引いて埋め込む（6方向すべて不透明ブロックに囲まれたものを除外）。
 葉は不透明扱いで間引く（殻状に作るのが前提）。ガラス・水・氷は半透明。HTMLは16MB以下に収めること。
 """
-import sys, os, json, base64, argparse, collections, re
+import sys, os, json, base64, argparse, collections, re, struct
 HERE = __file__.rsplit('/', 1)[0]; sys.path.insert(0, HERE)
 from bplib import read_bp
 from colors import col, shape, INVISIBLE, KEYWORDS, KEYWORDS_26
@@ -37,7 +37,8 @@ def entry(path, sample):
                 tags=h.get('Tags', []), ver=h.get('Version'), count=h.get('BlockCount', len(bl)),
                 size=[max(xs)-mx+1, max(ys)-my+1, max(zs)-mz+1], thumb=base64.b64encode(bp['thumb_png']).decode(),
                 yaw=round(h.get('ThumbnailYaw', 0), 1), pitch=round(h.get('ThumbnailPitch', 0), 1),
-                top=cnt.most_common(12), kinds=len(cnt), pal=[[n, '#%06x' % col(n), sh] for (n, sh) in pal], v=v)
+                top=cnt.most_common(12), kinds=len(cnt), pal=[[n, '#%06x' % col(n), sh] for (n, sh) in pal],
+                **({'vb': base64.b64encode(struct.pack('<%dh' % len(v), *v)).decode()} if len(v) > 400000 else {'v': v}))   # 大きいものは Int16 の base64（約2/3）
 
 ap = argparse.ArgumentParser(); ap.add_argument('out'); ap.add_argument('--samples', nargs='*'); ap.add_argument('--archive', nargs='*')
 ap.add_argument('--sync-local')

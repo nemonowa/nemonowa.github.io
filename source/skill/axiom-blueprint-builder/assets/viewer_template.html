@@ -42,7 +42,7 @@ dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:1
 <aside id="info"></aside>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const DATA=__DATA__;
+const DATA=__DATA__;DATA.forEach(d=>{if(d.vb&&!d.v){const s=atob(d.vb),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);d.v=Array.from(new Int16Array(u.buffer));delete d.vb}});
 const $=s=>document.querySelector(s);
 $('#sum').textContent=`${DATA.length} files · ${DATA.reduce((a,b)=>a+b.count,0).toLocaleString()} blocks`;
 let sec=null;DATA.forEach((d,i)=>{if(d.sample!==sec){sec=d.sample;const h=document.createElement('div');h.className='sec mono';h.textContent=sec?'SAMPLES — 生成した建築':'ARCHIVE — 手持ちの建築';$('#list').appendChild(h)}const e=document.createElement('div');e.className='it';e.innerHTML=`<img src="data:image/png;base64,${d.thumb}"><div><b>${d.name}${d.sample?' <span class="tag">NEW</span>':''}</b><small class="mono">${d.size.join('×')} · ${d.count.toLocaleString()}</small></div>`;e.onclick=()=>show(i);$('#list').appendChild(e)});
