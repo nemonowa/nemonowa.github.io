@@ -1,0 +1,37 @@
+"""ブロック名→表示色・形状。プレビュー/サムネイル/ビューア共通。
+未知のブロックはマゼンタ(0xff00ff)になる。新しいブロックを使ったら KEYWORDS の先頭に追加する。
+部分一致なので、長い/特殊な名前ほど先に並べる（'bricks' のような短い完全一致は EXACT へ）。"""
+import re
+EXACT={'bricks':0x96614f,'bamboo':0x7ba63c}
+DYES={'white': 15330540, 'light_gray': 9342598, 'gray': 4080711, 'black': 1447450, 'brown': 7489320, 'red': 10561314, 'orange': 15758867, 'yellow': 16303399, 'lime': 7387417, 'green': 5532955, 'cyan': 1411473, 'light_blue': 3846105, 'blue': 3488157, 'purple': 8006317, 'magenta': 12403891, 'pink': 15568300}
+KEYWORDS=[('pale_oak_leaves',0x9aa08e),('pale_oak',0xe3d7cf),('pale_moss',0x7d8a6a),('pale_hanging_moss',0x7d8a6a),('resin_brick',0xd1632a),('resin_block',0xd9712a),('resin_clump',0xd9712a),('creaking_heart',0x6b4a3a),('leaf_litter',0x8a6a2a),('wildflowers',0xd8b0d0),('dried_ghast',0x8d8d86),('firefly_bush',0x5a7a3a),('sunflower',0xf0c020),('prismarine_bricks',0x63ab9a),('dark_prismarine',0x345c4c),('smooth_sandstone',0xe0d6a8),('cut_sandstone',0xdbcf9f),('chiseled_sandstone',0xdbcf9f),('honeycomb',0xe5a227),('smooth_red_sandstone',0xb5622a),('cut_red_sandstone',0xb5622a),('chiseled_red_sandstone',0xb5622a),('red_sandstone',0xb5622a),('polished_granite',0x9a6a59),('granite',0x956756),('cut_copper',0xc06c50),('melon',0x6f911e),('purpur_block',0xa97da9),('cherry_planks',0xe2b2ac),('cactus',3569198),('spawner',1914418),('diamond_block',6280403),('emerald_block',4381547),('clay',10791096),('deepslate_brick',4671303),('stone_brick_stairs',8355711),('stone_brick_slab',8355711),('stone_brick_wall',8355711),('bell',14272058),('candle',15262920),('vine',5213754),('loom',10089042),('composter',8023602),('stonecutter',9010058),('brewing',9010058),('gold_ore', 6969914), ('fire', 15761440), ('cracked_stone_bricks', 7763574), ('crimson_nylium', 9051682), ('warped_nylium', 2783850), ('warped_wart', 1473146), ('warped_stem', 3824234), ('warped', 2787962), ('crimson_planks', 6960200), ('crimson', 8006212), ('oxidized', 5283976), ('twisting', 2138256), ('nether_sprouts', 2138256), ('dripstone', 8808012), ('bone_block', 15131340), ('mushroom_stem', 14209216), ('netherrack', 6957608), ('blue_orchid', 3186912), ('brick_stairs', 9855311), ('copper', 12610122), ('packed_mud', 9333328), ('mud_brick', 9071188), ('decorated_pot', 10115648), ('cauldron', 4210752), ('pearlescent', 15916264), ('birch_planks', 14207120), ('stripped_birch', 14075020), ('acacia', 12083248), ('shroomlight', 15769680), ('nether_wart', 9050650), ('weeping', 10494000), ('podzol', 6965800), ('calcite', 14672092), ('red_mushroom', 12595240), ('cave_vines', 6982192), ('ochre_froglight', 15914634), ('verdant_froglight', 14216384), ('pearlescent_froglight', 15916264), ('amethyst', 9069508), ('glow_lichen', 8034952), ('daisy', 15263952), ('cornflower', 4877016), ('bluet', 13689072), ('lily_of', 15790320), ('flowering_azalea', 8030784), ('mangrove', 9055782), ('bamboo_mosaic', 13218906), ('bamboo', 14074986), ('mud', 3947070), ('raw_gold', 14460986), ('azalea', 6192170), ('fletching', 13153418), ('smithing', 3816008), ('grindstone', 9079434), ('potted', 15315656), ('lightning_rod', 12610112), ('dandelion', 15781920), ('coal_block', 1447446), ('ladder', 10123850), ('hook', 9075296), ('campfire', 6965802), ('netherite', 4867142), ('quartz', 15459806), ('iron_block', 14474460), ('iron', 11053224), ('gold', 16175165), ('redstone', 11475468), ('sea_lantern', 11323582), ('glowstone', 16107898), ('lapis', 2052008), ('obsidian', 1314591), ('crying', 2755152), ('deepslate', 4605520), ('blackstone', 3813952), ('nether_brick', 2888984), ('red_nether', 5901326), ('prismarine', 6202264), ('end_stone', 14606244), ('end_rod', 15920352), ('sandstone', 14406302), ('sand', 14405534), ('gravel', 8748925), ('grass_block', 7051836), ('moss', 5863980), ('dirt_path', 9730627), ('dirt', 8806467), ('farmland', 5913118), ('tuff', 7105894), ('andesite', 8947848), ('diorite', 12434877), ('cobble', 8026746), ('mossy', 6978138), ('stone', 8355711), ('bedrock', 5592405), ('ice', 9287417), ('snow', 16055034), ('water', 4159204), ('lava', 14704666), ('magma', 9322266), ('cherry_leaves', 15315656), ('leaves', 4885036), ('cherry', 6961722), ('birch', 13154170), ('spruce', 6966572), ('dark_oak', 4861976), ('jungle', 10712141), ('acacia', 11098931), ('oak', 10650447), ('hay', 11968031), ('pumpkin', 13006365), ('sculk', 862771), ('chain', 3948360), ('bars', 6974058), ('beacon', 8316640), ('portal', 6954948), ('gateway', 1052704), ('lantern', 15245376), ('torch', 16765024), ('honey', 15769632), ('rail', 9075296), ('bookshelf', 8018490), ('command', 11569248), ('anvil', 4473924), ('chest', 10516524), ('barrel', 9071162), ('grass', 7315536), ('fern', 5933626), ('furnace', 7237230), ('smoker', 7233616), ('hopper', 4868682), ('spawner', 1976888), ('head', 8022618), ('bed', 10493984), ('cobweb', 14737632), ('lily', 2783786), ('bush', 8018474), ('rose', 11542570), ('poppy', 12591136), ('allium', 11563232), ('peony', 14721232), ('carrot', 14712864), ('stem', 8429632), ('lectern', 10517066), ('jukebox', 6963248), ('note_block', 6963248), ('dispenser', 7237230), ('lamp', 12615744), ('lever', 8022618), ('table', 8018490), ('ender', 1718842), ('terracotta', 9985603)]
+# 26.x の新ブロック（名前は △：調査では ID を一次資料で確認できていない。実機で名前が違えば直す）
+KEYWORDS_26=[('iron_chain',0x3c3f48),('potent_sulfur',0xc8a830),('sulfur_spike',0xd8c040),('sulfur',0xd8c24a),('cinnabar',0x9a2e26),('poplar_leaves',0xd88a2a),('poplar',0xbdbab2),('shelf_mushroom',0xb07a40),('straw',0xcdb25a),('golden_dandelion',0xe8c030),('red_shrub',0x8a3020),('copper_golem',0xc06a4a),('copper_torch',0x7fd0a0),('copper_lantern',0x7fd0a0)]
+def col(n):
+    n=n.replace('minecraft:','').split('[')[0]
+    if n in EXACT:return EXACT[n]
+    m=re.match(r'(light_gray|light_blue|white|gray|black|brown|red|orange|yellow|lime|green|cyan|blue|purple|magenta|pink)_',n)
+    if m and not n.startswith('red_nether') and not n.startswith('red_mush'):
+        c=DYES[m[1]]
+        if 'terracotta' in n and 'glazed' not in n:
+            r,g,b=c>>16,c>>8&255,c&255;c=(int(r*.6+.4*0x98)<<16)|(int(g*.6+.4*0x5e)<<8)|int(b*.6+.4*0x43)
+        return c
+    if n.startswith('glass') or n=='glass_pane':return 0xc0e0f0
+    if n=='tinted_glass':return 0x2a2232
+    for k,v in KEYWORDS_26+KEYWORDS:
+        if k in n:return v
+    return 0xff00ff
+THIN=('pane','fence','wall','bars','chain','torch','end_rod','sign','button','lever','banner','grass','fern','bush','rose','poppy','allium','peony','carrots','stem','ladder','hook','cobweb','sapling','trapdoor','door','head','lantern','campfire','vines','roots','sprouts','fungus','dripstone','lightning_rod','flower','tulip','dandelion','orchid','petals','lichen')
+SOLID_STEMS=('grass_block','mushroom_stem','warped_stem','crimson_stem','bamboo_block','dripstone_block','stripped_crimson_stem','stripped_warped_stem')
+def shape(n,state=''):
+    """0=立方体 1=下ハーフ 2=上ハーフ 3=薄板 4=細柱"""
+    n=n.replace('minecraft:','').split('[')[0]
+    if n.endswith('_slab'):return 2 if 'type=top' in state else (0 if 'type=double' in state else 1)
+    if n=='bamboo':return 4
+    if 'carpet' in n or 'pressure_plate' in n or n in('rail','powered_rail','detector_rail','activator_rail','lily_pad','snow'):return 3
+    if n not in SOLID_STEMS and any(k in n for k in THIN):return 4
+    return 0
+INVISIBLE={'air','cave_air','void_air','structure_void','light','barrier','tripwire'}
+def unknown(names):
+    """色が未定義のブロック名を返す（生成後に必ずチェック）"""
+    return sorted({n.replace('minecraft:','').split('[')[0] for n in names if col(n)==0xff00ff})

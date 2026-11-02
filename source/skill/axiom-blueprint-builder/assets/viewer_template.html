@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Axiom Blueprint Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d2033;--paper:#102a42;--line:#2c5a80;--ink:#d8ecff;--dim:#7fa6c8;--acc:#ffd166;--card:#13314d;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="light"]{--bg:#e8f0f7;--paper:#f4f8fc;--line:#9dbbd6;--ink:#0d2a45;--dim:#4d6f8e;--acc:#c2410c;--card:#ffffff;color-scheme:light}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#e8f0f7;--paper:#f4f8fc;--line:#9dbbd6;--ink:#0d2a45;--dim:#4d6f8e;--acc:#c2410c;--card:#ffffff;color-scheme:light}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Zen Kaku Gothic New","Hiragino Sans",sans-serif;display:grid;grid-template-columns:260px 1fr 300px;grid-template-rows:auto 1fr;height:100%;
+background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:32px 32px;background-blend-mode:normal}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{grid-column:1/-1;display:flex;align-items:baseline;gap:16px;padding:14px 20px;border-bottom:2px solid var(--line);background:var(--paper)}
+header h1{margin:0;font-size:20px;letter-spacing:.08em}header span{color:var(--dim);font-size:12px}
+#list{overflow:auto;border-right:2px solid var(--line);background:var(--paper)}
+.it{display:flex;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px dashed var(--line);cursor:pointer}
+.it:hover{background:var(--card)}.it.on{background:var(--card);box-shadow:inset 4px 0 var(--acc)}
+.it img{width:44px;height:44px;image-rendering:pixelated;border:1px solid var(--line);background:#0004}
+.it b{display:block;font-size:14px}.it small{color:var(--dim);font-size:11px}
+#stage{position:relative;min-height:300px}#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+#hud{position:absolute;left:12px;bottom:12px;right:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:12px;background:color-mix(in srgb,var(--paper) 85%,transparent);border:1px solid var(--line);padding:8px 12px}
+#hud input{accent-color:var(--acc)}#hud button{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);padding:4px 10px;cursor:pointer}
+#title{position:absolute;left:16px;top:12px;pointer-events:none}#title h2{margin:0;font-size:30px;text-shadow:0 2px 0 var(--bg)}#title div{color:var(--acc);font-size:12px}
+#info{overflow:auto;border-left:2px solid var(--line);background:var(--paper);padding:16px}
+#info h3{font-size:11px;letter-spacing:.2em;color:var(--dim);margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:13px}dt{color:var(--dim)}dd{margin:0;word-break:break-all}
+.bar{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center;font-size:12px;margin:4px 0}
+.sw{width:12px;height:12px;border:1px solid #0006}.bar i{display:block;height:3px;background:var(--acc);margin-top:2px}
+#thumb{width:100%;image-rendering:pixelated;border:1px solid var(--line)}
+.sec{padding:10px 12px 6px;font-size:10px;letter-spacing:.18em;color:var(--acc);border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--paper);z-index:1}
+@media (max-width:860px){.sec{writing-mode:vertical-rl;border-bottom:0;border-right:1px solid var(--line);padding:8px 4px;position:static}}
+.tag{display:inline-block;border:1px solid var(--acc);color:var(--acc);font-size:11px;padding:0 6px;margin-right:4px}
+@media (max-width:860px){body{grid-template-columns:1fr;grid-template-rows:auto auto 60vh auto;height:auto}
+#list{display:flex;overflow-x:auto;border-right:0;border-bottom:2px solid var(--line)}.it{flex:0 0 auto;border-bottom:0;border-right:1px dashed var(--line)}
+#info{border-left:0}}
+</style></head><body>
+<header><h1>AXIOM BLUEPRINT ARCHIVE</h1><span class="mono" id="sum"></span></header>
+<nav id="list"></nav>
+<main id="stage"><div id="title"><h2 id="tn"></h2><div class="mono" id="ts"></div></div>
+<div id="hud" class="mono"><label>断面 Y ≤ <input type="range" id="cut" min="0" max="1" value="1"> <span id="cv"></span></label>
+<label><input type="checkbox" id="rot"> 自動回転</label><button id="reset">視点リセット</button><span style="color:var(--dim)">ドラッグ:回転 / ホイール・ピンチ:ズーム / 右ドラッグ:移動</span></div></main>
+<aside id="info"></aside>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA=__DATA__;
+const $=s=>document.querySelector(s);
+$('#sum').textContent=`${DATA.length} files · ${DATA.reduce((a,b)=>a+b.count,0).toLocaleString()} blocks`;
+let sec=null;DATA.forEach((d,i)=>{if(d.sample!==sec){sec=d.sample;const h=document.createElement('div');h.className='sec mono';h.textContent=sec?'SAMPLES — 生成した建築':'ARCHIVE — 手持ちの建築';$('#list').appendChild(h)}const e=document.createElement('div');e.className='it';e.innerHTML=`<img src="data:image/png;base64,${d.thumb}"><div><b>${d.name}${d.sample?' <span class="tag">NEW</span>':''}</b><small class="mono">${d.size.join('×')} · ${d.count.toLocaleString()}</small></div>`;e.onclick=()=>show(i);$('#list').appendChild(e)});
+const st=$('#stage'),R=new THREE.WebGLRenderer({antialias:true,alpha:true});R.setPixelRatio(Math.min(devicePixelRatio,2));st.prepend(R.domElement);
+const S=new THREE.Scene(),cam=new THREE.PerspectiveCamera(45,1,.1,5000);
+S.add(new THREE.HemisphereLight(0xffffff,0x445566,.75));const dl=new THREE.DirectionalLight(0xffffff,.6);dl.position.set(.6,1,.4);S.add(dl);
+let grp=new THREE.Group();S.add(grp);const geos=[new THREE.BoxGeometry(1,1,1),new THREE.BoxGeometry(1,.5,1).translate(0,-.25,0),new THREE.BoxGeometry(1,.5,1).translate(0,.25,0),new THREE.BoxGeometry(1,.08,1).translate(0,-.46,0),new THREE.BoxGeometry(.35,1,.35)];
+let cur,meshes=[],yaw=.8,pitch=.55,dist=50,tgt=new THREE.Vector3(),grid;
+function resize(){const r=st.getBoundingClientRect();R.setSize(r.width,r.height,false);R.domElement.style.width=r.width+'px';R.domElement.style.height=r.height+'px';cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
+new ResizeObserver(resize).observe(st);
+function build(maxY){grp.clear();meshes.forEach(m=>m.dispose&&m.dispose());meshes=[];const d=cur,v=d.v,m4=new THREE.Matrix4(),cnt=new Array(d.pal.length).fill(0);
+for(let i=0;i<v.length;i+=4)if(v[i+1]<=maxY)cnt[v[i+3]]++;
+const ims=d.pal.map((p,k)=>{if(!cnt[k])return null;const n=p[0],tr=/glass|water|ice|cobweb|portal/.test(n)&&!/tinted/.test(n);
+const emi=/lantern|glowstone|torch|lamp|beacon|end_rod|lava|magma|shroom|portal/.test(n);
+const mat=new THREE.MeshLambertMaterial({color:p[1],transparent:tr,opacity:tr?(n.includes('water')?.55:.45):1,depthWrite:!tr,emissive:emi?p[1]:0,emissiveIntensity:emi?.5:0});
+const im=new THREE.InstancedMesh(geos[p[2]],mat,cnt[k]);im.count=0;grp.add(im);meshes.push(mat);return im});
+for(let i=0;i<v.length;i+=4){if(v[i+1]>maxY)continue;const im=ims[v[i+3]];m4.makeTranslation(v[i]-d.size[0]/2+.5,v[i+1]+.5,v[i+2]-d.size[2]/2+.5);im.setMatrixAt(im.count++,m4)}
+const g=new THREE.GridHelper(Math.max(d.size[0],d.size[2])+8,Math.max(d.size[0],d.size[2])+8,0x5588aa,0x2c5a80);grp.add(g)}
+function reset(){const s=cur.size,m=Math.max(...s);dist=m*1.9+6;tgt.set(0,s[1]/2,0);yaw=(cur.yaw+180)*Math.PI/180;pitch=Math.max(.15,Math.min(1.2,cur.pitch*Math.PI/180||.5))}
+function show(i){cur=DATA[i];document.querySelectorAll('.it').forEach((e,j)=>e.classList.toggle('on',i==j));
+const c=$('#cut');c.max=cur.size[1]-1;c.value=c.max;$('#cv').textContent=c.value;build(+c.value);reset();
+$('#tn').textContent=cur.name;$('#ts').textContent=`${cur.size.join(' × ')}  /  描画 ${(cur.v.length/4).toLocaleString()} 面ブロック`;
+const tot=cur.top.reduce((a,b)=>a+b[1],0)||1,col=Object.fromEntries(cur.pal.map(p=>[p[0],p[1]])),mx=cur.top[0]?cur.top[0][1]:1;
+$('#info').innerHTML=`<img id="thumb" src="data:image/png;base64,${cur.thumb}" alt=""><h3>METADATA</h3><dl class="mono">
+<dt>名前</dt><dd>${cur.name}</dd><dt>ファイル</dt><dd>${cur.file}</dd><dt>作者</dt><dd>${cur.author}</dd><dt>タグ</dt><dd>${cur.tags.map(t=>`<span class="tag">${t}</span>`).join('')||'—'}</dd>
+<dt>形式Ver</dt><dd>${cur.ver}</dd><dt>サイズ</dt><dd>${cur.size.join(' × ')}</dd><dt>体積</dt><dd>${(cur.size[0]*cur.size[1]*cur.size[2]).toLocaleString()}</dd>
+<dt>ブロック数</dt><dd>${cur.count.toLocaleString()}</dd><dt>種類</dt><dd>${cur.kinds}</dd><dt>サムネ角</dt><dd>yaw ${cur.yaw}° / pitch ${cur.pitch}°</dd></dl>
+<h3>使用ブロック TOP${cur.top.length}</h3>`+cur.top.map(([n,c])=>`<div class="bar mono"><div class="sw" style="background:${col[n]||'#888'}"></div><div>${n}<i style="width:${c/mx*100}%"></i></div><div>${c.toLocaleString()}</div></div>`).join('')}
+$('#cut').oninput=e=>{$('#cv').textContent=e.target.value;build(+e.target.value)};$('#reset').onclick=reset;
+let drag=null,pts=new Map();const cv=R.domElement;cv.oncontextmenu=e=>e.preventDefault();
+cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);drag={b:e.button,x:e.clientX,y:e.clientY}};
+cv.onpointermove=e=>{if(!drag)return;const p=pts.get(e.pointerId);if(pts.size==2){const o=[...pts].find(q=>q[0]!=e.pointerId)[1],d0=Math.hypot(p[0]-o[0],p[1]-o[1]),d1=Math.hypot(e.clientX-o[0],e.clientY-o[1]);dist*=d0/d1;pts.set(e.pointerId,[e.clientX,e.clientY]);return}
+const dx=e.clientX-p[0],dy=e.clientY-p[1];pts.set(e.pointerId,[e.clientX,e.clientY]);
+if(drag.b==2||e.shiftKey){const r=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw)),k=dist/500;tgt.addScaledVector(r,-dx*k);tgt.y+=dy*k}else{yaw-=dx*.008;pitch=Math.max(-1.4,Math.min(1.5,pitch+dy*.008))}};
+cv.onpointerup=cv.onpointercancel=e=>{pts.delete(e.pointerId);if(!pts.size)drag=null};
+cv.onwheel=e=>{e.preventDefault();dist*=Math.exp(e.deltaY*.001)};
+(function loop(){requestAnimationFrame(loop);if($('#rot').checked)yaw+=.004;cam.position.set(tgt.x+dist*Math.cos(pitch)*Math.sin(yaw),tgt.y+dist*Math.sin(pitch),tgt.z+dist*Math.cos(pitch)*Math.cos(yaw));cam.lookAt(tgt);R.render(S,cam)})();
+resize();show(0);
+</script></body></html>
